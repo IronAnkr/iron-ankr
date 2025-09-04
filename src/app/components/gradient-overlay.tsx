@@ -1,5 +1,4 @@
 import { cn } from "@/utils/cn";
-import { ReactNode } from "react";
 
 
 export default function GradientOverlay({ className }:{className?:string, }){

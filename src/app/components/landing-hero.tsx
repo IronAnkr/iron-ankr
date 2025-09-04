@@ -7,7 +7,6 @@ import { motion } from "framer-motion";
 import { ArrowDownRight } from "lucide-react";
 import Image from "next/image";
 
-const font_a = Oooh_Baby({ subsets:['latin'], weight: "400"})
 const font_b = Roboto_Slab({ subsets: ['latin'], weight: "300"})
 
 export default function LandingHero() {

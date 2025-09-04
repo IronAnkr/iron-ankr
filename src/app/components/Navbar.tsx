@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { Menu, ShoppingCart, Search } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -37,9 +38,9 @@ export default function Navbar() {
 
       <div className="mx-auto flex h-full w-full max-w-6xl items-center justify-between px-4">
         {/* Left: Brand */}
-        <a href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <span className="text-sm font-semibold tracking-wide text-white/90 sm:block">IRON ANCHOR</span>
-        </a>
+        </Link>
 
         {/* Center: Links */}
         <div className="hidden items-center gap-6 md:flex">
@@ -81,9 +82,9 @@ export default function Navbar() {
         <div className="mx-auto max-w-6xl px-4 py-3">
           <div className="grid grid-cols-2 gap-3 text-sm">
             <a className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-zinc-200" href="#products" onClick={() => setOpen(false)}>Products</a>
-            <a className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-zinc-200" href="/about" onClick={() => setOpen(false)}>About</a>
-            <a className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-zinc-200" href="/faq" onClick={() => setOpen(false)}>FAQ</a>
-            <a className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-zinc-200" href="/contact" onClick={() => setOpen(false)}>Contact</a>
+            <Link className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-zinc-200" href="/about" onClick={() => setOpen(false)}>About</Link>
+            <Link className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-zinc-200" href="/faq" onClick={() => setOpen(false)}>FAQ</Link>
+            <Link className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-zinc-200" href="/contact" onClick={() => setOpen(false)}>Contact</Link>
           </div>
         </div>
       </motion.div>
@@ -93,10 +94,10 @@ export default function Navbar() {
 
 function NavLink({ href, label }: { href: string; label: string }) {
   return (
-    <a href={href} className="group relative text-sm text-zinc-200 transition-colors hover:text-white">
+    <Link href={href} className="group relative text-sm text-zinc-200 transition-colors hover:text-white">
       {label}
       <span className="absolute -bottom-1 left-0 h-px w-0 bg-gradient-to-r from-rose-400 via-fuchsia-400 to-sky-400 transition-all duration-300 group-hover:w-full" />
-    </a>
+    </Link>
   );
 }
 

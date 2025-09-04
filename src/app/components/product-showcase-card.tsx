@@ -60,8 +60,11 @@ function extractVariantPreview(variants?: ProductVariantT[]) {
 }
 
 function getRating(product: ProductT): number | undefined {
-  const val = (product.metadata as any)?.rating;
-  if (typeof val === "number") return Math.max(0, Math.min(5, val));
+  const meta = product.metadata;
+  if (meta && "rating" in meta) {
+    const val = meta["rating"];
+    if (typeof val === "number") return Math.max(0, Math.min(5, val));
+  }
   return undefined;
 }
 
