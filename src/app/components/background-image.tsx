@@ -34,7 +34,7 @@ export default function BackgroundImage({src}:{src:string}) {
     };
   }, []);
 
-  const strength = 0.15; // subtle parallax strength
+  const strength = 0.25; // subtle parallax strength
   const translateY = Math.round(offset * strength);
 
   return (

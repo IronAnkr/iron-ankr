@@ -21,7 +21,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-50 h-16 backdrop-blur-md bg-black/25">
+    <nav className="fixed inset-x-4 top-4 z-50 h-16 backdrop-blur-md bg-black/25 rounded-md overflow-hidden">
       <motion.div
         className="absolute inset-x-0 top-0 h-0.5 origin-left bg-gradient-to-r from-rose-400 via-fuchsia-400 to-sky-400"
         style={{ scaleX: progress }}

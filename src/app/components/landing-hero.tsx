@@ -25,9 +25,7 @@ export default function LandingHero() {
           transition={{ duration: 0.6 }}
           className="w-full max-w-5xl"
         >
-          <div className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full ">
-            <Image src="/logo.png" alt="Iron Anchor" width={48} height={48}  />
-          </div>
+            <Image src="/logo.png" alt="Iron Anchor" width={200} height={200} className="justify-self-center" />
 
           <motion.h1
             initial={{ opacity: 0, y: 10 }}
@@ -84,8 +82,7 @@ export default function LandingHero() {
           className="absolute bottom-6 inline-flex items-center gap-2 text-xs text-zinc-300 hover:text-white"
         >
           Scroll to products
-          <span className="h-6 w-px bg-white/30" />
-          <span className="inline-block h-2 w-2 rotate-45 border-b border-r" />
+          <span className="inline-block h-2 w-2 rotate-45 border-b border-r -translate-y-0.5" />
         </motion.a>
       </div>
     </main>
