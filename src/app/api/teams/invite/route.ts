@@ -98,7 +98,8 @@ export async function POST(req: NextRequest) {
 
     // For both new and existing users, create a record in our public `team_invites` table.
     const expires_at = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(); // 7 days
-    const { data: newInvite, error: dbError } = await supabase
+    // Insert invite with service role to bypass RLS after we have authorized the caller above
+    const { data: newInvite, error: dbError } = await supabaseAdmin
       .from('team_invites')
       .insert({
         team_id: team_id,
