@@ -125,6 +125,11 @@ export function UserDropdown() {
     };
   }, [supabase]);
 
+  // If we already have an email, ensure loading is not stuck
+  useEffect(() => {
+    if (email !== null) setLoading(false);
+  }, [email]);
+
   async function signOut() {
     await supabase.auth.signOut();
     setOpen(false);
