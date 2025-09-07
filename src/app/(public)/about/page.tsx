@@ -30,7 +30,7 @@ export default function AboutPage() {
           transition={{ duration: 0.6 }}
           className="text-center"
         >
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl">About Iron Anchor</h1>
+          <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl">About Iron ankr</h1>
           <p className="mx-auto mt-3 max-w-2xl text-zinc-300">
             Built by lifters for lifters. We design gear that amplifies stimulus, manages fatigue, and keeps you lifting safely.
           </p>

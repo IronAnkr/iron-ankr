@@ -1,31 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
 import { Menu, ShoppingCart, Search } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import { PublicBanner } from "./public-banner";
+import { UserDropdown } from "./auth/user-dropdown";
+import Image from "next/image";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 30, mass: 0.2 });
   const bgOpacity = useTransform(progress, [0, 1], [0.3, 0.75]);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <nav className="fixed inset-x-4 top-4 z-50 h-16 backdrop-blur-md bg-black/25 rounded-md overflow-hidden">
+    <nav className="fixed inset-x-4 top-4 z-50 h-16 bg-black/25 rounded-md overflow-visible rounded-top-lg">
       <motion.div
-        className="absolute inset-x-0 top-0 h-0.5 origin-left bg-gradient-to-r from-rose-400 via-fuchsia-400 to-sky-400"
+        className="absolute inset-x-0 top-0 h-0.5 origin-left bg-gradient-to-r from-rose-400 z-10 via-fuchsia-400 to-sky-400"
         style={{ scaleX: progress }}
       />
+      <div className="backdrop-blur-md absolute inset-0" />
 
       <motion.div
         className="absolute inset-0 -z-10 backdrop-blur-md border-b"
@@ -38,8 +33,9 @@ export default function Navbar() {
 
       <div className="mx-auto flex h-full w-full max-w-6xl items-center justify-between px-4">
         {/* Left: Brand */}
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-sm font-semibold tracking-wide text-white/90 sm:block">IRON ANCHOR</span>
+        <Link href="/" className="flex items-center gap-2 z-20">
+          <Image className="" alt="logo" src="/logo.png" width={30} height={30} />
+          <span className="text-sm font-semibold tracking-wide text-white/90 sm:block uppercase">IRON ANKR</span>
         </Link>
 
         {/* Center: Links */}
@@ -62,6 +58,9 @@ export default function Navbar() {
           </button>
 
           <CartButton count={2} />
+
+          {/* Auth dropdown */}
+          <UserDropdown />
 
           <button
             aria-label="Menu"
@@ -88,6 +87,10 @@ export default function Navbar() {
           </div>
         </div>
       </motion.div>
+      {/* Slim banner, hanging off the bottom edge */}
+      <div className="absolute inset-x-0 top-full backdrop-blur-md z-50 rounded-b-lg overflow-hidden ">
+        <PublicBanner />
+      </div>
     </nav>
   );
 }

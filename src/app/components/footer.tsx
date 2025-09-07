@@ -38,8 +38,8 @@ export default function Footer() {
         >
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <Image src="/logo.png" alt="Iron Anchor" width={36} height={36} />
-              <span className="text-lg font-semibold tracking-wide">Iron Anchor</span>
+              <Image src="/logo.png" alt="Iron ankr" width={36} height={36} />
+              <span className="text-lg font-semibold tracking-wide">Iron ankr</span>
             </div>
             <p className="max-w-md text-sm text-zinc-300">
               Precision gear for serious pulling. Built to amplify stimulus, manage fatigue, and keep you lifting safely.
@@ -119,7 +119,7 @@ export default function Footer() {
 
         <div className="mt-10 border-t border-white/10 pt-6 text-xs text-zinc-400">
           <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
-            <span>© {year} Iron Anchor. All rights reserved.</span>
+            <span>© {year} Iron ankr. All rights reserved.</span>
             <div className="flex items-center gap-4">
               <a className="hover:text-white" href="#">Privacy</a>
               <a className="hover:text-white" href="#">Terms</a>

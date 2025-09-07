@@ -17,17 +17,20 @@ const ids = {
   },
 };
 
-export const products: ProductT[] = [
+type ProductSeed = ProductT & { variants?: string[] };
+export const products: ProductSeed[] = [
   {
     id: ids.products.classic,
-    name: "Iron Anchor Classic Lifting Straps",
+    name: "Iron ankr Classic Lifting Straps",
     description:
       "Durable cotton straps for everyday pulling days. Comfortable, secure, and built to last.",
+    status: "active",
     price_in_cents: 1999,
     variants: [ids.variants.classicBlack, ids.variants.classicSand],
     images: [
       "/hero-bg.png", // placeholder image from /public
     ],
+    tags: [],
     metadata: { category: "straps", material: "cotton" },
     created_at: now,
     updated_at: now,
@@ -35,14 +38,16 @@ export const products: ProductT[] = [
   },
   {
     id: ids.products.figure8,
-    name: "Iron Anchor Figure-8 Straps",
+    name: "Iron ankr Figure-8 Straps",
     description:
       "Max-security figure-8s for deadlifts and heavy pulls. Lock in and focus on the lift.",
+    status: "active",
     price_in_cents: 2499,
     variants: [ids.variants.figure8Small, ids.variants.figure8Large],
     images: [
       "/logo.png", // placeholder image from /public
     ],
+    tags: [],
     metadata: { category: "straps", style: "figure-8" },
     created_at: now,
     updated_at: now,
@@ -120,4 +125,3 @@ export const productsWithVariants = products.map((p) => ({
 }));
 
 export type ProductWithVariants = (typeof productsWithVariants)[number];
-

@@ -2,7 +2,7 @@
 
 import BackgroundImage from "./background-image";
 import GradientOverlay from "./gradient-overlay";
-import { Oooh_Baby, Roboto_Slab } from "next/font/google";
+import { Roboto_Slab } from "next/font/google";
 import { motion } from "framer-motion";
 import { ArrowDownRight } from "lucide-react";
 import Image from "next/image";
@@ -25,7 +25,7 @@ export default function LandingHero() {
           transition={{ duration: 0.6 }}
           className="w-full max-w-5xl"
         >
-            <Image src="/logo.png" alt="Iron Anchor" width={200} height={200} className="justify-self-center" />
+            <Image src="/logo.png" alt="Iron ankr" width={200} height={200} className="justify-self-center" />
 
           <motion.h1
             initial={{ opacity: 0, y: 10 }}

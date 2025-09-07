@@ -114,7 +114,7 @@ export default function ContactPage() {
             className="space-y-4"
           >
             <InfoCard icon={<Mail className="h-4 w-4" />} title="Email">
-              <a className="underline hover:text-white" href="mailto:support@ironanchor.fit">support@ironanchor.fit</a>
+              <a className="underline hover:text-white" href="mailto:support@ironankr.fit">support@ironankr.fit</a>
             </InfoCard>
             <InfoCard icon={<Phone className="h-4 w-4" />} title="Phone">
               <span className="text-zinc-300">+1 (555) 010-2025</span>
