@@ -113,15 +113,21 @@ export function UserDropdown() {
       }
       setLoading(false);
     });
+    const onTeamsChanged = () => {
+      // Team membership changed elsewhere (e.g., invite accepted); refresh
+      load();
+    };
     const onDocClick = (e: MouseEvent) => {
       if (!containerRef.current) return;
       if (!containerRef.current.contains(e.target as Node)) setOpen(false);
     };
     document.addEventListener("click", onDocClick);
+    window.addEventListener('ia:teams-changed', onTeamsChanged as EventListener);
     return () => {
       mounted = false;
       sub.subscription?.unsubscribe();
       document.removeEventListener("click", onDocClick);
+      window.removeEventListener('ia:teams-changed', onTeamsChanged as EventListener);
     };
   }, [supabase]);
 

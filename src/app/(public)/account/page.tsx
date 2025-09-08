@@ -20,11 +20,32 @@ export default function AccountPage() {
   useEffect(() => {
     let mounted = true;
     const load = async () => {
+      // If invite hash processing is happening, wait a moment to let it finish
+      try {
+        if (typeof window !== 'undefined') {
+          const inProgress = (window as unknown as { __IA_AUTH_HASH_IN_PROGRESS__?: boolean }).__IA_AUTH_HASH_IN_PROGRESS__ || sessionStorage.getItem('IA_AUTH_HASH_STATUS') === 'processing';
+          if (inProgress) {
+            await new Promise((r) => setTimeout(r, 250));
+          }
+        }
+      } catch {}
       const { data: session } = await supabase.auth.getSession();
       const uid = session.session?.user.id;
       if (!uid) {
+        // If an invite hash was (or is) present, avoid redirect; let AuthHashHandler finish
+        const hasInviteHash = typeof window !== 'undefined' && /access_token=/.test(window.location.hash);
+        const inProgress = (typeof window !== 'undefined') && ((window as unknown as { __IA_AUTH_HASH_IN_PROGRESS__?: boolean }).__IA_AUTH_HASH_IN_PROGRESS__ || sessionStorage.getItem('IA_AUTH_HASH_STATUS') === 'processing');
+        if (!(hasInviteHash || inProgress)) {
+          try {
+            const redirectTo = typeof window !== "undefined" ? window.location.pathname + window.location.search : "/account";
+            if (typeof window !== "undefined") {
+              window.location.href = `/login?redirect=${encodeURIComponent(redirectTo)}`;
+              return;
+            }
+          } catch {}
+        }
         if (mounted) setLoading(false);
-        return; // not signed in
+        return;
       }
       const { data, error } = await supabase
         .from("app_users")
@@ -50,6 +71,28 @@ export default function AccountPage() {
     });
     return () => { mounted = false; sub.subscription?.unsubscribe(); };
   }, [supabase]);
+
+  // Fallback: if loading takes too long, try a soft recovery
+  useEffect(() => {
+    if (!loading) return;
+    const t = setTimeout(() => {
+      if (!loading) return;
+      try {
+        const key = "ia_retry_account_once";
+        if (typeof window !== "undefined") {
+          if (sessionStorage.getItem(key) !== "1") {
+            sessionStorage.setItem(key, "1");
+            window.location.reload();
+            return;
+          }
+        }
+      } catch {}
+      // As a last resort, stop spinner and show a gentle message
+      setError((e) => e || "This is taking longer than expected. Please try again.");
+      setLoading(false);
+    }, 6000);
+    return () => clearTimeout(t);
+  }, [loading]);
 
   async function save() {
     setSaving(true);

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { getSupabaseBrowserClient } from "@/utils/supabase/client";
-import { TeamT, TeamInviteT, TeamMemberT } from "@/db/schema";
+import { TeamT, TeamInviteT } from "@/db/schema";
 import { User } from "@supabase/supabase-js";
 
 type TeamWithMemberCount = TeamT & { member_count: number };
@@ -31,40 +31,43 @@ export function TeamsDashboard() {
 
   useEffect(() => {
     const loadInitialData = async () => {
-      setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-
-      if (!user) {
+      try {
+        setLoading(true);
+        const ctrl = new AbortController();
+        const timeout = setTimeout(() => ctrl.abort(), 10000);
+        const res = await fetch('/api/owner/teams/summary', { credentials: 'same-origin', signal: ctrl.signal });
+        clearTimeout(timeout);
+        if (!res.ok) {
+          const j = await res.json().catch(() => ({}));
+          throw new Error(j.error || `Failed to load: ${res.status}`);
+        }
+        const data = await res.json();
+        setUser(data.user || null);
+        setIsSiteOwner((data.site_role || 'user') === 'owner');
+        setTeamRoles(data.roles || {});
+        setTeams((data.teams || []) as TeamWithMemberCount[]);
+        setInvites((data.invites || []) as InviteWithTeamName[]);
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : 'Unexpected error loading teams');
+      } finally {
         setLoading(false);
-        setError("You must be logged in to manage teams.");
-        return;
       }
-
-      // Parallel fetch
-      const [teamsResult, invitesResult, siteRoleResult, myRolesResult] = await Promise.all([
-        supabase.from("teams").select("*, team_members(count)"),
-        supabase.from("team_invites").select("*, teams(name)").is("accepted_at", null),
-        supabase.from("app_users").select("role").eq("id", user.id).maybeSingle(),
-        supabase.from("team_members").select("team_id, role").eq("user_id", user.id),
-      ]);
-
-      if (teamsResult.error || invitesResult.error) {
-        setError(teamsResult.error?.message || invitesResult.error?.message || "Failed to load data.");
-      } else {
-        const formattedTeams = teamsResult.data.map(t => ({ ...t, member_count: t.team_members[0]?.count || 0 }));
-        setTeams(formattedTeams);
-        setInvites(invitesResult.data as InviteWithTeamName[]);
-        setIsSiteOwner((siteRoleResult.data?.role || "user") === "owner");
-        const roleMap: Record<string, string> = {};
-        ((myRolesResult.data as TeamMemberT[] | null) || []).forEach((r: TeamMemberT) => { roleMap[r.team_id] = r.role; });
-        setTeamRoles(roleMap);
-      }
-      setLoading(false);
     };
 
     loadInitialData();
-  }, [supabase]);
+  }, []);
+
+  // Safety fallback: if loading takes too long, surface an error instead of spinning forever
+  useEffect(() => {
+    if (!loading) return;
+    const t = setTimeout(() => {
+      if (loading) {
+        setError((e) => e || 'This is taking longer than expected. Please try again.');
+        setLoading(false);
+      }
+    }, 8000);
+    return () => clearTimeout(t);
+  }, [loading]);
 
   const handleCreateTeam = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,6 +173,9 @@ export function TeamsDashboard() {
   return (
     <div className="mt-4 space-y-8">
       {message && <div className="bg-green-900/50 border border-green-500 text-green-200 p-3 rounded-lg">{message}</div>}
+      <div className="flex items-center justify-end">
+        <button onClick={() => window.location.reload()} className="rounded-md border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-white hover:bg-white/10">Retry</button>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Create Team Section */}

@@ -38,6 +38,27 @@ export default function AccountSettingsPage() {
     return () => { mounted = false; };
   }, [supabase]);
 
+  // Fallback: if loading is stuck, try a one-time refresh then show message
+  useEffect(() => {
+    if (!loading) return;
+    const t = setTimeout(() => {
+      if (!loading) return;
+      try {
+        const key = "ia_retry_account_settings_once";
+        if (typeof window !== "undefined") {
+          if (sessionStorage.getItem(key) !== "1") {
+            sessionStorage.setItem(key, "1");
+            window.location.reload();
+            return;
+          }
+        }
+      } catch {}
+      setError((e) => e || "This is taking longer than expected. Please try again.");
+      setLoading(false);
+    }, 6000);
+    return () => clearTimeout(t);
+  }, [loading]);
+
   async function save() {
     setSaving(true);
     setError(null);

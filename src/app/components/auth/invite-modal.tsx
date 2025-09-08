@@ -116,6 +116,7 @@ export function InviteModalWatcher() {
       }
 
       setInvite(null);
+      try { window.dispatchEvent(new Event('ia:teams-changed')); } catch {}
     } finally {
       setActionLoading(false);
     }
@@ -134,6 +135,7 @@ export function InviteModalWatcher() {
         console.error("Failed to delete invite:", error.message);
       }
       setInvite(null);
+      try { window.dispatchEvent(new Event('ia:teams-changed')); } catch {}
     } finally {
       setActionLoading(false);
     }

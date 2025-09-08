@@ -31,10 +31,13 @@ function LoginContent() {
         sessionStorage.setItem("ia_last_email", email);
       } catch {}
       clientLog("login:send_otp", { email, redirect });
+      const siteUrl = (typeof window !== 'undefined' && window.location?.origin) 
+        ? window.location.origin 
+        : (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?redirect=${encodeURIComponent(redirect)}`,
+          emailRedirectTo: `${siteUrl}/auth/callback?redirect=${encodeURIComponent(redirect)}`,
         },
       });
       if (error) throw error;

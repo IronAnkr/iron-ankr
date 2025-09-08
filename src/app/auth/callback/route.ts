@@ -14,30 +14,28 @@ export async function GET(req: NextRequest) {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
-          getAll() {
-            return cookieStore.getAll()
-          },
+          getAll() { return cookieStore.getAll() },
           setAll(cookiesToSet) {
             try {
-              cookiesToSet.forEach(({ name, value, options }) =>
-                cookieStore.set(name, value, options)
-              )
-            } catch {
-              // ignore
-            }
+              cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options))
+            } catch { /* ignore */ }
           },
         },
       }
     )
+
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
-      return NextResponse.redirect(new URL(redirect, requestUrl.origin))
+      // After server exchange, hydrate the browser session via a post-callback page
+      const url = new URL('/auth/post-callback', requestUrl.origin)
+      url.searchParams.set('redirect', redirect)
+      return NextResponse.redirect(url)
     }
   }
 
   // return the user to an error page with instructions
-  console.error("Supabase auth callback error:", "No code or exchange failed");
   const errorUrl = new URL('/login', requestUrl.origin)
   errorUrl.searchParams.set('error', 'Authentication failed. Please try again.')
   return NextResponse.redirect(errorUrl)
 }
+

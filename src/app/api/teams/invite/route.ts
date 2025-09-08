@@ -82,7 +82,8 @@ export async function POST(req: NextRequest) {
     // Always attempt to send an invite; handle the "already registered" case gracefully.
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
     const { error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
-      redirectTo: `${siteUrl}/account`,
+      // Use a dedicated hash callback page to reliably finalize tokens before hitting /account
+      redirectTo: `${siteUrl}/auth/hash-callback?redirect=${encodeURIComponent('/account')}`,
     })
     if (inviteError) {
       const msg = String(inviteError.message || '')
