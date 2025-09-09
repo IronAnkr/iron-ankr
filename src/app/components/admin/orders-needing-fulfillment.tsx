@@ -1,62 +1,81 @@
+"use client";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/app/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/table";
 import { Badge } from "@/app/components/ui/badge";
+import { getSupabaseBrowserClient } from "@/utils/supabase/client";
+
+type OrderRow = {
+  id: string;
+  total_in_cents: number;
+  currency: string;
+  payment_status: string;
+  fulfillment_status: string;
+  created_at: string;
+};
+
+function formatCents(cents: number, currency: string = "USD") {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency }).format((cents || 0) / 100);
+}
 
 export function OrdersNeedingFulfillment() {
+  const supabase = useMemo(() => getSupabaseBrowserClient(), []);
+  const [orders, setOrders] = useState<OrderRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true); setError(null);
+      const { data, error } = await supabase
+        .from("orders")
+        .select("id,total_in_cents,currency,payment_status,fulfillment_status,created_at")
+        .order("created_at", { ascending: false })
+        .limit(10);
+      if (error) setError(error.message);
+      setOrders((data as OrderRow[] | null) ?? []);
+      setLoading(false);
+    })();
+  }, [supabase]);
+
   return (
     <Card className="overflow-hidden border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent">
       <CardHeader>
         <CardTitle className="text-white">Orders</CardTitle>
-        <CardDescription>A list of your recent orders.</CardDescription>
+        <CardDescription>Recent orders from Stripe checkout.</CardDescription>
       </CardHeader>
       <CardContent>
+        {error && <div className="mb-3 rounded-md border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">{error}</div>}
         <Table>
           <TableHeader>
             <TableRow className="bg-white/[0.04]">
-              <TableHead>Customer</TableHead>
-              <TableHead className="hidden sm:table-cell">Type</TableHead>
-              <TableHead className="hidden sm:table-cell">Status</TableHead>
+              <TableHead>Order</TableHead>
+              <TableHead className="hidden sm:table-cell">Payment</TableHead>
+              <TableHead className="hidden sm:table-cell">Fulfillment</TableHead>
               <TableHead className="hidden md:table-cell">Date</TableHead>
               <TableHead className="text-right">Amount</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell>
-                <div className="font-medium">Liam Johnson</div>
-                <div className="hidden text-sm text-muted-foreground md:inline">
-                  liam@example.com
-                </div>
-              </TableCell>
-              <TableCell className="hidden sm:table-cell">Sale</TableCell>
-              <TableCell className="hidden sm:table-cell">
-                <Badge className="text-xs bg-emerald-400/15 text-emerald-300 border-emerald-500/20" variant="outline">Fulfilled</Badge>
-              </TableCell>
-              <TableCell className="hidden md:table-cell">2023-06-23</TableCell>
-              <TableCell className="text-right">$250.00</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell>
-                <div className="font-medium">Olivia Smith</div>
-                <div className="hidden text-sm text-muted-foreground md:inline">
-                  olivia@example.com
-                </div>
-              </TableCell>
-              <TableCell className="hidden sm:table-cell">Refund</TableCell>
-              <TableCell className="hidden sm:table-cell">
-                <Badge className="text-xs bg-rose-400/15 text-rose-300 border-rose-500/20" variant="outline">Declined</Badge>
-              </TableCell>
-              <TableCell className="hidden md:table-cell">2023-06-24</TableCell>
-              <TableCell className="text-right">$150.00</TableCell>
-            </TableRow>
-            {/* Add more table rows here */}
+            {loading ? (
+              <TableRow><TableCell colSpan={5} className="text-sm text-white/70">Loading…</TableCell></TableRow>
+            ) : orders.length === 0 ? (
+              <TableRow><TableCell colSpan={5} className="text-sm text-white/70">No orders yet.</TableCell></TableRow>
+            ) : (
+              orders.map((o) => (
+                <TableRow key={o.id}>
+                  <TableCell className="font-medium">{o.id.slice(0, 8)}…</TableCell>
+                  <TableCell className="hidden sm:table-cell">
+                    <Badge className="text-xs" variant="outline">{o.payment_status}</Badge>
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell">
+                    <Badge className="text-xs" variant="outline">{o.fulfillment_status}</Badge>
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">{new Date(o.created_at).toLocaleString()}</TableCell>
+                  <TableCell className="text-right">{formatCents(o.total_in_cents, o.currency)}</TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </CardContent>

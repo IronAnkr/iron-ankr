@@ -3,13 +3,40 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useCart } from "@/app/cart/cart-provider";
+import { useCallback, useState } from "react";
 
 function formatCents(cents: number, currency: string = "USD") {
   return new Intl.NumberFormat("en-US", { style: "currency", currency }).format((cents || 0) / 100);
 }
 
 export default function CartPage() {
-  const { items, cart, loading, error, updateQuantity, removeItem, clearCart } = useCart();
+  const { items, cart, cartId, loading, error, updateQuantity, removeItem, clearCart } = useCart();
+  const [checkingOut, setCheckingOut] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
+  const startCheckout = useCallback(async () => {
+    if (!cartId) return;
+    setCheckingOut(true);
+    setCheckoutError(null);
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cartId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || 'Failed to start checkout');
+      if (data?.url) {
+        window.location.href = data.url as string;
+        return;
+      }
+      throw new Error('Invalid checkout response');
+    } catch (e: unknown) {
+      setCheckoutError(e instanceof Error ? e.message : 'Checkout failed');
+    } finally {
+      setCheckingOut(false);
+    }
+  }, [cartId]);
   const totalQty = items.reduce((n, it) => n + (it.quantity || 0), 0);
 
   return (
@@ -23,6 +50,7 @@ export default function CartPage() {
       </header>
 
       {error && <div className="mb-4 rounded-md border border-red-500/40 bg-red-500/10 p-3 text-sm text-red-200">{error}</div>}
+      {checkoutError && <div className="mb-4 rounded-md border border-red-500/40 bg-red-500/10 p-3 text-sm text-red-200">{checkoutError}</div>}
 
       {loading && items.length === 0 ? (
         <div className="text-white/80">Loading…</div>
@@ -112,11 +140,11 @@ export default function CartPage() {
             </div>
             <button
               className="mt-4 w-full rounded-md bg-white px-4 py-2 text-sm font-semibold text-black disabled:opacity-60"
-              disabled={items.length === 0 || loading}
+              disabled={items.length === 0 || loading || checkingOut}
+              onClick={() => void startCheckout()}
             >
-              Checkout
+              {checkingOut ? 'Redirecting…' : 'Checkout'}
             </button>
-            <p className="mt-2 text-xs text-white/60">Checkout is a placeholder for now.</p>
           </aside>
         </div>
       )}

@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ClipboardList, Home, Megaphone, Package, Percent, Settings } from "lucide-react";
+import { ClipboardList, Home, Megaphone, Package, Percent, Settings, Truck } from "lucide-react";
 
 const LINKS = [
   { href: "/admin/orders", label: "Orders", Icon: ClipboardList },
+  { href: "/admin/fulfillment", label: "Fulfillment", Icon: Truck },
   { href: "/admin/products", label: "Products", Icon: Package },
   { href: "/admin/banners", label: "Banners", Icon: Megaphone },
   { href: "/admin/discounts", label: "Discounts", Icon: Percent },
@@ -43,4 +44,3 @@ export function AdminSidebar() {
     </aside>
   );
 }
-
