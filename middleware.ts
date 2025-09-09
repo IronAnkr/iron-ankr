@@ -1,6 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-import { serverLog } from "@/utils/debug";
 
 export async function middleware(req: NextRequest) {
   // Prepare a passthrough response and attach updated auth cookies to it.
@@ -31,7 +30,11 @@ export async function middleware(req: NextRequest) {
   // The rest of this file is for route protection.
   const path = req.nextUrl.pathname;
   
-  serverLog("mw:start", { path, hasUser: !!user });
+  const debug = process.env.NEXT_PUBLIC_DEBUG_AUTH === "1";
+  if (debug) {
+    // Keep logging extremely light and edge-safe
+    console.log("[mw:start]", { path, hasUser: Boolean(user) });
+  }
 
   const isProtectedRoute = /^\/(owner|admin|marketing|account)/.test(path);
 
