@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { InviteModalWatcher } from "./components/auth/invite-modal";
 import { AuthHashHandler } from "./components/auth/auth-hash-handler";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function RootLayout({
         <InviteModalWatcher />
         {children}
       </body>
+      <GoogleAnalytics gaId="G-K2S57B1J45" />
     </html>
   );
 }

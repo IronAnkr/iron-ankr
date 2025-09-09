@@ -14,6 +14,8 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             <Link href="/marketing/links" className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-white hover:bg-white/10">Links</Link>
             <Link href="/marketing/content" className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-white hover:bg-white/10">Content</Link>
             <Link href="/marketing/banners" className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-white hover:bg-white/10">Banners</Link>
+            <Link href="/marketing/tasks" className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-white hover:bg-white/10">Tasks</Link>
+            <Link href="/marketing/approvals" className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-white hover:bg-white/10">Approvals</Link>
           </nav>
           {children}
         </AdminContainer>
