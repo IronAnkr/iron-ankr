@@ -1,57 +1,33 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/table";
 import { Badge } from "@/app/components/ui/badge";
 import { type DiscountT } from "@/db/schema";
 import { DiscountFormModal } from "./discount-form-modal";
-
-const STORAGE_KEY = "ia_discounts";
-
-function loadDiscounts(): DiscountT[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as DiscountT[];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveDiscounts(data: DiscountT[]) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-function seedIfEmpty(setter: (d: DiscountT[]) => void) {
-  const existing = loadDiscounts();
-  if (existing.length) return setter(existing);
-  const now = new Date().toISOString();
-  const nowDate = new Date();
-  const seed: DiscountT[] = [
-    { id: crypto.randomUUID(), code: "WELCOME10", type: "percent", value: 10, active: true, uses_count: 143, created_at: now, updated_at: now, deleted_at: null },
-    { id: crypto.randomUUID(), code: "FREESHIP", type: "amount", value: 5, active: true, uses_count: 82, created_at: now, updated_at: now, deleted_at: null },
-    { id: crypto.randomUUID(), code: "SPRING20", type: "percent", value: 20, active: false, start_date: nowDate, end_date: nowDate, uses_count: 210, created_at: now, updated_at: now, deleted_at: null },
-  ];
-  saveDiscounts(seed);
-  setter(seed);
-}
+import { getSupabaseBrowserClient } from "@/utils/supabase/client";
 
 export function DiscountsTable() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<DiscountT | null>(null);
   const [items, setItems] = useState<DiscountT[]>([]);
   const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const supabase = useMemo(() => getSupabaseBrowserClient(), []);
+  const load = useCallback(async () => {
+    setLoading(true); setError(null);
+    const { data, error } = await supabase
+      .from('discounts')
+      .select('*')
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false });
+    if (error) setError(error.message);
+    setItems((data as DiscountT[] | null) ?? []);
+    setLoading(false);
+  }, [supabase]);
 
-  useEffect(() => {
-    seedIfEmpty(setItems);
-  }, []);
-
-  useEffect(() => {
-    saveDiscounts(items);
-  }, [items]);
+  useEffect(() => { void load(); }, [load]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -59,23 +35,42 @@ export function DiscountsTable() {
     return items.filter((d) => d.code.toLowerCase().includes(q));
   }, [items, query]);
 
-  function upsert(d: DiscountT) {
-    setItems((prev) => {
-      const idx = prev.findIndex((x) => x.id === d.id);
-      if (idx === -1) return [d, ...prev];
-      const next = [...prev];
-      next[idx] = d;
-      return next;
-    });
+  async function upsert(d: DiscountT) {
+    // Map dates to string (date) columns
+    const payload = {
+      id: d.id || crypto.randomUUID(),
+      code: d.code.trim().toUpperCase(),
+      type: d.type,
+      value: d.value,
+      description: d.description ?? null,
+      start_date: d.start_date ? new Date(d.start_date).toISOString().slice(0,10) : null,
+      end_date: d.end_date ? new Date(d.end_date).toISOString().slice(0,10) : null,
+      max_uses: d.max_uses ?? null,
+      uses_count: d.uses_count ?? 0,
+      product_ids: d.product_ids ?? null,
+      variant_ids: d.variant_ids ?? null,
+      minimum_subtotal_in_cents: d.minimum_subtotal_in_cents ?? null,
+      active: d.active ?? true,
+      metadata: d.metadata ?? null,
+    };
+    const query = editing ? supabase.from('discounts').update(payload).eq('id', editing.id) : supabase.from('discounts').insert(payload);
+    const { error } = await query;
+    if (error) { alert(error.message); return; }
+    setOpen(false); setEditing(null);
+    await load();
   }
 
-  function remove(id: string) {
+  async function remove(id: string) {
     if (!confirm("Delete this discount?")) return;
-    setItems((prev) => prev.filter((d) => d.id !== id));
+    const { error } = await supabase.from('discounts').update({ deleted_at: new Date().toISOString() }).eq('id', id);
+    if (error) { alert(error.message); return; }
+    await load();
   }
 
-  function toggleActive(id: string) {
-    setItems((prev) => prev.map((d) => (d.id === id ? { ...d, active: !d.active } : d)));
+  async function toggleActive(id: string, active: boolean) {
+    const { error } = await supabase.from('discounts').update({ active }).eq('id', id);
+    if (error) { alert(error.message); return; }
+    await load();
   }
 
   return (
@@ -104,6 +99,7 @@ export function DiscountsTable() {
         </div>
       </CardHeader>
       <CardContent>
+        {error && <div className="mb-3 rounded-md border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">{error}</div>}
         <Table>
           <TableHeader>
             <TableRow className="bg-white/[0.04]">
@@ -117,7 +113,11 @@ export function DiscountsTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map((d) => (
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-sm text-white/70">Loading…</TableCell>
+              </TableRow>
+            ) : filtered.map((d) => (
               <TableRow key={d.id}>
                 <TableCell className="font-medium text-white">{d.code}</TableCell>
                 <TableCell className="capitalize">{d.type}</TableCell>
@@ -126,7 +126,7 @@ export function DiscountsTable() {
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
                   {(d.start_date || d.end_date) ? (
-                    <span className="text-white/80">{d.start_date ? d.start_date.toISOString().slice(0,10) : "—"} → {d.end_date ? d.end_date.toISOString().slice(0,10) : "—"}</span>
+                    <span className="text-white/80">{d.start_date ? (typeof d.start_date === 'string' ? d.start_date : d.start_date.toISOString().slice(0,10)) : "—"} → {d.end_date ? (typeof d.end_date === 'string' ? d.end_date : d.end_date.toISOString().slice(0,10)) : "—"}</span>
                   ) : (
                     <span className="text-white/50">—</span>
                   )}
@@ -146,13 +146,13 @@ export function DiscountsTable() {
                 <TableCell className="text-right">
                   <div className="inline-flex items-center gap-2">
                     <button onClick={() => { setEditing(d); setOpen(true); }} className="text-xs rounded-md px-2 py-1 bg-white/5 hover:bg-white/10">Edit</button>
-                    <button onClick={() => toggleActive(d.id)} className="text-xs rounded-md px-2 py-1 bg-white/5 hover:bg-white/10">{d.active ? "Disable" : "Enable"}</button>
-                    <button onClick={() => remove(d.id)} className="text-xs rounded-md px-2 py-1 bg-rose-500/20 text-rose-200 hover:bg-rose-500/30">Delete</button>
+                    <button onClick={() => void toggleActive(d.id, !d.active)} className="text-xs rounded-md px-2 py-1 bg-white/5 hover:bg-white/10">{d.active ? "Disable" : "Enable"}</button>
+                    <button onClick={() => void remove(d.id)} className="text-xs rounded-md px-2 py-1 bg-rose-500/20 text-rose-200 hover:bg-rose-500/30">Delete</button>
                   </div>
                 </TableCell>
               </TableRow>
             ))}
-            {filtered.length === 0 && (
+            {!loading && filtered.length === 0 && (
               <TableRow>
                 <TableCell colSpan={7} className="text-center text-sm text-white/60 py-8">No discounts match your search.</TableCell>
               </TableRow>
@@ -164,7 +164,7 @@ export function DiscountsTable() {
       <DiscountFormModal
         open={open}
         onClose={() => setOpen(false)}
-        onSave={(d) => upsert(d)}
+        onSave={(d) => { void upsert(d); }}
         initial={editing}
       />
     </Card>

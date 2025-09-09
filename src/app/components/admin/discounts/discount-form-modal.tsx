@@ -32,10 +32,13 @@ export function DiscountFormModal({ open, onClose, onSave, initial }: Props) {
       deleted_at: null,
     }
   );
+  const [valueInput, setValueInput] = useState<string>(String((initial?.value ?? 10)));
 
   useEffect(() => {
-    if (initial) setForm(initial);
-    else
+    if (initial) {
+      setForm(initial);
+      setValueInput(String(initial.value ?? 0));
+    } else {
       setForm({
         id: "",
         code: "",
@@ -55,22 +58,30 @@ export function DiscountFormModal({ open, onClose, onSave, initial }: Props) {
         updated_at: new Date().toISOString(),
         deleted_at: null,
       });
+      setValueInput("10");
+    }
   }, [initial]);
 
   const errors = useMemo(() => {
     const e: Record<string, string> = {};
     if (!form.code.trim()) e.code = "Code is required";
-    if (form.type === "percent" && (form.value <= 0 || form.value > 100)) e.value = "Percent must be 1–100";
-    if (form.type === "amount" && form.value <= 0) e.value = "Amount must be greater than 0";
+    const parsed = valueInput.trim() === "" ? NaN : Number(valueInput);
+    if (form.type === "percent") {
+      if (!Number.isFinite(parsed) || parsed <= 0 || parsed > 100) e.value = "Percent must be 1–100";
+    } else {
+      if (!Number.isFinite(parsed) || parsed <= 0) e.value = "Amount must be greater than 0";
+    }
     if (form.start_date && form.end_date && new Date(form.start_date) > new Date(form.end_date)) e.date = "End must be after start";
     if (form.max_uses !== undefined && form.max_uses! < 0) e.max_uses = "Must be 0 or more";
     return e;
-  }, [form]);
+  }, [form, valueInput]);
 
   function submit() {
     if (Object.keys(errors).length) return;
     const id = form.id || crypto.randomUUID();
-    onSave({ ...form, id, updated_at: new Date().toISOString() });
+    const parsed = Number(valueInput);
+    if (!Number.isFinite(parsed) || parsed <= 0) return; // final guard per request
+    onSave({ ...form, value: parsed, id, updated_at: new Date().toISOString() });
     onClose();
   }
 
@@ -111,8 +122,8 @@ export function DiscountFormModal({ open, onClose, onSave, initial }: Props) {
             <span className="text-sm text-white/90">Value {form.type === "percent" ? "(%)" : "($)"}</span>
             <input
               type="number"
-              value={form.value}
-              onChange={(e) => setForm((f) => ({ ...f, value: Number(e.target.value) }))}
+              value={valueInput}
+              onChange={(e) => setValueInput(e.target.value)}
               className={cn(
                 "w-full rounded-md border border-white/10 bg-white/5 text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20",
                 errors.value && "ring-2 ring-rose-400/40"
@@ -167,6 +178,18 @@ export function DiscountFormModal({ open, onClose, onSave, initial }: Props) {
               className="h-4 w-4 rounded border-white/20 bg-white/5"
             />
             <span className="text-sm">Active</span>
+          </label>
+        </div>
+
+        <div className="mt-3">
+          <label className="grid gap-1">
+            <span className="text-sm text-white/90">Description (optional)</span>
+            <textarea
+              value={form.description ?? ""}
+              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value || undefined }))}
+              placeholder="Short note about this code, where it’s used, or eligibility."
+              className="w-full rounded-md border border-white/10 bg-white/5 text-white placeholder-white/40 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20 min-h-20"
+            />
           </label>
         </div>
 

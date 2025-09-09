@@ -1,12 +1,57 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/utils/cn";
 import ProductShowcaseCard from "./product-showcase-card";
-import { productsWithVariants } from "@/data/dummy_data";
+import { type ProductT, type ProductVariantT } from "@/db/schema";
+import { getSupabaseBrowserClient } from "@/utils/supabase/client";
 
+
+type ProductWithVariants = { product: ProductT; variants: ProductVariantT[] };
 
 export default function LandingProductShowcase() {
+  const supabase = useMemo(() => getSupabaseBrowserClient(), []);
+  const [items, setItems] = useState<ProductWithVariants[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      try {
+        const [prodRes, varRes] = await Promise.all([
+          supabase
+            .from("products")
+            .select("id,name,description,status,price_in_cents,images,tags,metadata,created_at,updated_at,deleted_at")
+            .is('deleted_at', null)
+            .eq('status', 'active')
+            .order("created_at", { ascending: false })
+            .limit(6),
+          supabase
+            .from("product_variants")
+            .select("id,product_id,sku,title,attributes,price_in_cents,stock,barcode,weight_grams,metadata,created_at,updated_at,deleted_at"),
+        ]);
+        if (prodRes.error) throw prodRes.error;
+        if (varRes.error) throw varRes.error;
+        const variantsByProduct = new Map<string, ProductVariantT[]>();
+        (varRes.data as ProductVariantT[] | null)?.forEach((v) => {
+          const arr = variantsByProduct.get(v.product_id) ?? [];
+          arr.push(v);
+          variantsByProduct.set(v.product_id, arr);
+        });
+        const cat: ProductWithVariants[] = ((prodRes.data as ProductT[] | null) ?? []).map((p) => ({
+          product: p,
+          variants: variantsByProduct.get(p.id) ?? [],
+        }));
+        setItems(cat);
+      } catch {
+        // Swallow error; UI shows loading/empty states
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [supabase]);
+
   return (
     <section
       id="products"
@@ -38,7 +83,7 @@ export default function LandingProductShowcase() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
         >
-          {productsWithVariants.map(({ product, variants }, idx) => (
+          {items.map(({ product, variants }, idx) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 10 }}
@@ -54,6 +99,13 @@ export default function LandingProductShowcase() {
             </motion.div>
           ))}
         </motion.div>
+
+        {loading && (
+          <div className="mt-8 text-center text-sm text-zinc-300">Loading products…</div>
+        )}
+        {!loading && items.length === 0 && (
+          <div className="mt-8 text-center text-sm text-zinc-300">New products are coming soon.</div>
+        )}
       </div>
     </section>
   );

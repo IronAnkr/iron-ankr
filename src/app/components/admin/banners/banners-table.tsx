@@ -1,55 +1,35 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/app/components/ui/table";
 import { Badge } from "@/app/components/ui/badge";
 import { type BannerMessageT } from "@/db/schema";
 import { BannerFormModal } from "./banner-form-modal";
-
-const STORAGE_KEY = "ia_banners";
-
-function load(): BannerMessageT[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as BannerMessageT[];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function save(data: BannerMessageT[]) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
-}
-
-function seedIfEmpty(setter: (d: BannerMessageT[]) => void) {
-  const existing = load();
-  if (existing.length) return setter(existing);
-  const now = new Date().toISOString();
-  const seed: BannerMessageT[] = [
-    { id: crypto.randomUUID(), message: "Free shipping over $50", link_url: undefined, variant: "info", priority: 1, starts_at: undefined, ends_at: undefined, active: true, metadata: undefined, created_at: now, updated_at: now, deleted_at: null },
-  ];
-  save(seed);
-  setter(seed);
-}
+import { getSupabaseBrowserClient } from "@/utils/supabase/client";
 
 export function BannersTable() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<BannerMessageT | null>(null);
   const [items, setItems] = useState<BannerMessageT[]>([]);
   const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const supabase = useMemo(() => getSupabaseBrowserClient(), []);
 
-  useEffect(() => {
-    seedIfEmpty(setItems);
-  }, []);
+  const load = useCallback(async () => {
+    setLoading(true); setError(null);
+    const { data, error } = await supabase
+      .from('banner_messages')
+      .select('*')
+      .is('deleted_at', null)
+      .order('priority', { ascending: false })
+      .order('updated_at', { ascending: false });
+    if (error) setError(error.message);
+    setItems((data as BannerMessageT[] | null) ?? []);
+    setLoading(false);
+  }, [supabase]);
 
-  useEffect(() => {
-    save(items);
-  }, [items]);
+  useEffect(() => { void load(); }, [load]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -57,27 +37,37 @@ export function BannersTable() {
     return items.filter((b) => b.message.toLowerCase().includes(q));
   }, [items, query]);
 
-  function upsert(b: BannerMessageT) {
-    setItems((prev) => {
-      const idx = prev.findIndex((x) => x.id === b.id);
-      if (idx === -1) return [b, ...prev].sort(sorter);
-      const next = [...prev];
-      next[idx] = b;
-      return next.sort(sorter);
-    });
+  async function upsert(b: BannerMessageT) {
+    const id = b.id || crypto.randomUUID();
+    const payload = {
+      id,
+      message: b.message,
+      link_url: b.link_url ?? null,
+      variant: b.variant,
+      priority: b.priority ?? 0,
+      starts_at: b.starts_at ?? null,
+      ends_at: b.ends_at ?? null,
+      active: b.active ?? true,
+      metadata: b.metadata ?? null,
+    };
+    const query = editing ? supabase.from('banner_messages').update(payload).eq('id', editing.id) : supabase.from('banner_messages').insert(payload);
+    const { error } = await query;
+    if (error) { alert(error.message); return; }
+    setOpen(false); setEditing(null);
+    await load();
   }
 
-  function remove(id: string) {
+  async function remove(id: string) {
     if (!confirm("Delete this banner?")) return;
-    setItems((prev) => prev.filter((d) => d.id !== id));
+    const { error } = await supabase.from('banner_messages').update({ deleted_at: new Date().toISOString(), active: false }).eq('id', id);
+    if (error) { alert(error.message); return; }
+    await load();
   }
 
-  function toggleActive(id: string) {
-    setItems((prev) => prev.map((d) => (d.id === id ? { ...d, active: !d.active } : d)));
-  }
-
-  function sorter(a: BannerMessageT, b: BannerMessageT) {
-    return b.priority - a.priority;
+  async function toggleActive(id: string, active: boolean) {
+    const { error } = await supabase.from('banner_messages').update({ active }).eq('id', id);
+    if (error) { alert(error.message); return; }
+    await load();
   }
 
   return (
@@ -106,6 +96,7 @@ export function BannersTable() {
         </div>
       </CardHeader>
       <CardContent>
+        {error && <div className="mb-3 rounded-md border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">{error}</div>}
         <Table>
           <TableHeader>
             <TableRow className="bg-white/[0.04]">
@@ -118,7 +109,11 @@ export function BannersTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map((b) => (
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={6} className="text-sm text-white/70">Loading…</TableCell>
+              </TableRow>
+            ) : filtered.map((b) => (
               <TableRow key={b.id}>
                 <TableCell className="font-medium text-white">{b.message}</TableCell>
                 <TableCell className="capitalize">{b.variant}</TableCell>
@@ -140,13 +135,13 @@ export function BannersTable() {
                 <TableCell className="text-right">
                   <div className="inline-flex items-center gap-2">
                     <button onClick={() => { setEditing(b); setOpen(true); }} className="text-xs rounded-md px-2 py-1 bg-white/5 hover:bg-white/10">Edit</button>
-                    <button onClick={() => toggleActive(b.id)} className="text-xs rounded-md px-2 py-1 bg-white/5 hover:bg-white/10">{b.active ? "Disable" : "Enable"}</button>
-                    <button onClick={() => remove(b.id)} className="text-xs rounded-md px-2 py-1 bg-rose-500/20 text-rose-200 hover:bg-rose-500/30">Delete</button>
+                    <button onClick={() => void toggleActive(b.id, !b.active)} className="text-xs rounded-md px-2 py-1 bg-white/5 hover:bg-white/10">{b.active ? "Disable" : "Enable"}</button>
+                    <button onClick={() => void remove(b.id)} className="text-xs rounded-md px-2 py-1 bg-rose-500/20 text-rose-200 hover:bg-rose-500/30">Delete</button>
                   </div>
                 </TableCell>
               </TableRow>
             ))}
-            {filtered.length === 0 && (
+            {!loading && filtered.length === 0 && (
               <TableRow>
                 <TableCell colSpan={6} className="text-center text-sm text-white/60 py-8">No banners found.</TableCell>
               </TableRow>
@@ -158,10 +153,9 @@ export function BannersTable() {
       <BannerFormModal
         open={open}
         onClose={() => setOpen(false)}
-        onSave={(b) => upsert(b)}
+        onSave={(b) => { void upsert(b); }}
         initial={editing}
       />
     </Card>
   );
 }
-

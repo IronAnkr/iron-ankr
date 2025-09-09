@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { type BannerMessageT } from "@/db/schema";
 import { getSupabaseBrowserClient } from "@/utils/supabase/client";
@@ -20,6 +20,13 @@ export function PublicBanner() {
   const [index, setIndex] = useState(0);
   const [hidden, setHidden] = useState(false);
   const timerRef = useRef<number | null>(null);
+
+  // Refs for measuring DOM elements
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+
+  // State to manage the scrolling animation
+  const [scrollDistance, setScrollDistance] = useState(0);
 
   const load = useCallback(async () => {
     // Query a small slice of active banners; apply time filtering client-side
@@ -72,8 +79,45 @@ export function PublicBanner() {
   }, [banners]);
 
   const banner = banners[index] || null;
+
+  // Callback to measure overflow. Stable reference via useCallback.
+  const checkOverflow = useCallback(() => {
+    if (containerRef.current && contentRef.current) {
+      const container = containerRef.current;
+      const contentWidth = contentRef.current.scrollWidth;
+      const containerWidth = container.clientWidth;
+      const isOverflowing = contentWidth > containerWidth;
+
+      if (isOverflowing) {
+        // Get the computed style to account for padding
+        const style = window.getComputedStyle(container);
+        const paddingRight = parseFloat(style.paddingRight) || 0;
+        setScrollDistance(contentWidth - containerWidth + paddingRight);
+      } else {
+        setScrollDistance(0);
+      }
+    } else {
+      setScrollDistance(0);
+    }
+  }, []);
+
+  // Use layout effect to measure the DOM right after it paints
+  useLayoutEffect(() => {
+    // Reset scroll state for new banner
+    setScrollDistance(0);
+    // A resize can change the overflow status
+    window.addEventListener("resize", checkOverflow);
+    return () => {
+      window.removeEventListener("resize", checkOverflow);
+    };
+  }, [banner, checkOverflow]); // Re-run when banner or the callback changes
+
   if (!banner || hidden) return null;
   const styles = variantToStyles(banner.variant);
+  const isOverflowing = scrollDistance > 0;
+
+  // Base speed: 75px/sec. Adjust duration based on how much it needs to scroll.
+  const scrollDuration = isOverflowing ? scrollDistance / 75 : 0;
 
   function close() {
     try {
@@ -84,23 +128,38 @@ export function PublicBanner() {
 
   return (
     <div className="relative w-full overflow-hidden rounded-b-lg" aria-live="polite" aria-atomic>
-      <AnimatePresence mode="popLayout" initial={false}>
+      <AnimatePresence mode="popLayout">
         <motion.div
           key={banner.id}
           initial={{ opacity: 0, rotateX: -80, y: -10 }}
           animate={{ opacity: 1, rotateX: 0, y: 0 }}
           exit={{ opacity: 0, rotateX: 80, y: 10 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
+          // Trigger measurement after the entrance animation completes
+          onAnimationComplete={checkOverflow}
           className={`relative flex w-full items-stretch origin-top ${styles.border} ${styles.bg} ${styles.text} backdrop-blur-xl supports-[backdrop-filter:blur(0px)]:backdrop-blur-xl shadow-[0_6px_20px_rgba(0,0,0,.35)]`}
         >
-          <div className={"flex min-w-0 flex-1 items-center gap-2 px-3 py-1.5 text-xs font-medium"}>
-            {banner.link_url ? (
-              <Link href={banner.link_url} className="truncate hover:underline">
-                {banner.message}
-              </Link>
-            ) : (
-              <span className="truncate">{banner.message}</span>
-            )}
+          <div ref={containerRef} className={"flex min-w-0 flex-1 items-center gap-2 px-3 py-1.5 text-xs font-medium overflow-hidden"}>
+            <motion.div
+              ref={contentRef}
+              key={`${banner.id}-content`} // Unique key to ensure animation state resets
+              className="whitespace-nowrap"
+              initial={{ x: 0 }}
+              animate={{ x: isOverflowing ? -scrollDistance : 0 }}
+              transition={{
+                delay: 1.5, // Wait 1.5s before starting scroll
+                duration: scrollDuration,
+                ease: "linear",
+              }}
+            >
+              {banner.link_url ? (
+                <Link href={banner.link_url} className="hover:underline">
+                  {banner.message}
+                </Link>
+              ) : (
+                <span>{banner.message}</span>
+              )}
+            </motion.div>
           </div>
           <button
             aria-label="Dismiss announcement"

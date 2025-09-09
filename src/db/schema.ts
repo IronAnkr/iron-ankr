@@ -333,6 +333,25 @@ export const InventoryLedger = z.object({
   created_at: Timestamp,
 });
 
+// Admin Settings
+export const Setting = z.object({
+  id: UUID,
+  key: z.string().min(1),
+  scope: z.string().min(1).default("site"),
+  group_key: z.string().optional(),
+  label: z.string().optional(),
+  description: z.string().optional(),
+  value: Json.optional(),
+  value_str: z.string().optional(),
+  is_public: z.boolean().default(false),
+  active: z.boolean().default(true),
+  starts_at: Timestamp.optional(),
+  ends_at: Timestamp.optional(),
+  metadata: Json.optional(),
+  created_at: Timestamp,
+  updated_at: Timestamp,
+});
+
 
 // Inferred types
 export type ProductT = z.infer<typeof Product>;
@@ -355,3 +374,4 @@ export type ContentPostT = z.infer<typeof ContentPost>;
 export type AffiliateT = z.infer<typeof Affiliate>;
 export type ProductAuditT = z.infer<typeof ProductAudit>;
 export type InventoryLedgerT = z.infer<typeof InventoryLedger>;
+export type SettingT = z.infer<typeof Setting>;

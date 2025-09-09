@@ -4,6 +4,7 @@ import "./globals.css";
 import { InviteModalWatcher } from "./components/auth/invite-modal";
 import { AuthHashHandler } from "./components/auth/auth-hash-handler";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { CartProvider } from "./cart/cart-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +34,9 @@ export default function RootLayout({
         {/* Handle magic-link/invite hash fragments and initialize session */}
         <AuthHashHandler />
         <InviteModalWatcher />
-        {children}
+        <CartProvider>
+          {children}
+        </CartProvider>
       </body>
       <GoogleAnalytics gaId="G-K2S57B1J45" />
     </html>

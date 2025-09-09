@@ -1,27 +1,69 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Search, SortAsc, SortDesc } from "lucide-react";
 import { cn } from "@/utils/cn";
 import ProductShowcaseCard from "@/app/components/product-showcase-card";
-import { productsWithVariants } from "@/data/dummy_data";
+import { type ProductT, type ProductVariantT } from "@/db/schema";
+import { getSupabaseBrowserClient } from "@/utils/supabase/client";
+
+type ProductWithVariants = { product: ProductT; variants: ProductVariantT[] };
 
 export default function ProductsPage() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<"name" | "price_asc" | "price_desc">("name");
+  const [catalog, setCatalog] = useState<ProductWithVariants[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+
+  useEffect(() => {
+    const supabase = getSupabaseBrowserClient();
+    (async () => {
+      setLoading(true);
+      try {
+        const [prodRes, varRes] = await Promise.all([
+          supabase
+            .from("products")
+            .select("id,name,description,status,price_in_cents,images,tags,metadata,created_at,updated_at,deleted_at")
+            .is('deleted_at', null)
+            .order("created_at", { ascending: false }),
+          supabase
+            .from("product_variants")
+            .select("id,product_id,sku,title,attributes,price_in_cents,stock,barcode,weight_grams,metadata,created_at,updated_at,deleted_at"),
+        ]);
+        if (prodRes.error) throw prodRes.error;
+        if (varRes.error) throw varRes.error;
+        const variantsByProduct = new Map<string, ProductVariantT[]>();
+        (varRes.data as ProductVariantT[] | null)?.forEach((v) => {
+          const arr = variantsByProduct.get(v.product_id) ?? [];
+          arr.push(v);
+          variantsByProduct.set(v.product_id, arr);
+        });
+        const cat: ProductWithVariants[] = ((prodRes.data as ProductT[] | null) ?? []).map((p) => ({
+          product: p,
+          variants: variantsByProduct.get(p.id) ?? [],
+        }));
+        setCatalog(cat);
+      } catch {
+        // Swallow error; UI shows loading/empty states
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const list = productsWithVariants.filter(({ product }) => {
+    const list = catalog.filter(({ product }) => {
       if (!q) return true;
       return (
         product.name.toLowerCase().includes(q) ||
-        product.description.toLowerCase().includes(q)
+        (product.description || "").toLowerCase().includes(q)
       );
     });
 
-    const priceOf = (p: typeof productsWithVariants[number]) => {
+    const priceOf = (p: ProductWithVariants) => {
       const base = p.product.price_in_cents;
       const vs = p.variants?.length ? p.variants : undefined;
       const min = vs?.length ? Math.min(...vs.map((v) => v.price_in_cents ?? base)) : base;
@@ -34,7 +76,7 @@ export default function ProductsPage() {
       const pb = priceOf(b);
       return sort === "price_asc" ? pa - pb : pb - pa;
     });
-  }, [query, sort]);
+  }, [query, sort, catalog]);
 
   return (
     <section
@@ -117,8 +159,13 @@ export default function ProductsPage() {
             </motion.div>
           ))}
         </motion.div>
-
-        {results.length === 0 && (
+        {loading && (
+          <div className="mt-16 text-center text-sm text-zinc-300">Loading products…</div>
+        )}
+        {!loading && catalog.length === 0 && (
+          <div className="mt-16 text-center text-sm text-zinc-300">No products available yet. Please check back soon.</div>
+        )}
+        {!loading && catalog.length > 0 && results.length === 0 && (
           <div className="mt-16 text-center text-sm text-zinc-300">No products match your search.</div>
         )}
       </div>
@@ -151,4 +198,3 @@ function BackgroundGrid() {
     </div>
   );
 }
-

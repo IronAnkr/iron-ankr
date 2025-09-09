@@ -6,6 +6,7 @@ import { Menu, ShoppingCart, Search } from "lucide-react";
 import Link from "next/link";
 import { PublicBanner } from "./public-banner";
 import { UserDropdown } from "./auth/user-dropdown";
+import { MobileDrawer } from "./MobileDrawer";
 import Image from "next/image";
 
 export default function Navbar() {
@@ -57,7 +58,7 @@ export default function Navbar() {
             <kbd className="ml-1 rounded bg-white/10 px-1.5 py-0.5 text-[10px] text-zinc-300">⌘K</kbd>
           </button>
 
-          <CartButton count={2} />
+          <CartButton />
 
           {/* Auth dropdown */}
           <UserDropdown />
@@ -72,21 +73,9 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile panel */}
-      <motion.div
-        initial={false}
-        animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
-        className="overflow-hidden border-b border-white/10 backdrop-blur-md bg-black  md:hidden"
-      >
-        <div className="mx-auto max-w-6xl px-4 py-3">
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <a className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-zinc-200" href="#products" onClick={() => setOpen(false)}>Products</a>
-            <Link className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-zinc-200" href="/about" onClick={() => setOpen(false)}>About</Link>
-            <Link className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-zinc-200" href="/faq" onClick={() => setOpen(false)}>FAQ</Link>
-            <Link className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-zinc-200" href="/contact" onClick={() => setOpen(false)}>Contact</Link>
-          </div>
-        </div>
-      </motion.div>
+      {/* Mobile Drawer */}
+      <MobileDrawer open={open} setOpen={setOpen} />
+
       {/* Slim banner, hanging off the bottom edge */}
       <div className="absolute inset-x-0 top-full backdrop-blur-md z-50 rounded-b-lg overflow-hidden ">
         <PublicBanner />
@@ -104,15 +93,21 @@ function NavLink({ href, label }: { href: string; label: string }) {
   );
 }
 
-function CartButton({ count = 0 }: { count?: number }) {
+import { useCart } from "@/app/cart/cart-provider";
+import React from "react";
+
+function CartButton() {
+  const { items } = useCart();
+  const count = items.reduce((n, it) => n + (it.quantity || 0), 0);
   return (
-    <button
+    <Link
+      href="/cart"
       aria-label="Cart"
       className="relative inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white text-black px-3 py-1.5 text-xs font-semibold shadow-sm transition-colors hover:bg-zinc-200"
     >
       <ShoppingCart className="h-4 w-4" />
       <span className="hidden sm:inline">Cart</span>
       <span className="absolute -right-2 -top-2 grid h-5 w-5 place-content-center rounded-full bg-gradient-to-br from-rose-500 to-sky-500 text-[10px] font-bold text-white shadow">{count}</span>
-    </button>
+    </Link>
   );
 }
