@@ -5,7 +5,7 @@ import { AdminSidebar } from "../components/admin/admin-sidebar";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="dark relative flex flex-col min-h-screen pt-24 bg-black text-white overflow-x-hidden">
+    <div className="system-theme relative flex flex-col min-h-screen pt-24 bg-background text-foreground overflow-x-hidden">
       <FancyBackground />
       <AdminNavbar />
       <main className="relative z-10 flex-1 py-4 md:py-6 lg:py-8">

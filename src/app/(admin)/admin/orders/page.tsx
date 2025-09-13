@@ -46,18 +46,18 @@ export default function AdminOrdersPage() {
     <div className="flex flex-col gap-4">
       <header className="flex items-end justify-between gap-4 h-20">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">Orders</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Orders</h1>
           <p className="text-sm text-muted-foreground">Payments flowing in from Stripe Checkout.</p>
         </div>
       </header>
 
-      <Card className="overflow-hidden border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent">
+      <Card className="overflow-hidden border-border/60 bg-card/60">
         <CardHeader>
           <CardTitle>Recent Orders</CardTitle>
           <CardDescription>Newest first. Click an order to view details.</CardDescription>
         </CardHeader>
         <CardContent>
-          {error && <div className="mb-3 rounded-md border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">{error}</div>}
+          {error && <div className="mb-3 rounded-md border border-border/60 bg-card/60 p-3 text-sm text-rose-800 dark:text-rose-200">{error}</div>}
           <Table>
             <TableHeader>
               <TableRow>
@@ -71,21 +71,21 @@ export default function AdminOrdersPage() {
             </TableHeader>
             <TableBody>
               {loading ? (
-                <TableRow><TableCell colSpan={6} className="text-sm text-white/70">Loading…</TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} className="text-sm text-muted-foreground">Loading…</TableCell></TableRow>
               ) : orders.length === 0 ? (
-                <TableRow><TableCell colSpan={6} className="text-sm text-white/70">No orders yet.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} className="text-sm text-muted-foreground">No orders yet.</TableCell></TableRow>
               ) : (
                 orders.map((o) => (
                   <TableRow
                     key={o.id}
-                    className="hover:bg-white/5 cursor-pointer"
+                    className="hover:bg-muted/50 cursor-pointer"
                     onClick={() => { setActiveOrderId(o.id); setIsModalOpen(true); }}
                   >
                     <TableCell className="font-medium">{o.id.slice(0, 8)}…</TableCell>
                     <TableCell className="hidden md:table-cell">{new Date(o.created_at).toLocaleString()}</TableCell>
-                    <TableCell className="hidden md:table-cell"><Badge variant="outline" className="text-xs">{o.status}</Badge></TableCell>
-                    <TableCell><Badge variant="outline" className="text-xs">{o.payment_status}</Badge></TableCell>
-                    <TableCell className="hidden sm:table-cell"><Badge variant="outline" className="text-xs">{o.fulfillment_status}</Badge></TableCell>
+                    <TableCell className="hidden md:table-cell"><Badge variant="outline" className="text-xs text-muted-foreground">{o.status}</Badge></TableCell>
+                    <TableCell><Badge variant="outline" className="text-xs text-muted-foreground">{o.payment_status}</Badge></TableCell>
+                    <TableCell className="hidden sm:table-cell"><Badge variant="outline" className="text-xs text-muted-foreground">{o.fulfillment_status}</Badge></TableCell>
                     <TableCell className="text-right">{formatCents(o.total_in_cents, o.currency)}</TableCell>
                   </TableRow>
                 ))
@@ -168,30 +168,30 @@ function OrderDetailModal({ orderId, onClose }: { orderId: string; onClose: () =
 
   return (
     <div role="dialog" aria-modal="true" className="fixed inset-0 z-[100000]">
-      <div className="fixed inset-0 bg-black/80" onClick={onClose} />
+      <div className="fixed inset-0 bg-foreground/20" onClick={onClose} />
       <div className="fixed inset-0 z-[100001] flex flex-col pt-20 md:pt-24">
-        <div className="shrink-0 flex items-center justify-between px-4 md:px-8 h-14 border-b border-white/10 bg-black">
+        <div className="shrink-0 flex items-center justify-between px-4 md:px-8 h-14 border-b border-border/60 bg-card">
           <div>
-            <div className="text-sm text-white/70">Order</div>
-            <div className="text-white font-semibold">{orderId.slice(0,8)}… {order ? `• ${new Date(order.created_at).toLocaleString()} • ${formatCents(order.total_in_cents, currency)}` : ''}</div>
+            <div className="text-sm text-muted-foreground">Order</div>
+            <div className="text-foreground font-semibold">{orderId.slice(0,8)}… {order ? `• ${new Date(order.created_at).toLocaleString()} • ${formatCents(order.total_in_cents, currency)}` : ''}</div>
           </div>
           <div className="flex items-center gap-2">
-            <Link href={`/admin/orders/${orderId}`} className="rounded-md border border-white/15 bg-white/5 px-2 py-1 text-xs text-white/90 hover:border-white/30">Open full page</Link>
-            <button aria-label="Close" onClick={onClose} className="rounded-md border border-white/15 bg-white/5 px-2 py-1 text-sm text-white/90 hover:border-white/30">✕</button>
+            <Link href={`/admin/orders/${orderId}`} className="rounded-md border border-border/60 bg-background/50 px-2 py-1 text-xs text-foreground/90 hover:border-border">Open full page</Link>
+            <button aria-label="Close" onClick={onClose} className="rounded-md border border-border/60 bg-background/50 px-2 py-1 text-sm text-foreground/90 hover:border-border">✕</button>
           </div>
         </div>
-        <div className="grow overflow-auto px-4 md:px-8 py-4 bg-black">
+        <div className="grow overflow-auto px-4 md:px-8 py-4 bg-background">
           <div className="mx-auto max-w-5xl grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <Card className="lg:col-span-2 overflow-hidden border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent">
+            <Card className="lg:col-span-2 overflow-hidden border-border/60 bg-card/60">
               <CardHeader>
                 <CardTitle>Items</CardTitle>
                 <CardDescription>Line items in this order.</CardDescription>
               </CardHeader>
               <CardContent>
                 {loading ? (
-                  <div className="text-sm text-white/70">Loading…</div>
+                  <div className="text-sm text-muted-foreground">Loading…</div>
                 ) : items.length === 0 ? (
-                  <div className="text-sm text-white/70">No items found.</div>
+                  <div className="text-sm text-muted-foreground">No items found.</div>
                 ) : (
                   <Table>
                     <TableHeader>
@@ -220,7 +220,7 @@ function OrderDetailModal({ orderId, onClose }: { orderId: string; onClose: () =
             </Card>
 
             <div className="space-y-4">
-              <Card className="overflow-hidden border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent">
+              <Card className="overflow-hidden border-border/60 bg-card/60">
                 <CardHeader>
                   <CardTitle>Status</CardTitle>
                   <CardDescription>Order and fulfillment state.</CardDescription>

@@ -127,7 +127,7 @@ export function PublicBanner() {
   }
 
   return (
-    <div className="relative w-full overflow-hidden rounded-b-lg" aria-live="polite" aria-atomic>
+    <div className="system-theme relative w-full overflow-hidden rounded-b-lg" aria-live="polite" aria-atomic>
       <AnimatePresence mode="popLayout">
         <motion.div
           key={banner.id}
@@ -164,7 +164,7 @@ export function PublicBanner() {
           <button
             aria-label="Dismiss announcement"
             onClick={close}
-            className={"px-3 hover:bg-white/10 transition-colors"}
+            className={"px-3 hover:bg-foreground/10 transition-colors"}
           >
             ×
           </button>
@@ -177,12 +177,28 @@ export function PublicBanner() {
 function variantToStyles(variant: BannerMessageT["variant"]) {
   switch (variant) {
     case "success":
-      return { bg: "bg-emerald-500/25", text: "text-emerald-100", border: "border-t border-emerald-500/30" };
+      return {
+        bg: "bg-emerald-600/10 dark:bg-emerald-500/20",
+        text: "text-emerald-800 dark:text-emerald-100",
+        border: "border-t border-emerald-600/30 dark:border-emerald-500/30",
+      };
     case "warning":
-      return { bg: "bg-amber-500/25", text: "text-amber-100", border: "border-t border-amber-500/30" };
+      return {
+        bg: "bg-amber-600/10 dark:bg-amber-500/20",
+        text: "text-amber-900 dark:text-amber-100",
+        border: "border-t border-amber-600/30 dark:border-amber-500/30",
+      };
     case "error":
-      return { bg: "bg-rose-500/25", text: "text-rose-100", border: "border-t border-rose-500/30" };
+      return {
+        bg: "bg-rose-600/10 dark:bg-rose-500/20",
+        text: "text-rose-900 dark:text-rose-100",
+        border: "border-t border-rose-600/30 dark:border-rose-500/30",
+      };
     default:
-      return { bg: "bg-sky-500/25", text: "text-sky-100", border: "border-t border-sky-500/30" };
+      return {
+        bg: "bg-sky-600/10 dark:bg-sky-500/20",
+        text: "text-sky-900 dark:text-sky-100",
+        border: "border-t border-sky-600/30 dark:border-sky-500/30",
+      };
   }
 }

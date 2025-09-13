@@ -87,7 +87,7 @@ export default function AdminFulfillmentPage() {
     <div className="flex flex-col gap-4">
       <header className="flex items-end justify-between gap-4 h-20">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">Fulfillment</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Fulfillment</h1>
           <p className="text-sm text-muted-foreground">Rate shop, buy labels, and mark orders fulfilled.</p>
         </div>
       </header>
@@ -111,9 +111,9 @@ export default function AdminFulfillmentPage() {
               </TableHeader>
               <TableBody>
                 {loading ? (
-                  <TableRow><TableCell colSpan={3} className="text-sm text-white/70">Loading…</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={3} className="text-sm dark:text-white/70">Loading…</TableCell></TableRow>
                 ) : orders.length === 0 ? (
-                  <TableRow><TableCell colSpan={3} className="text-sm text-white/70">No orders need fulfillment.</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={3} className="text-sm dark:text-white/70">No orders need fulfillment.</TableCell></TableRow>
                 ) : (
                   orders.map((o) => (
                     <TableRow
@@ -147,10 +147,10 @@ export default function AdminFulfillmentPage() {
 
 function LabeledInput({ label, value, onChange, type = "text", disabled = false }: { label: string; value: string | number; onChange: (v: string) => void; type?: string; disabled?: boolean }) {
   return (
-    <label className="grid gap-1 text-xs text-white/70">
+    <label className="grid gap-1 text-xs text-muted-foreground">
       <span>{label}</span>
       <input
-        className={`rounded-md bg-white/5 border border-white/10 px-2 py-1 text-white ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
+        className={`rounded-md bg-background/50 border border-border/60 px-2 py-1 text-foreground ${disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
         value={value ?? ""}
         onChange={(e) => onChange(e.target.value)}
         type={type}
@@ -163,7 +163,7 @@ function LabeledInput({ label, value, onChange, type = "text", disabled = false 
 function Select({ value, onChange, options }: { value: string; onChange: (v: string) => void; options: string[] }) {
   return (
     <select
-      className="rounded-md bg-white/5 border border-white/10 px-2 py-1 text-white text-xs"
+      className="rounded-md bg-background/50 border border-border/60 px-2 py-1 text-foreground text-xs"
       value={value}
       onChange={(e) => onChange(e.target.value)}
     >
@@ -320,29 +320,29 @@ function FulfillmentModal({ order, onClose, onFulfilled }: { order: OrderRow; on
   return (
     <div role="dialog" aria-modal="true" className="fixed inset-0 z-[99998]">
       {/* Backdrop */}
-      <div className="fixed inset-0 z-[99999] bg-black" onClick={onClose} />
+      <div className="fixed inset-0 z-[99999] bg-foreground/20" onClick={onClose} />
       {/* Content */}
       <div className="fixed inset-0 z-[100000] flex flex-col pt-20 md:pt-24">
-        <div className="shrink-0 flex items-center justify-between px-4 md:px-8 h-14 border-b border-white/10 bg-black">
+        <div className="shrink-0 flex items-center justify-between px-4 md:px-8 h-14 border-b border-border/60 bg-card">
           <div className="flex flex-col">
-            <div className="text-sm text-white/70">Fulfill Order</div>
-            <div className="text-white font-semibold">{order.id.slice(0,8)}… • {new Date(order.created_at).toLocaleString()} • {formatCents(order.total_in_cents, order.currency)}</div>
+            <div className="text-sm text-muted-foreground">Fulfill Order</div>
+            <div className="text-foreground font-semibold">{order.id.slice(0,8)}… • {new Date(order.created_at).toLocaleString()} • {formatCents(order.total_in_cents, order.currency)}</div>
           </div>
           <div className="flex items-center gap-2">
-            <Link href={`/admin/orders/${order.id}`} className="rounded-md border border-white/15 bg-white/5 px-2 py-1 text-xs text-white/90 hover:border-white/30">View details</Link>
-            <button aria-label="Close" onClick={onClose} className="rounded-md border border-white/15 bg-white/5 px-2 py-1 text-sm text-white/90 hover:border-white/30">✕</button>
+            <Link href={`/admin/orders/${order.id}`} className="rounded-md border border-border/60 bg-background/50 px-2 py-1 text-xs text-foreground/90 hover:border-border">View details</Link>
+            <button aria-label="Close" onClick={onClose} className="rounded-md border border-border/60 bg-background/50 px-2 py-1 text-sm text-foreground/90 hover:border-border">✕</button>
           </div>
         </div>
-        <div className="grow overflow-auto px-4 md:px-8 py-4 bg-black">
+        <div className="grow overflow-auto px-4 md:px-8 py-4 bg-background">
           <div className="mx-auto max-w-4xl">
-            {error && <div className="mb-3 rounded-md border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">{error}</div>}
+            {error && <div className="mb-3 rounded-md border border-border/60 bg-card/60 p-3 text-sm text-rose-800 dark:text-rose-200">{error}</div>}
 
             {/* From address */}
             <div className="space-y-2 mb-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold">Ship From</h3>
+                <h3 className="text-sm font-semibold text-foreground">Ship From</h3>
                 <button
-                  className="text-xs rounded-md border border-white/15 bg-white/5 px-2 py-1 text-white/80 hover:border-white/30"
+                  className="text-xs rounded-md border border-border/60 bg-background/50 px-2 py-1 text-foreground/80 hover:border-border"
                   onClick={async () => {
                     const res = await fetch("/api/shippo/defaults");
                     const j = await res.json();
@@ -356,8 +356,8 @@ function FulfillmentModal({ order, onClose, onFulfilled }: { order: OrderRow; on
             {/* To address */}
             <div className="space-y-2 mb-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold">Ship To</h3>
-                <span className="text-xs text-white/50">From customer</span>
+                <h3 className="text-sm font-semibold text-foreground">Ship To</h3>
+                <span className="text-xs text-muted-foreground">From customer</span>
               </div>
               <AddressEditor value={toAddress} onChange={setToAddress} readOnly />
             </div>
@@ -385,17 +385,17 @@ function FulfillmentModal({ order, onClose, onFulfilled }: { order: OrderRow; on
                 <button
                   onClick={getRates}
                   disabled={busy || hasExistingShipment}
-                  className="rounded-md border border-white/15 bg-white/10 px-3 py-2 text-sm text-white/90 hover:border-white/30 disabled:opacity-60"
+                  className="rounded-md bg-foreground text-background px-3 py-2 text-sm hover:bg-foreground/90 disabled:opacity-60"
                 >{busy ? "Fetching rates…" : "Get Rates"}</button>
                 <button
                   onClick={() => { setRates([]); setSelectedRate(null); setLabelUrl(null); setTracking(null); }}
-                  className="rounded-md border border-white/15 bg-white/5 px-3 py-2 text-sm text-white/80 hover:border-white/30"
+                  className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-sm text-foreground/80 hover:border-border"
                 >Reset</button>
               </div>
               {rates.length > 0 && (
-                <div className="max-h-64 overflow-auto rounded-md border border-white/10">
+                <div className="max-h-64 overflow-auto rounded-md border border-border/60">
                   <table className="w-full text-sm">
-                    <thead className="bg-white/[0.04]">
+                    <thead className="bg-muted">
                       <tr>
                         <th className="text-left px-3 py-2">Service</th>
                         <th className="text-left px-3 py-2">Carrier</th>
@@ -406,7 +406,7 @@ function FulfillmentModal({ order, onClose, onFulfilled }: { order: OrderRow; on
                     </thead>
                     <tbody>
                       {rates.map((r) => (
-                        <tr key={r.object_id} className={selectedRate?.object_id === r.object_id ? "bg-white/[0.06]" : ""}>
+                        <tr key={r.object_id} className={selectedRate?.object_id === r.object_id ? "bg-muted/60" : ""}>
                           <td className="px-3 py-1.5">{rateServiceName(r)}</td>
                           <td className="px-3 py-1.5">{r.provider}</td>
                           <td className="px-3 py-1.5 text-right">{r.estimated_days ? `${r.estimated_days}d` : "—"}</td>
@@ -414,7 +414,7 @@ function FulfillmentModal({ order, onClose, onFulfilled }: { order: OrderRow; on
                           <td className="px-3 py-1.5 text-right">
                             <button
                               onClick={() => setSelectedRate(r)}
-                              className="rounded-md border border-white/15 bg-white/10 px-2 py-1 text-xs text-white/90 hover:border-white/30"
+                              className="rounded-md border border-border/60 bg-background/50 px-2 py-1 text-xs text-foreground/90 hover:border-border"
                             >Select</button>
                           </td>
                         </tr>
@@ -430,21 +430,21 @@ function FulfillmentModal({ order, onClose, onFulfilled }: { order: OrderRow; on
               <button
                 onClick={purchaseLabel}
                 disabled={!selectedRate || busy || hasExistingShipment}
-                className="w-full rounded-md border border-white/15 bg-white/15 px-3 py-2 text-sm text-white hover:border-white/30 disabled:opacity-60"
+                className="w-full rounded-md bg-foreground text-background px-3 py-2 text-sm hover:bg-foreground/90 disabled:opacity-60"
               >{busy ? "Purchasing…" : selectedRate ? `Buy Label: ${selectedRate.provider} ${rateServiceName(selectedRate)}` : "Select a rate to buy label"}</button>
 
               {(labelUrl || tracking) && (
-                <div className="rounded-md border border-white/10 p-3 text-sm text-white/80 space-y-2">
+                <div className="rounded-md border border-border/60 bg-card/60 p-3 text-sm text-foreground/80 space-y-2">
                   {labelUrl && (
                     <div className="flex items-center justify-between">
                       <span>Label</span>
-                      <a href={labelUrl} target="_blank" className="rounded-md border border-white/15 bg-white/5 px-2 py-1 text-xs hover:border-white/30">Download</a>
+                      <a href={labelUrl} target="_blank" className="rounded-md border border-border/60 bg-background/50 px-2 py-1 text-xs hover:border-border">Download</a>
                     </div>
                   )}
                   {tracking?.number && (
                     <div className="flex items-center justify-between">
                       <span>Tracking</span>
-                      <a href={tracking.url} target="_blank" className="rounded-md border border-white/15 bg-white/5 px-2 py-1 text-xs hover:border-white/30">{tracking.number}</a>
+                      <a href={tracking.url} target="_blank" className="rounded-md border border-border/60 bg-background/50 px-2 py-1 text-xs hover:border-border">{tracking.number}</a>
                     </div>
                   )}
                 </div>
@@ -455,7 +455,7 @@ function FulfillmentModal({ order, onClose, onFulfilled }: { order: OrderRow; on
                 <button
                   onClick={markFulfilled}
                   disabled={!orderIdToFulfill || busy || hasExistingShipment}
-                  className="col-span-2 rounded-md border border-white/15 bg-white/5 px-3 py-2 text-sm text-white/80 hover:border-white/30 disabled:opacity-60 text-left"
+                  className="col-span-2 rounded-md border border-border/60 bg-background/50 px-3 py-2 text-sm text-foreground/80 hover:border-border disabled:opacity-60 text-left"
                 >{hasExistingShipment ? 'Already fulfilled' : 'Mark Fulfilled (save tracking)'}</button>
               </div>
             </div>

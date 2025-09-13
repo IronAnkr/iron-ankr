@@ -60,18 +60,18 @@ export default function MarketingApprovalsPage() {
   return (
     <div className="space-y-5">
       <header>
-        <h1 className="text-xl font-semibold text-white">Approvals</h1>
-        <p className="text-sm text-white/70">Review and approve marketing changes.</p>
+        <h1 className="text-xl font-semibold text-foreground">Approvals</h1>
+        <p className="text-sm text-muted-foreground">Review and approve marketing changes.</p>
       </header>
 
-      {error && <p className="text-sm text-rose-300">{error}</p>}
+      {error && <p className="text-sm text-rose-800 dark:text-rose-200">{error}</p>}
 
       {loading ? (
-        <div className="text-white/80">Loading…</div>
+        <div className="text-muted-foreground">Loading…</div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-white/10">
-          <table className="w-full text-sm text-white/90">
-            <thead className="bg-white/5 text-white/70">
+        <div className="overflow-hidden rounded-lg border border-border/60">
+          <table className="w-full text-sm text-foreground/90">
+            <thead className="bg-muted text-muted-foreground">
               <tr>
                 <th className="p-3 text-left">Item</th>
                 <th className="p-3">Requested</th>
@@ -79,20 +79,20 @@ export default function MarketingApprovalsPage() {
                 <th className="p-3">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-border/60">
               {items.map((a) => (
                 <tr key={a.id}>
                   <td className="p-3 text-left">
                     <div className="font-medium">{a.entity_type.toUpperCase()}</div>
-                    <div className="text-white/60 text-xs">{a.entity_id}</div>
+                    <div className="text-muted-foreground text-xs">{a.entity_id}</div>
                   </td>
                   <td className="p-3 text-center">{new Date(a.created_at).toLocaleString()}</td>
-                  <td className="p-3 text-center uppercase text-white/70">{a.status}</td>
+                  <td className="p-3 text-center uppercase text-muted-foreground">{a.status}</td>
                   <td className="p-3 text-center flex items-center justify-center gap-2">
                     {isMarketingAdmin && a.status === 'pending' && (
                       <>
-                        <button onClick={() => decide(a.id, 'approved')} className="text-emerald-300 hover:underline">Approve</button>
-                        <button onClick={() => decide(a.id, 'rejected')} className="text-rose-300 hover:underline">Reject</button>
+                        <button onClick={() => decide(a.id, 'approved')} className="hover:underline text-emerald-700 dark:text-emerald-300">Approve</button>
+                        <button onClick={() => decide(a.id, 'rejected')} className="hover:underline text-rose-700 dark:text-rose-300">Reject</button>
                       </>
                     )}
                   </td>
@@ -105,4 +105,3 @@ export default function MarketingApprovalsPage() {
     </div>
   );
 }
-

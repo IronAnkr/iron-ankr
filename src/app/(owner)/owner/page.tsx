@@ -26,10 +26,10 @@ function formatCents(cents: number, currency: string = "USD") {
 
 function KPI({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-black/40 backdrop-blur p-4">
-      <div className="text-xs uppercase tracking-wide text-white/60">{label}</div>
-      <div className="mt-1 text-2xl font-semibold text-white">{value}</div>
-      {sub && <div className="mt-1 text-xs text-white/50">{sub}</div>}
+    <div className="rounded-xl border border-border/60 bg-card/60 backdrop-blur p-4">
+      <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
+      <div className="mt-1 text-2xl font-semibold text-foreground">{value}</div>
+      {sub && <div className="mt-1 text-xs text-muted-foreground">{sub}</div>}
     </div>
   );
 }
@@ -105,26 +105,26 @@ export default function OwnerDashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       {authorized === false && (
-        <div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">Owner access required.</div>
+        <div className="rounded-md border p-3 text-sm border-amber-600/30 bg-amber-500/10 text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100">Owner access required.</div>
       )}
       {/* Header */}
       <header className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-white">Owner Dashboard</h1>
-          <p className="text-sm text-white/70">Oversee your store, teams, and systems at a glance.</p>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">Owner Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Oversee your store, teams, and systems at a glance.</p>
         </div>
         <div className="flex items-center gap-2 text-sm">
-          <Link href="/" className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-2 text-white hover:bg-white/10">
+          <Link href="/" className="inline-flex items-center gap-2 rounded-md border px-3 py-2 border-border/60 bg-background/50 text-foreground hover:border-border">
             <Home className="h-4 w-4" /> Return to site
           </Link>
-          <button className="rounded-md border border-white/15 bg-white/5 px-3 py-2 text-white hover:bg-white/10">Today</button>
-          <button className="rounded-md border border-white/15 bg-white/5 px-3 py-2 text-white hover:bg-white/10">7 days</button>
-          <button className="rounded-md border border-white/15 bg-white/5 px-3 py-2 text-white hover:bg-white/10">30 days</button>
-          <button className="rounded-md border border-white/15 bg-white/5 px-3 py-2 text-white hover:bg-white/10">Custom…</button>
+          <button className="rounded-md border px-3 py-2 border-border/60 bg-background/50 text-foreground hover:border-border">Today</button>
+          <button className="rounded-md border px-3 py-2 border-border/60 bg-background/50 text-foreground hover:border-border">7 days</button>
+          <button className="rounded-md border px-3 py-2 border-border/60 bg-background/50 text-foreground hover:border-border">30 days</button>
+          <button className="rounded-md border px-3 py-2 border-border/60 bg-background/50 text-foreground hover:border-border">Custom…</button>
         </div>
       </header>
 
-      {error && <div className="rounded-md border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">{error}</div>}
+      {error && <div className="rounded-md border p-3 text-sm border-rose-600/30 bg-rose-500/10 text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-100">{error}</div>}
 
       {/* KPI Cards */}
       <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4">
@@ -137,10 +137,10 @@ export default function OwnerDashboardPage() {
       </section>
 
       {/* Quick Actions */}
-      <section className="rounded-xl border border-white/10 bg-white/5 p-4">
+      <section className="rounded-xl border border-border/60 bg-card/60 p-4">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-sm font-semibold text-white">Quick actions</h2>
-          <div className="text-xs text-white/60">Common admin tasks</div>
+          <h2 className="text-sm font-semibold text-foreground">Quick actions</h2>
+          <div className="text-xs text-muted-foreground">Common admin tasks</div>
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
           {[
@@ -153,7 +153,7 @@ export default function OwnerDashboardPage() {
             <Link
               key={i}
               href={a.href}
-              className="rounded-md border border-white/15 bg-white/5 px-3 py-2 text-sm text-white hover:bg-white/10"
+              className="rounded-md border px-3 py-2 text-sm border-border/60 bg-background/50 text-foreground hover:border-border"
             >
               {a.label}
             </Link>
@@ -162,14 +162,14 @@ export default function OwnerDashboardPage() {
       </section>
 
       {/* Recent orders */}
-      <section className="rounded-xl border border-white/10 bg-white/5 p-4">
+      <section className="rounded-xl border border-border/60 bg-card/60 p-4">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-white">Recent orders</h3>
-          <Link href="/admin/orders" className="text-xs text-white/70 hover:text-white">View all</Link>
+          <h3 className="text-sm font-semibold text-foreground">Recent orders</h3>
+          <Link href="/admin/orders" className="text-xs text-muted-foreground hover:text-foreground">View all</Link>
         </div>
         <div className="mt-3 overflow-x-auto">
           <table className="min-w-full text-sm">
-            <thead className="bg-white/5">
+            <thead className="bg-background/50">
               <tr>
                 <th className="px-3 py-2 text-left">Order</th>
                 <th className="px-3 py-2 text-left hidden md:table-cell">Placed</th>
@@ -178,14 +178,14 @@ export default function OwnerDashboardPage() {
                 <th className="px-3 py-2 text-right">Total</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-border/60">
               {loading ? (
-                <tr><td colSpan={5} className="px-3 py-3 text-white/70">Loading…</td></tr>
+                <tr><td colSpan={5} className="px-3 py-3 text-muted-foreground">Loading…</td></tr>
               ) : orders.length === 0 ? (
-                <tr><td colSpan={5} className="px-3 py-3 text-white/70">No recent orders.</td></tr>
+                <tr><td colSpan={5} className="px-3 py-3 text-muted-foreground">No recent orders.</td></tr>
               ) : (
                 orders.slice(0,8).map(o => (
-                  <tr key={o.id} className="hover:bg-white/5">
+                  <tr key={o.id} className="hover:bg-background/50">
                     <td className="px-3 py-2 font-medium">{o.id.slice(0,8)}…</td>
                     <td className="px-3 py-2 hidden md:table-cell">{new Date(o.created_at).toLocaleString()}</td>
                     <td className="px-3 py-2 hidden sm:table-cell">{o.payment_status}</td>
@@ -201,29 +201,29 @@ export default function OwnerDashboardPage() {
 
       {/* Recent Activity + System */}
       <section className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        <div className="xl:col-span-2 rounded-xl border border-white/10 bg-white/5 p-4">
+        <div className="xl:col-span-2 rounded-xl border border-border/60 bg-card/60 p-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-white">Recent activity</h3>
-            <button className="text-xs text-white/70 hover:text-white">View all</button>
+            <h3 className="text-sm font-semibold text-foreground">Recent activity</h3>
+            <button className="text-xs text-muted-foreground hover:text-foreground">View all</button>
           </div>
-          <ul className="mt-3 divide-y divide-white/10">
+          <ul className="mt-3 divide-y divide-border/60">
             {[...orders.slice(0,5).map(o => ({ t:'Order', d:`Order ${o.id.slice(0,8)}… • ${o.payment_status} • ${formatCents(o.total_in_cents,o.currency)}`, ts:o.created_at })),
               ...customers.slice(0,5).map(c => ({ t:'Customer', d:`New customer • ${c.email}`, ts:c.created_at }))]
               .sort((a,b)=> a.ts < b.ts ? 1 : -1)
               .slice(0,8)
               .map((item, i) => (
                 <li key={i} className="flex items-start gap-3 py-3">
-                  <span className="mt-1 h-2 w-2 rounded-full bg-white/60" />
+                  <span className="mt-1 h-2 w-2 rounded-full bg-foreground/60" />
                   <div>
-                    <div className="text-sm text-white/90">{item.d}</div>
-                    <div className="text-xs text-white/50">{item.t}</div>
+                    <div className="text-sm text-foreground/90">{item.d}</div>
+                    <div className="text-xs text-muted-foreground">{item.t}</div>
                   </div>
                 </li>
               ))}
           </ul>
         </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <h3 className="text-sm font-semibold text-white">System status</h3>
+        <div className="rounded-xl border border-border/60 bg-card/60 p-4">
+          <h3 className="text-sm font-semibold text-foreground">System status</h3>
           <div className="mt-3 space-y-2 text-sm">
             {[
               { name: "Database (Supabase)", ok: true },
@@ -232,9 +232,9 @@ export default function OwnerDashboardPage() {
               { name: "Third-party APIs", ok: true },
             ].map((s, i) => (
               <div key={i} className="flex items-center justify-between">
-                <span className="text-white/90">{s.name}</span>
-                <span className={`inline-flex items-center gap-2 text-xs ${s.ok ? "text-emerald-300" : "text-rose-300"}`}>
-                  <span className={`h-2 w-2 rounded-full ${s.ok ? "bg-emerald-400" : "bg-rose-400"}`} />
+                <span className="text-foreground/90">{s.name}</span>
+                <span className={`inline-flex items-center gap-2 text-xs ${s.ok ? "text-emerald-700 dark:text-emerald-300" : "text-rose-700 dark:text-rose-300"}`}>
+                  <span className={`h-2 w-2 rounded-full ${s.ok ? "bg-emerald-500" : "bg-rose-500"}`} />
                   {s.ok ? "Operational" : "Issues"}
                 </span>
               </div>

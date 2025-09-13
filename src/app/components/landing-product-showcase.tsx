@@ -56,8 +56,10 @@ export default function LandingProductShowcase() {
     <section
       id="products"
       className={cn(
-        "relative w-full overflow-hidden bg-[radial-gradient(ellipse_at_top_left,rgba(244,63,94,0.25),transparent_50%),",
-        "radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.25),transparent_50%)] py-20 text-white"
+        "system-theme relative w-full overflow-hidden",
+        "bg-[radial-gradient(ellipse_at_top_left,rgba(244,63,94,0.25),transparent_50%),",
+        "radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.25),transparent_50%)]",
+        "py-20 text-foreground"
       )}
     >
       <BackgroundGrid />
@@ -71,7 +73,7 @@ export default function LandingProductShowcase() {
           className="text-center"
         >
           <h2 className="text-4xl font-extrabold tracking-tight sm:text-6xl">Our Straps</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-zinc-300">
+          <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
             Built for serious pulling: secure, durable, and engineered for repeatable performance.
           </p>
         </motion.div>
@@ -101,10 +103,10 @@ export default function LandingProductShowcase() {
         </motion.div>
 
         {loading && (
-          <div className="mt-8 text-center text-sm text-zinc-300">Loading products…</div>
+          <div className="mt-8 text-center text-sm text-muted-foreground">Loading products…</div>
         )}
         {!loading && items.length === 0 && (
-          <div className="mt-8 text-center text-sm text-zinc-300">New products are coming soon.</div>
+          <div className="mt-8 text-center text-sm text-muted-foreground">New products are coming soon.</div>
         )}
       </div>
     </section>
@@ -114,9 +116,9 @@ export default function LandingProductShowcase() {
 function BackgroundGrid() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:32px_32px]" />
-      <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black via-transparent to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-[linear-gradient(hsl(var(--foreground)/0.05)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--foreground)/0.05)_1px,transparent_1px)] bg-[size:32px_32px]" />
+      <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[hsl(var(--background))] via-transparent to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
     </div>
   );
 }

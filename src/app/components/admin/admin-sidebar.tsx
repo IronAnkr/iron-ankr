@@ -1,10 +1,11 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ClipboardList, Home, Megaphone, Package, Percent, Settings, Truck, Wrench } from "lucide-react";
+import { ClipboardList, Home, Megaphone, Package, Percent, Settings, Truck, Wrench, Inbox } from "lucide-react";
 
 const LINKS = [
   { href: "/admin/orders", label: "Orders", Icon: ClipboardList },
+  { href: "/admin/messages", label: "Messages", Icon: Inbox },
   { href: "/admin/fulfillment", label: "Fulfillment", Icon: Truck },
   { href: "/admin/products", label: "Products", Icon: Package },
   { href: "/admin/banners", label: "Banners", Icon: Megaphone },
@@ -16,12 +17,12 @@ const LINKS = [
 export function AdminSidebar() {
   const pathname = usePathname();
   return (
-    <aside className="hidden lg:block w-[260px] shrink-0">
+    <aside className="hidden lg:block w-[260px] shrink-0 system-theme">
       <div className="sticky top-24 space-y-3">
-        <Link href="/" className="flex items-center gap-2 rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white/90 hover:bg-white/10">
+        <Link href="/" className="flex items-center gap-2 rounded-md border px-3 py-2 text-sm border-border/60 bg-background/50 text-foreground hover:border-border">
           <Home className="h-4 w-4" /> Return to site
         </Link>
-        <nav className="rounded-xl border border-white/10 bg-black/50 backdrop-blur p-2">
+        <nav className="rounded-xl border border-border/60 bg-card/60 backdrop-blur p-2">
           <ul className="grid gap-1">
             {LINKS.map(({ href, label, Icon }) => {
               const active = pathname?.startsWith(href);
@@ -29,7 +30,7 @@ export function AdminSidebar() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm ${active ? 'bg-white/15 text-white' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
+                    className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm ${active ? 'bg-background/60 text-foreground' : 'text-foreground/80 hover:bg-background/50 hover:text-foreground'}`}
                   >
                     <Icon className="h-4 w-4" /> {label}
                   </Link>
@@ -38,7 +39,7 @@ export function AdminSidebar() {
             })}
           </ul>
         </nav>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-white/70">
+        <div className="rounded-xl border border-border/60 bg-background/50 p-3 text-xs text-muted-foreground">
           Tip: Use the top search to quickly jump to orders, products, and customers.
         </div>
       </div>

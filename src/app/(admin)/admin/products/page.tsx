@@ -36,21 +36,21 @@ export default function AdminProductsPage() {
     <div className="flex flex-col gap-4">
       <header className="flex items-end justify-between gap-4 h-20">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">Products</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Products</h1>
           <p className="text-sm text-muted-foreground">Manage inventory, pricing, and visibility.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={() => { setEditing(null); setOpen(true); }} className="rounded-md bg-white/10 text-white px-3 py-2 text-sm hover:bg-white/15 transition">Add Product</button>
+          <button onClick={() => { setEditing(null); setOpen(true); }} className="rounded-md bg-foreground text-background px-3 py-2 text-sm hover:bg-foreground/90 transition">Add Product</button>
         </div>
       </header>
 
-      <Card className="overflow-hidden border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent">
+      <Card className="overflow-hidden border-border/60 bg-card/60">
         <CardHeader>
           <CardTitle>Catalog</CardTitle>
           <CardDescription>Overview of products in your store.</CardDescription>
         </CardHeader>
         <CardContent>
-          {error && <div className="mb-3 rounded-md border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">{error}</div>}
+          {error && <div className="mb-3 rounded-md border border-border/60 bg-card/60 p-3 text-sm text-rose-800 dark:text-rose-200">{error}</div>}
           <Table>
             <TableHeader>
               <TableRow>
@@ -64,11 +64,11 @@ export default function AdminProductsPage() {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-sm text-white/70">Loading…</TableCell>
+                  <TableCell colSpan={5} className="text-sm text-muted-foreground">Loading…</TableCell>
                 </TableRow>
               ) : products.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-sm text-white/70">No products yet. Click “Add Product” to create your first one.</TableCell>
+                  <TableCell colSpan={5} className="text-sm text-muted-foreground">No products yet. Click “Add Product” to create your first one.</TableCell>
                 </TableRow>
               ) : (
                 products.map((p) => (
@@ -81,7 +81,7 @@ export default function AdminProductsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => { setEditing(p); setOpen(true); }}
-                          className="rounded-md border border-white/15 bg-white/5 px-2 py-1 text-xs text-white/90 hover:border-white/30"
+                          className="rounded-md border border-border/60 bg-background/50 px-2 py-1 text-xs text-foreground/90 hover:border-border"
                         >
                           Edit
                         </button>
@@ -95,7 +95,7 @@ export default function AdminProductsPage() {
                             if (error) { alert(error.message); return; }
                             void load();
                           }}
-                          className="rounded-md border border-white/15 bg-white/5 px-2 py-1 text-xs text-rose-200 hover:border-rose-400/40"
+                          className="rounded-md border border-border/60 bg-background/50 px-2 py-1 text-xs text-destructive hover:border-border"
                         >
                           Delete
                         </button>

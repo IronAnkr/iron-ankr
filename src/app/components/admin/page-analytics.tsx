@@ -106,24 +106,24 @@ export function PageAnalytics() {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {error && (
-        <div className="md:col-span-2 lg:col-span-3 rounded-md border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">
+        <div className="md:col-span-2 lg:col-span-3 rounded-md border p-3 text-sm border-rose-600/30 bg-rose-500/10 text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-100">
           {error}
         </div>
       )}
       {cards.map((c) => (
-        <Card key={c.title} className="relative overflow-hidden border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent">
+        <Card key={c.title} className="relative overflow-hidden border-border/60 bg-gradient-to-b from-[hsl(var(--foreground)/0.06)] to-transparent">
           <div className={`absolute inset-x-0 -top-12 h-24 bg-gradient-to-b ${c.color}`} />
           <CardHeader className="relative">
-            <CardTitle className="text-sm text-white/80">{c.title}</CardTitle>
+            <CardTitle className="text-sm text-foreground/80">{c.title}</CardTitle>
           </CardHeader>
           <CardContent className="relative">
             <div className="flex items-end justify-between">
               <div>
-                <div className="text-3xl font-semibold text-white">{c.value}</div>
+                <div className="text-3xl font-semibold text-foreground">{c.value}</div>
                 {/* Keeping delta area for future comparisons */}
               </div>
               <div className="h-12 w-24 opacity-90">
-                <Sparkline values={c.data} colorClass="text-white" />
+                <Sparkline values={c.data} colorClass="text-foreground" />
               </div>
             </div>
           </CardContent>

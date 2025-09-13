@@ -11,21 +11,26 @@ const font_b = Roboto_Slab({ subsets: ['latin'], weight: "300"})
 
 export default function LandingHero() {
   return (
-    <main className="relative h-[100svh] overflow-hidden">
+    <main className="system-theme relative h-[100svh] overflow-hidden text-foreground">
       {/* Backgrounds */}
       <GradientOverlay />
-      <BackgroundImage src="/hero-bg.png"/>
+      <span className="visible dark:invisible">
+      <BackgroundImage src="/hero-bg-light.png"/>
+      </span>
+      <span className="invisible dark:visible">
+      <BackgroundImage src="/hero-bg-dark.png"/>
+      </span>
       <DecorativeLayers />
 
       {/* Content */}
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-white text-center md:-mt-8 lg:-mt-12">
+      <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center md:-mt-8 lg:-mt-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="w-full max-w-5xl"
         >
-            <Image src="/logo.png" alt="Iron ankr" width={200} height={200} className="justify-self-center" />
+          <Image src="/logo.png" alt="Iron ankr" width={200} height={200} className="justify-self-center invert dark:invert-0" />
 
           <motion.h1
             initial={{ opacity: 0, y: 10 }}
@@ -33,7 +38,7 @@ export default function LandingHero() {
             transition={{ duration: 0.7, delay: 0.05 }}
             className="text-balance text-5xl font-extrabold leading-[1.05] sm:text-7xl md:text-8xl"
           >
-            <span className="bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-b from-[hsl(var(--foreground))] to-[hsl(var(--foreground)/0.7)] bg-clip-text text-transparent">
               LIFT HEAVY,
             </span>
             <br />
@@ -46,7 +51,7 @@ export default function LandingHero() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="mx-auto mt-4 max-w-2xl text-sm text-zinc-300 sm:text-base"
+            className="mx-auto mt-4 max-w-2xl text-sm text-muted-foreground sm:text-base"
             style={font_b.style}
           >
             The only gym straps you’ll need—engineered for secure pulls, consistent technique, and progressive overload.
@@ -60,13 +65,13 @@ export default function LandingHero() {
           >
             <a
               href="#products"
-              className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-black shadow transition-colors hover:bg-zinc-200"
+              className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background shadow transition-colors hover:bg-foreground/90"
             >
               Shop Now
             </a>
             <a
               href="#products"
-              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm text-zinc-200 backdrop-blur hover:border-white/30"
+              className="inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm backdrop-blur border-border/60 bg-background/50 text-foreground/80 hover:border-border"
             >
               Explore Products <ArrowDownRight className="h-4 w-4" />
             </a>
@@ -77,15 +82,15 @@ export default function LandingHero() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.35 }}
-            className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-zinc-300"
+            className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground"
           >
             <span className="inline-flex items-center gap-1">
               {[0,1,2,3,4].map(i => <Star key={i} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />)}
               <span className="ml-1">Rated 4.9/5 by 500+ lifters</span>
             </span>
-            <span className="hidden sm:inline text-white/20">•</span>
+            <span className="hidden sm:inline text-foreground/20">•</span>
             <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> 30‑day guarantee</span>
-            <span className="hidden sm:inline text-white/20">•</span>
+            <span className="hidden sm:inline text-foreground/20">•</span>
             <span className="inline-flex items-center gap-1"><Truck className="h-3.5 w-3.5" /> Ships in 24h</span>
           </motion.div>
         </motion.div>
@@ -96,10 +101,10 @@ export default function LandingHero() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="absolute bottom-6 inline-flex items-center gap-2 text-xs text-zinc-300 hover:text-white"
+          className="absolute bottom-6 inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
         >
           Scroll to products
-          <span className="inline-block h-2 w-2 rotate-45 border-b border-r -translate-y-0.5" />
+          <span className="inline-block h-2 w-2 rotate-45 border-b border-r border-foreground/50 -translate-y-0.5" />
         </motion.a>
 
         {/* Floating feature cards */}
@@ -113,13 +118,13 @@ function DecorativeLayers() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0">
       {/* Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:36px_36px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(hsl(var(--foreground)/0.06)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--foreground)/0.06)_1px,transparent_1px)] bg-[size:36px_36px]" />
       {/* Radials */}
       <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-rose-400/20 blur-3xl" />
       <div className="absolute -right-24 top-1/3 h-72 w-72 rounded-full bg-sky-400/20 blur-3xl" />
       {/* Glare */}
-      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/10 via-transparent to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black via-transparent to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[hsl(var(--foreground)/0.10)] via-transparent to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
     </div>
   );
 }
@@ -131,9 +136,9 @@ function FloatingFeatureCards() {
         initial={{ opacity: 0, y: 20, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.7, delay: 0.45 }}
-        className="pointer-events-none absolute left-4 top-24 hidden max-w-[220px] rounded-xl border border-white/15 bg-white/5 p-3 text-left text-xs text-white/90 backdrop-blur-md sm:block md:left-10"
+        className="pointer-events-none absolute left-4 top-24 hidden max-w-[220px] rounded-xl border border-border/60 bg-card/70 p-3 text-left text-xs text-foreground/90 backdrop-blur-md sm:block md:left-10"
       >
-        <div className="mb-2 inline-flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 text-emerald-200">
+        <div className="mb-2 inline-flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 text-emerald-700 dark:text-emerald-200">
           <Award className="h-3.5 w-3.5" /> Pro‑grade build
         </div>
         
@@ -144,9 +149,9 @@ function FloatingFeatureCards() {
         initial={{ opacity: 0, y: 20, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.7, delay: 0.55 }}
-        className="pointer-events-none absolute right-4 bottom-24 hidden max-w-[240px] rounded-xl border border-white/15 bg-white/5 p-3 text-left text-xs text-white/90 backdrop-blur-md sm:block md:right-10"
+        className="pointer-events-none absolute right-4 bottom-24 hidden max-w-[240px] rounded-xl border border-border/60 bg-card/70 p-3 text-left text-xs text-foreground/90 backdrop-blur-md sm:block md:right-10"
       >
-        <div className="mb-2 inline-flex items-center gap-2 rounded-md border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-sky-200">
+        <div className="mb-2 inline-flex items-center gap-2 rounded-md border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-sky-700 dark:text-sky-200">
           <Clock className="h-3.5 w-3.5" /> Fast setup
         </div>
         

@@ -55,8 +55,10 @@ export default function FaqPage() {
   return (
     <section
       className={cn(
-        "relative w-full overflow-hidden bg-[radial-gradient(ellipse_at_top_left,rgba(244,63,94,0.25),transparent_50%),",
-        "radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.25),transparent_50%)] py-20 text-white"
+        "system-theme relative w-full overflow-hidden",
+        "bg-[radial-gradient(ellipse_at_top_left,rgba(244,63,94,0.25),transparent_50%),",
+        "radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.25),transparent_50%)]",
+        "py-20 text-foreground"
       )}
     >
       <BackgroundGrid />
@@ -69,7 +71,7 @@ export default function FaqPage() {
           className="text-center"
         >
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl">FAQ</h1>
-          <p className="mx-auto mt-3 max-w-2xl text-zinc-300">
+          <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
             Answers to common questions about straps, usage, shipping, and care.
           </p>
         </motion.div>
@@ -81,17 +83,17 @@ export default function FaqPage() {
           className="mx-auto mt-8 w-full max-w-xl"
         >
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search FAQ..."
-              className="w-full rounded-full border border-white/15 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-zinc-400 backdrop-blur focus:border-white/30 focus:outline-none"
+              className="w-full rounded-full border py-2 pl-9 pr-3 text-sm backdrop-blur focus:outline-none border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground focus:border-border"
             />
           </div>
         </motion.div>
 
-        <div className="mt-8 divide-y divide-white/10 overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/70">
+        <div className="mt-8 divide-y divide-border/60 overflow-hidden rounded-2xl border border-border/60 bg-card/70">
           {results.map((item, idx) => (
             <AccordionItem
               key={idx}
@@ -105,7 +107,7 @@ export default function FaqPage() {
         </div>
 
         {results.length === 0 && (
-          <div className="mt-16 text-center text-sm text-zinc-300">No results. Try different keywords.</div>
+          <div className="mt-16 text-center text-sm text-muted-foreground">No results. Try different keywords.</div>
         )}
 
         <motion.div
@@ -113,10 +115,10 @@ export default function FaqPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mx-auto mt-10 flex max-w-xl items-center justify-center gap-2 text-sm text-zinc-300"
+          className="mx-auto mt-10 flex max-w-xl items-center justify-center gap-2 text-sm text-muted-foreground"
         >
           <Mail className="h-4 w-4" />
-          Still need help? <a className="underline hover:text-white" href="/contact">Contact support</a>
+          Still need help? <a className="underline hover:text-foreground" href="/contact">Contact support</a>
         </motion.div>
       </div>
     </section>
@@ -140,15 +142,15 @@ function AccordionItem({
   return (
     <div>
       <button
-        className="flex w-full items-center gap-3 px-4 py-4 text-left hover:bg-white/5"
+        className="flex w-full items-center gap-3 px-4 py-4 text-left hover:bg-background/50"
         onClick={() => setOpen(isOpen ? null : index)}
         aria-expanded={isOpen}
       >
-        <HelpCircle className="h-5 w-5 text-zinc-300" />
+        <HelpCircle className="h-5 w-5 text-muted-foreground" />
         <span className="flex-1 text-sm font-semibold">{q}</span>
         <ChevronDown
           className={cn(
-            "h-5 w-5 text-zinc-400 transition-transform",
+            "h-5 w-5 text-muted-foreground transition-transform",
             isOpen ? "rotate-180" : "rotate-0"
           )}
         />
@@ -158,9 +160,9 @@ function AccordionItem({
         animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
         className="overflow-hidden px-4"
       >
-        <div className="pb-4 text-sm text-zinc-300">{a}</div>
+        <div className="pb-4 text-sm text-muted-foreground">{a}</div>
       </motion.div>
-      <div className="h-px w-full bg-white/10" />
+      <div className="h-px w-full bg-border" />
     </div>
   );
 }
@@ -168,10 +170,9 @@ function AccordionItem({
 function BackgroundGrid() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:32px_32px]" />
-      <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black via-transparent to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-[linear-gradient(hsl(var(--foreground)/0.05)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--foreground)/0.05)_1px,transparent_1px)] bg-[size:32px_32px]" />
+      <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[hsl(var(--background))] via-transparent to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
     </div>
   );
 }
-

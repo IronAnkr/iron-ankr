@@ -7,7 +7,6 @@ import Link from "next/link";
 import { PublicBanner } from "./public-banner";
 import { UserDropdown } from "./auth/user-dropdown";
 import { MobileDrawer } from "./MobileDrawer";
-import Image from "next/image";
 import { useEffect } from "react";
 import { SearchModal } from "./search-modal";
 
@@ -33,7 +32,7 @@ export default function Navbar() {
 
   return (
     <>
-    <nav className="fixed inset-x-4 top-4 z-50 h-16 bg-black/25 rounded-md overflow-visible">
+    <nav className="system-theme fixed inset-x-4 top-4 z-50 h-16 rounded-md overflow-visible text-foreground">
       <motion.div
         className="absolute inset-x-0 top-0 h-0.5 origin-left bg-gradient-to-r from-rose-400 z-10 via-fuchsia-400 to-sky-400"
         style={{ scaleX: progress }}
@@ -43,19 +42,15 @@ export default function Navbar() {
       <motion.div
         className="absolute inset-0 -z-10 backdrop-blur-md border-b"
         style={{
-          backgroundColor: "rgba(10,10,10,0.6)",
-          borderColor: "rgba(255,255,255,0.08)",
+          backgroundColor: "hsl(var(--background) / 0.6)",
+          borderColor: "hsl(var(--border))",
           opacity: bgOpacity,
         }}
       />
 
       <div className="mx-auto flex h-full w-full max-w-6xl items-center justify-between px-4">
         {/* Left: Brand */}
-        <Link href="/" className="flex items-center gap-2 z-20">
-          <Image className="" alt="logo" src="/logo.png" width={30} height={30} />
-          <span className="text-sm font-semibold tracking-wide text-white/90 sm:block uppercase">IRON ANKR</span>
-        </Link>
-
+        <LogoIcon />
         {/* Center: Links */}
         <div className="hidden items-center gap-6 md:flex">
           <NavLink href="/products" label="Products" />
@@ -69,11 +64,11 @@ export default function Navbar() {
           <button
             aria-label="Search"
             onClick={() => setSearchOpen(true)}
-            className="group hidden items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-zinc-200 backdrop-blur hover:border-white/30 md:flex"
+            className="group hidden items-center gap-2 rounded-full border px-3 py-1.5 text-xs backdrop-blur md:flex border-border/60 bg-background/50 text-foreground/80 hover:border-border"
           >
-            <Search className="h-4 w-4 text-zinc-300" />
+            <Search className="h-4 w-4 text-foreground/80" />
             <span className="hidden sm:inline">Search</span>
-            <kbd className="ml-1 rounded bg-white/10 px-1.5 py-0.5 text-[10px] text-zinc-300">⌘K</kbd>
+            <kbd className="ml-1 rounded bg-foreground/10 px-1.5 py-0.5 text-[10px] text-foreground/80">⌘K</kbd>
           </button>
 
           <CartButton />
@@ -83,7 +78,7 @@ export default function Navbar() {
 
           <button
             aria-label="Menu"
-            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 p-2 text-white/90 backdrop-blur hover:border-white/30 md:hidden"
+            className="inline-flex items-center justify-center rounded-full border p-2 backdrop-blur md:hidden border-border/60 bg-background/50 text-foreground/90 hover:border-border"
             onClick={() => setOpen((v) => !v)}
           >
             <Menu className="h-5 w-5" />
@@ -106,7 +101,7 @@ export default function Navbar() {
 
 function NavLink({ href, label }: { href: string; label: string }) {
   return (
-    <Link href={href} className="group relative text-sm text-zinc-200 transition-colors hover:text-white">
+    <Link href={href} className="group relative text-sm text-foreground/80 transition-colors hover:text-foreground">
       {label}
       <span className="absolute -bottom-1 left-0 h-px w-0 bg-gradient-to-r from-rose-400 via-fuchsia-400 to-sky-400 transition-all duration-300 group-hover:w-full" />
     </Link>
@@ -115,6 +110,7 @@ function NavLink({ href, label }: { href: string; label: string }) {
 
 import { useCart } from "@/app/cart/cart-provider";
 import React from "react";
+import LogoIcon from "./logo-icon";
 
 function CartButton() {
   const { items } = useCart();
@@ -123,7 +119,7 @@ function CartButton() {
     <Link
       href="/cart"
       aria-label="Cart"
-      className="relative inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white text-black px-3 py-1.5 text-xs font-semibold shadow-sm transition-colors hover:bg-zinc-200"
+      className="relative inline-flex items-center justify-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold shadow-sm transition-colors border-border/60 bg-foreground text-background hover:bg-foreground/90"
     >
       <ShoppingCart className="h-4 w-4" />
       <span className="hidden sm:inline">Cart</span>

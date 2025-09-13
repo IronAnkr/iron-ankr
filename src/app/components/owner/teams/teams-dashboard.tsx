@@ -167,19 +167,19 @@ export function TeamsDashboard() {
     }
   };
 
-  if (loading) return <div className="text-center p-8">Loading teams data...</div>;
-  if (error) return <div className="bg-red-900/50 border border-red-500 text-red-200 p-4 rounded-lg">{error}</div>;
+  if (loading) return <div className="text-center p-8 text-muted-foreground">Loading teams data...</div>;
+  if (error) return <div className="rounded-lg border p-4 bg-rose-500/10 border-rose-600/30 text-rose-800 dark:bg-rose-500/10 dark:border-rose-500/30 dark:text-rose-100">{error}</div>;
 
   return (
     <div className="mt-4 space-y-8">
-      {message && <div className="bg-green-900/50 border border-green-500 text-green-200 p-3 rounded-lg">{message}</div>}
+      {message && <div className="rounded-lg border p-3 bg-green-500/10 border-green-600/30 text-green-800 dark:bg-green-400/10 dark:border-green-400/30 dark:text-green-200">{message}</div>}
       <div className="flex items-center justify-end">
-        <button onClick={() => window.location.reload()} className="rounded-md border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-white hover:bg-white/10">Retry</button>
+        <button onClick={() => window.location.reload()} className="rounded-md border px-3 py-1.5 text-xs border-border/60 bg-background/50 text-foreground hover:border-border">Retry</button>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Create Team Section */}
-        <div className="rounded-lg border border-white/10 bg-black/60 p-6">
+        <div className="rounded-lg border border-border/60 bg-card/60 p-6">
           <h3 className="text-lg font-semibold">Create New Team</h3>
           <form onSubmit={handleCreateTeam} className="mt-4 space-y-3">
             <input
@@ -187,17 +187,17 @@ export function TeamsDashboard() {
               value={newTeamName}
               onChange={(e) => setNewTeamName(e.target.value)}
               placeholder="e.g., Marketing"
-              className="w-full rounded-md border-white/20 bg-white/5 px-3 py-2 text-white focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md px-3 py-2 border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none"
               required
             />
-            <button type="submit" className="w-full rounded-md bg-blue-600 px-3 py-2 text-white font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-600" disabled={!newTeamName.trim()}>
+            <button type="submit" className="w-full rounded-md bg-foreground px-3 py-2 text-background font-semibold hover:bg-foreground/90 transition-colors disabled:opacity-60" disabled={!newTeamName.trim()}>
               Create Team
             </button>
           </form>
         </div>
 
         {/* Invite User Section */}
-        <div className="rounded-lg border border-white/10 bg-black/60 p-6">
+        <div className="rounded-lg border border-border/60 bg-card/60 p-6">
           <h3 className="text-lg font-semibold">Invite User to Team</h3>
           <form onSubmit={handleInviteUser} className="mt-4 space-y-3">
             <input
@@ -205,14 +205,14 @@ export function TeamsDashboard() {
               value={inviteEmail}
               onChange={(e) => setInviteEmail(e.target.value)}
               placeholder="user@example.com"
-              className="w-full rounded-md border-white/20 bg-white/5 px-3 py-2 text-white focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-md px-3 py-2 border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none"
               required
             />
-            <select value={inviteTeamId} onChange={(e) => setInviteTeamId(e.target.value)} className="w-full rounded-md border-white/20 bg-black/80 px-3 py-2 text-white focus:ring-2 focus:ring-blue-500" required>
+            <select value={inviteTeamId} onChange={(e) => setInviteTeamId(e.target.value)} className="w-full rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground focus:outline-none" required>
               <option value="" disabled>Select a team...</option>
               {teams.map((team) => <option key={team.id} value={team.id}>{team.name}</option>)}
             </select>
-            <select value={inviteRole} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setInviteRole(e.target.value as "member"|"marketing"|"admin")} className="w-full rounded-md border-white/20 bg-black/80 px-3 py-2 text-white focus:ring-2 focus:ring-blue-500" required>
+            <select value={inviteRole} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setInviteRole(e.target.value as "member"|"marketing"|"admin")} className="w-full rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground focus:outline-none" required>
               {allowedRolesForTeam(inviteTeamId).includes("member") && (
                 <option value="member">Member</option>
               )}
@@ -224,9 +224,9 @@ export function TeamsDashboard() {
               )}
             </select>
             {!canInviteForTeam(inviteTeamId) && (
-              <p className="text-amber-300 text-sm">Only the website owner or the owner of the selected team can send invites.</p>
+              <p className="text-sm text-amber-700 dark:text-amber-300">Only the website owner or the owner of the selected team can send invites.</p>
             )}
-            <button type="submit" className="w-full rounded-md bg-blue-600 px-3 py-2 text-white font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-600" disabled={!inviteEmail.trim() || !inviteTeamId || !canInviteForTeam(inviteTeamId)}>
+            <button type="submit" className="w-full rounded-md bg-foreground px-3 py-2 text-background font-semibold hover:bg-foreground/90 transition-colors disabled:opacity-60" disabled={!inviteEmail.trim() || !inviteTeamId || !canInviteForTeam(inviteTeamId)}>
               Send Invitation
             </button>
           </form>
@@ -234,9 +234,9 @@ export function TeamsDashboard() {
       </div>
 
       {/* Existing Teams Section */}
-      <div className="rounded-lg border border-white/10 bg-black/60 p-6">
+      <div className="rounded-lg border border-border/60 bg-card/60 p-6">
         <h3 className="text-lg font-semibold">Manage Teams</h3>
-        <div className="mt-4 -mx-6 border-t border-white/10">
+        <div className="mt-4 -mx-6 border-t border-border/60">
           {teams.length === 0 ? (
             <p className="text-center text-gray-400 py-8">No teams have been created yet.</p>
           ) : (

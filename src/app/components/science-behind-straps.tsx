@@ -9,13 +9,21 @@ import GradientOverlay from "./gradient-overlay";
 export default function ScienceBehindStraps() {
   return (
     <section className={cn(
-      "relative w-full overflow-hidden bg-[radial-gradient(ellipse_at_top_left,rgba(244,63,94,0.25),transparent_50%),",
+      "system-theme relative w-full overflow-hidden",
+      "bg-[radial-gradient(ellipse_at_top_left,rgba(244,63,94,0.25),transparent_50%),",
       "radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.25),transparent_50%)]",
-      "py-20 text-white"
+      "py-20 text-foreground"
     )}>
       <BackgroundGrid />
-        <GradientOverlay />
-      <BackgroundImage src="/science-behind-straps-bg.png" />
+      <div className="bg-gradient-to-b from-white to-transparent absolute inset inset-0 via-white dark:hidden" />
+      <span className="visible dark:invisible">
+      <BackgroundImage src="/science-behind-straps-bg-light.png" />
+      </span>
+      <span className="invisible dark:visible">
+      <BackgroundImage src="/science-behind-straps-bg-dark.png" />
+      </span>
+
+      <GradientOverlay />
 
       <div className="mx-auto w-full max-w-6xl px-4 z-10 relative">
         <Header />
@@ -34,9 +42,9 @@ export default function ScienceBehindStraps() {
 function BackgroundGrid() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:32px_32px]" />
-      <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black via-transparent to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-[linear-gradient(hsl(var(--foreground)/0.05)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--foreground)/0.05)_1px,transparent_1px)] bg-[size:32px_32px]" />
+      <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[hsl(var(--background))] via-transparent to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
     </div>
   );
 }
@@ -57,7 +65,7 @@ function Header() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.1 }}
-        className="mx-auto mt-4 max-w-3xl text-lg text-zinc-300"
+        className="mx-auto mt-4 max-w-3xl text-lg text-muted-foreground"
       >
         Evidence-based reasons to use lifting straps: optimize stimulus to the target musculature, manage fatigue, and train safely across rep ranges.
       </motion.p>
@@ -67,9 +75,9 @@ function Header() {
 
 function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/40 p-5 backdrop-blur">
+    <div className="rounded-2xl border border-border/60 bg-background/40 p-5 backdrop-blur">
       <div className="text-3xl font-extrabold">{value}</div>
-      <div className="mt-1 text-sm text-zinc-300">{label}</div>
+      <div className="mt-1 text-sm text-muted-foreground">{label}</div>
     </div>
   );
 }
@@ -101,15 +109,15 @@ function Card({
   body: string;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/70 p-5 transition-transform hover:-translate-y-1">
+    <div className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card/70 p-5 transition-transform hover:-translate-y-1">
       <div className="absolute -left-20 -top-20 h-40 w-40 rounded-full bg-rose-400/10 blur-3xl transition-opacity group-hover:opacity-100" />
       <div className="flex items-start gap-3">
-        <div className="rounded-xl bg-white/10 p-2.5">
+        <div className="rounded-xl bg-foreground/10 p-2.5">
           <Icon className="h-5 w-5" />
         </div>
         <div>
           <h3 className="text-lg font-semibold">{title}</h3>
-          <p className="mt-1 text-sm text-zinc-300">{body}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{body}</p>
         </div>
       </div>
     </div>
@@ -158,7 +166,7 @@ function WhyUseStraps() {
 
 function Chip({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded-full border border-white/10 bg-black/50 px-3 py-1 text-xs text-zinc-200">{children}</span>
+    <span className="rounded-full border border-border/60 bg-background/50 px-3 py-1 text-xs text-foreground/80">{children}</span>
   );
 }
 
@@ -185,11 +193,11 @@ function Bar({ label, a, b, aLabel, bLabel }: { label: string; a: number; b: num
   const bPct = (b / total) * 100;
   return (
     <div>
-      <div className="mb-1 flex items-center justify-between text-xs text-zinc-300">
+      <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
         <span>{label}</span>
-        <span className="text-zinc-400">{aLabel} vs {bLabel}</span>
+        <span className="text-foreground/60">{aLabel} vs {bLabel}</span>
       </div>
-      <div className="flex h-3 overflow-hidden rounded-full border border-white/10 bg-white/5">
+      <div className="flex h-3 overflow-hidden rounded-full border border-border/60 bg-background/50">
         <div style={{ width: `${aPct}%` }} className="bg-rose-400/70" />
         <div style={{ width: `${bPct}%` }} className="bg-sky-400/70" />
       </div>
@@ -202,8 +210,8 @@ function WhatTheyImprove() {
     <div className="mt-12">
       <h3 className="text-xl font-bold tracking-wide">What They Improve</h3>
       <div className="mt-4 grid gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
-          <ul className="list-disc space-y-2 pl-5 text-sm text-zinc-300">
+        <div className="rounded-2xl border border-border/60 bg-card/50 p-5">
+          <ul className="list-disc space-y-2 pl-5 text-sm text-muted-foreground">
             <li>Time-under-tension on posterior chain before grip gives out</li>
             <li>Rep quality near fatigue due to reduced bar slip</li>
             <li>Load tolerance for hinge and row patterns</li>
@@ -212,14 +220,14 @@ function WhatTheyImprove() {
           </ul>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
-          <div className="text-sm text-zinc-300">Simplified illustration: where the limiting factor shifts when adding straps</div>
+        <div className="rounded-2xl border border-border/60 bg-card/50 p-5">
+          <div className="text-sm text-muted-foreground">Simplified illustration: where the limiting factor shifts when adding straps</div>
           <div className="mt-4 space-y-4">
             <Bar label="Heavy RDL Set" a={65} b={35} aLabel="Target muscles" bLabel="Grip" />
             <Bar label="High-Rep Rows" a={60} b={40} aLabel="Target muscles" bLabel="Grip" />
             <Bar label="Volume Deadlifts" a={55} b={45} aLabel="Target muscles" bLabel="Grip" />
           </div>
-          <div className="mt-3 text-xs text-zinc-500">Illustrative only; exact distributions vary by individual and context.</div>
+          <div className="mt-3 text-xs text-muted-foreground">Illustrative only; exact distributions vary by individual and context.</div>
         </div>
       </div>
     </div>
@@ -228,26 +236,26 @@ function WhatTheyImprove() {
 
 function MechanicsExplainer() {
   return (
-    <div className="mt-14 rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.02] p-6">
-      <div className="flex items-center gap-2 text-sm font-semibold text-zinc-300">
+    <div className="mt-14 rounded-2xl border border-border/60 bg-gradient-to-br from-[hsl(var(--foreground)/0.06)] to-[hsl(var(--foreground)/0.02)] p-6">
+      <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
         <Beaker className="h-4 w-4" /> Mechanism Overview
       </div>
       <div className="mt-4 grid gap-6 lg:grid-cols-3">
         <div>
           <h4 className="text-lg font-bold">Load Transfer</h4>
-          <p className="mt-2 text-sm text-zinc-300">
+          <p className="mt-2 text-sm text-muted-foreground">
             Straps create a friction-locked loop that transfers a portion of the load path from finger flexors to the wrist-strap interface, delaying local forearm fatigue and preserving grip stability.
           </p>
         </div>
         <div>
           <h4 className="text-lg font-bold">Motor Output Allocation</h4>
-          <p className="mt-2 text-sm text-zinc-300">
+          <p className="mt-2 text-sm text-muted-foreground">
             With fewer neural resources devoted to maximum gripping, more output is available to the prime movers (lats, traps, erectors), improving effective reps and maintaining bar path under fatigue.
           </p>
         </div>
         <div>
           <h4 className="text-lg font-bold">Technique Stability</h4>
-          <p className="mt-2 text-sm text-zinc-300">
+          <p className="mt-2 text-sm text-muted-foreground">
             Reduced micro-slips decrease shearing at the hand-bar interface, yielding more consistent proprioceptive feedback and safer joint stacking through the pull.
           </p>
         </div>
@@ -258,7 +266,7 @@ function MechanicsExplainer() {
 
 function Citations() {
   return (
-    <div className="mt-10 text-sm text-zinc-400">
+    <div className="mt-10 text-sm text-muted-foreground">
       <p className="leading-relaxed">
         Notes: Practical strength and hypertrophy programming often separates grip development from posterior-chain overload to better manage systemic and local fatigue. Strap use is context-dependent and complements, not replaces, dedicated grip training.
       </p>
@@ -273,14 +281,13 @@ function Citations() {
 function CTA() {
   return (
     <div className="mt-12 flex flex-col items-center gap-3 text-center">
-      <div className="text-lg text-zinc-300">Ready to train smarter and safer?</div>
+      <div className="text-lg text-muted-foreground">Ready to train smarter and safer?</div>
       <a
         href="#products"
-        className="rounded-full bg-white px-6 py-3 font-semibold text-black transition-colors hover:bg-zinc-200"
+        className="rounded-full bg-foreground px-6 py-3 font-semibold text-background transition-colors hover:bg-foreground/90"
       >
         Explore Straps
       </a>
     </div>
   );
 }
-

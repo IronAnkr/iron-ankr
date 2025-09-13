@@ -117,39 +117,39 @@ export default function MarketingTasksPage() {
   return (
     <div className="space-y-5">
       <header>
-        <h1 className="text-xl font-semibold text-white">Tasks</h1>
-        <p className="text-sm text-white/70">Create, assign, and track marketing work.</p>
+        <h1 className="text-xl font-semibold text-foreground">Tasks</h1>
+        <p className="text-sm text-muted-foreground">Create, assign, and track marketing work.</p>
       </header>
 
-      <form onSubmit={createTask} className="rounded-lg border border-white/10 bg-black/60 p-4 grid gap-3 sm:grid-cols-3">
-        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Task title" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" required />
-        <select value={assignee} onChange={(e) => setAssignee(e.target.value)} className="rounded-md border-white/20 bg-black/80 px-3 py-2 text-white">
+      <form onSubmit={createTask} className="rounded-lg border border-border/60 bg-card/60 p-4 grid gap-3 sm:grid-cols-3">
+        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Task title" className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" required />
+        <select value={assignee} onChange={(e) => setAssignee(e.target.value)} className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground">
           <option value="">Unassigned</option>
           {users.map((u) => (
             <option key={u.id} value={u.id}>{u.email}</option>
           ))}
         </select>
-        <input type="datetime-local" value={dueAt} onChange={(e) => setDueAt(e.target.value)} className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" />
+        <input type="datetime-local" value={dueAt} onChange={(e) => setDueAt(e.target.value)} className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" />
         <div className="sm:col-span-3">
-          <button disabled={saving || !title.trim()} className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">{saving ? 'Saving…' : 'Create task'}</button>
+          <button disabled={saving || !title.trim()} className="rounded-md bg-foreground text-background hover:bg-foreground/90 px-3 py-2 text-sm font-semibold disabled:opacity-60">{saving ? 'Saving…' : 'Create task'}</button>
         </div>
       </form>
 
-      {error && <p className="text-sm text-rose-300">{error}</p>}
+      {error && <p className="text-sm text-rose-800 dark:text-rose-200">{error}</p>}
 
       <div className="flex flex-wrap items-center gap-2 text-sm">
-        <button onClick={() => setTab("todo")} className={`rounded-md border px-3 py-1.5 ${tab==='todo' ? 'bg-white text-black border-white' : 'border-white/10 bg-white/5 text-white hover:bg-white/10'}`}>To do</button>
-        <button onClick={() => setTab("in_progress")} className={`rounded-md border px-3 py-1.5 ${tab==='in_progress' ? 'bg-white text-black border-white' : 'border-white/10 bg-white/5 text-white hover:bg-white/10'}`}>In progress</button>
-        <button onClick={() => setTab("done")} className={`rounded-md border px-3 py-1.5 ${tab==='done' ? 'bg-white text-black border-white' : 'border-white/10 bg-white/5 text-white hover:bg-white/10'}`}>Done</button>
-        <button onClick={() => setTab("all")} className={`rounded-md border px-3 py-1.5 ${tab==='all' ? 'bg-white text-black border-white' : 'border-white/10 bg-white/5 text-white hover:bg-white/10'}`}>All</button>
+        <button onClick={() => setTab("todo")} className={`rounded-md border px-3 py-1.5 ${tab==='todo' ? 'bg-foreground text-background border-foreground' : 'border-border/60 bg-background/50 text-muted-foreground hover:text-foreground'}`}>To do</button>
+        <button onClick={() => setTab("in_progress")} className={`rounded-md border px-3 py-1.5 ${tab==='in_progress' ? 'bg-foreground text-background border-foreground' : 'border-border/60 bg-background/50 text-muted-foreground hover:text-foreground'}`}>In progress</button>
+        <button onClick={() => setTab("done")} className={`rounded-md border px-3 py-1.5 ${tab==='done' ? 'bg-foreground text-background border-foreground' : 'border-border/60 bg-background/50 text-muted-foreground hover:text-foreground'}`}>Done</button>
+        <button onClick={() => setTab("all")} className={`rounded-md border px-3 py-1.5 ${tab==='all' ? 'bg-foreground text-background border-foreground' : 'border-border/60 bg-background/50 text-muted-foreground hover:text-foreground'}`}>All</button>
       </div>
 
       {loading ? (
-        <div className="text-white/80">Loading…</div>
+        <div className="text-muted-foreground">Loading…</div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-white/10">
-          <table className="w-full text-sm text-white/90">
-            <thead className="bg-white/5 text-white/70">
+        <div className="overflow-hidden rounded-lg border border-border/60">
+          <table className="w-full text-sm text-foreground/90">
+            <thead className="bg-muted text-muted-foreground">
               <tr>
                 <th className="p-3 text-left">Title</th>
                 <th className="p-3">Assignee</th>
@@ -158,22 +158,22 @@ export default function MarketingTasksPage() {
                 <th className="p-3">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-border/60">
               {visibleTasks.map((t) => (
                 <tr key={t.id}>
                   <td className="p-3 text-left">{t.title}</td>
                   <td className="p-3 text-center">{emailFor(t.assignee)}</td>
                   <td className="p-3 text-center">{t.due_at ? new Date(t.due_at).toLocaleString() : '—'}</td>
-                  <td className="p-3 text-center uppercase text-white/70">{t.status.replace('_',' ')}</td>
+                  <td className="p-3 text-center uppercase text-muted-foreground">{t.status.replace('_',' ')}</td>
                   <td className="p-3 text-center flex items-center justify-center gap-2">
                     {t.status !== 'in_progress' && (
-                      <button onClick={() => updateStatus(t.id, 'in_progress')} className="text-blue-300 hover:underline">Start</button>
+                      <button onClick={() => updateStatus(t.id, 'in_progress')} className="text-muted-foreground hover:text-foreground hover:underline">Start</button>
                     )}
                     {t.status !== 'done' && (
-                      <button onClick={() => updateStatus(t.id, 'done')} className="text-emerald-300 hover:underline">Complete</button>
+                      <button onClick={() => updateStatus(t.id, 'done')} className="hover:underline text-emerald-700 dark:text-emerald-300">Complete</button>
                     )}
                     {isMarketingAdmin && (
-                      <button onClick={() => remove(t.id)} className="text-rose-300 hover:underline">Delete</button>
+                      <button onClick={() => remove(t.id)} className="text-destructive hover:underline">Delete</button>
                     )}
                   </td>
                 </tr>
@@ -185,4 +185,3 @@ export default function MarketingTasksPage() {
     </div>
   );
 }
-

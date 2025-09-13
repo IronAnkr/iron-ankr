@@ -39,16 +39,16 @@ export function OrdersNeedingFulfillment() {
   }, [supabase]);
 
   return (
-    <Card className="overflow-hidden border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent">
+    <Card className="overflow-hidden border-border/60 bg-gradient-to-b from-[hsl(var(--foreground)/0.06)] to-transparent">
       <CardHeader>
-        <CardTitle className="text-white">Orders</CardTitle>
+        <CardTitle className="text-foreground">Orders</CardTitle>
         <CardDescription>Recent orders from Stripe checkout.</CardDescription>
       </CardHeader>
       <CardContent>
-        {error && <div className="mb-3 rounded-md border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">{error}</div>}
+        {error && <div className="mb-3 rounded-md border p-3 text-sm border-rose-600/30 bg-rose-500/10 text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-100">{error}</div>}
         <Table>
           <TableHeader>
-            <TableRow className="bg-white/[0.04]">
+            <TableRow className="bg-background/50">
               <TableHead>Order</TableHead>
               <TableHead className="hidden sm:table-cell">Payment</TableHead>
               <TableHead className="hidden sm:table-cell">Fulfillment</TableHead>
@@ -58,9 +58,9 @@ export function OrdersNeedingFulfillment() {
           </TableHeader>
           <TableBody>
             {loading ? (
-              <TableRow><TableCell colSpan={5} className="text-sm text-white/70">Loading…</TableCell></TableRow>
+              <TableRow><TableCell colSpan={5} className="text-sm text-muted-foreground">Loading…</TableCell></TableRow>
             ) : orders.length === 0 ? (
-              <TableRow><TableCell colSpan={5} className="text-sm text-white/70">No orders yet.</TableCell></TableRow>
+              <TableRow><TableCell colSpan={5} className="text-sm text-muted-foreground">No orders yet.</TableCell></TableRow>
             ) : (
               orders.map((o) => (
                 <TableRow key={o.id}>

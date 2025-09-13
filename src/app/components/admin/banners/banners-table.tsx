@@ -75,7 +75,7 @@ export function BannersTable() {
       <CardHeader className="gap-2">
         <div className="flex items-end justify-between gap-2">
           <div>
-            <CardTitle className="text-white">Banner Messages</CardTitle>
+            <CardTitle className="dark:text-white">Banner Messages</CardTitle>
             <CardDescription>Small announcements shown beneath the site navbar.</CardDescription>
           </div>
           <div className="flex items-center gap-2">
@@ -84,14 +84,14 @@ export function BannersTable() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search message..."
-                className="w-56 rounded-lg bg-white/5 border border-white/10 text-white placeholder-white/40 px-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20"
+                className="w-56 rounded-lg bg-white/5 border border-white/10 dark:text-white placeholder-white/40 px-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20"
               />
-              <svg aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg aria-hidden className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 dark:text-white/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="11" cy="11" r="7" />
                 <path d="m21 21-4.3-4.3" />
               </svg>
             </div>
-            <button onClick={() => { setEditing(null); setOpen(true); }} className="rounded-md bg-white/10 text-white px-3 py-2 text-sm hover:bg-white/15 transition">Create banner</button>
+            <button onClick={() => { setEditing(null); setOpen(true); }} className="rounded-md bg-white/10 dark:text-white px-3 py-2 text-sm hover:bg-white/15 transition">Create banner</button>
           </div>
         </div>
       </CardHeader>
@@ -111,17 +111,17 @@ export function BannersTable() {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-sm text-white/70">Loading…</TableCell>
+                <TableCell colSpan={6} className="text-sm dark:text-white/70">Loading…</TableCell>
               </TableRow>
             ) : filtered.map((b) => (
               <TableRow key={b.id}>
-                <TableCell className="font-medium text-white">{b.message}</TableCell>
+                <TableCell className="font-medium dark:text-white">{b.message}</TableCell>
                 <TableCell className="capitalize">{b.variant}</TableCell>
                 <TableCell className="hidden md:table-cell">
                   {(b.starts_at || b.ends_at) ? (
-                    <span className="text-white/80">{b.starts_at?.slice(0,10) || "—"} → {b.ends_at?.slice(0,10) || "—"}</span>
+                    <span className="dark:text-white/80">{b.starts_at?.slice(0,10) || "—"} → {b.ends_at?.slice(0,10) || "—"}</span>
                   ) : (
-                    <span className="text-white/50">—</span>
+                    <span className="dark:text-white/50">—</span>
                   )}
                 </TableCell>
                 <TableCell className="hidden lg:table-cell">{b.priority}</TableCell>
@@ -129,7 +129,7 @@ export function BannersTable() {
                   {b.active ? (
                     <Badge className="text-xs bg-emerald-400/15 text-emerald-300 border-emerald-500/20" variant="outline">Active</Badge>
                   ) : (
-                    <Badge className="text-xs bg-white/10 text-white border-white/20" variant="outline">Disabled</Badge>
+                    <Badge className="text-xs bg-white/10 dark:text-white border-white/20" variant="outline">Disabled</Badge>
                   )}
                 </TableCell>
                 <TableCell className="text-right">
@@ -143,7 +143,7 @@ export function BannersTable() {
             ))}
             {!loading && filtered.length === 0 && (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-sm text-white/60 py-8">No banners found.</TableCell>
+                <TableCell colSpan={6} className="text-center text-sm dark:text-white/60 py-8">No banners found.</TableCell>
               </TableRow>
             )}
           </TableBody>

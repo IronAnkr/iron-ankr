@@ -20,17 +20,17 @@ export function AdminBreadcrumbs() {
 
   return (
     <nav className="mb-4 md:mb-6">
-      <ol className="flex items-center gap-2 text-xs text-white/70">
+      <ol className="flex items-center gap-2 text-xs text-muted-foreground">
         <li>
-          <Link href="/admin" className="hover:text-white">Dashboard</Link>
+          <Link href="/admin" className="hover:text-foreground">Dashboard</Link>
         </li>
         {crumbs.map((c, i) => (
           <li key={c.href} className="flex items-center gap-2">
-            <span className="text-white/30">/</span>
+            <span className="text-foreground/30">/</span>
             {i < crumbs.length - 1 ? (
-              <Link href={c.href} className="hover:text-white">{c.label}</Link>
+              <Link href={c.href} className="hover:text-foreground">{c.label}</Link>
             ) : (
-              <span className="text-white/90">{c.label}</span>
+              <span className="text-foreground/90">{c.label}</span>
             )}
           </li>
         ))}
@@ -38,4 +38,3 @@ export function AdminBreadcrumbs() {
     </nav>
   );
 }
-

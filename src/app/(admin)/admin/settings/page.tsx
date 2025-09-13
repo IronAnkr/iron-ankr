@@ -116,15 +116,15 @@ export default function AdminSettingsPage() {
   return (
     <div className="flex flex-col gap-4">
       <header className="flex items-end justify-between gap-4 h-20">
-        <h1 className="text-2xl font-bold tracking-tight text-white">Settings</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Settings</h1>
         <p className="text-sm text-muted-foreground">Configure store details, payments, and fulfillment.</p>
       </header>
       {error && (
-        <div className="rounded-md border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">{error}</div>
+        <div className="rounded-md border border-border/60 bg-card/60 p-3 text-sm text-rose-800 dark:text-rose-200">{error}</div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Card className="overflow-hidden border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent">
+        <Card className="overflow-hidden border-border/60 bg-card/60">
           <CardHeader>
             <CardTitle>Store</CardTitle>
             <CardDescription>Basic information for your storefront.</CardDescription>
@@ -132,18 +132,18 @@ export default function AdminSettingsPage() {
           <CardContent>
             <form className="grid gap-4">
               <label className="grid gap-1">
-                <span className="text-sm text-white/90">Store name</span>
-                <input value={storeName} onChange={(e)=>setStoreName(e.target.value)} className="w-full rounded-md border border-white/10 bg-white/5 text-white placeholder-white/40 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20" placeholder="Acme Co." />
+                <span className="text-sm text-foreground">Store name</span>
+                <input value={storeName} onChange={(e)=>setStoreName(e.target.value)} className="w-full rounded-md border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground px-3 py-2 text-sm focus:outline-none" placeholder="Acme Co." />
               </label>
               <label className="grid gap-1">
-                <span className="text-sm text-white/90">Support email</span>
-                <input value={supportEmail} onChange={(e)=>setSupportEmail(e.target.value)} className="w-full rounded-md border border-white/10 bg-white/5 text-white placeholder-white/40 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20" placeholder="support@example.com" />
+                <span className="text-sm text-foreground">Support email</span>
+                <input value={supportEmail} onChange={(e)=>setSupportEmail(e.target.value)} className="w-full rounded-md border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground px-3 py-2 text-sm focus:outline-none" placeholder="support@example.com" />
               </label>
               <div className="flex justify-end">
                 <button type="button" onClick={()=> void Promise.all([
                   saveString('site.store_name','Store name', storeName, { scope:'site', group_key:'store', is_public: true }),
                   saveString('site.support_email','Support email', supportEmail, { scope:'site', group_key:'store' }),
-                ])} className="rounded-md bg-white/10 text-white px-3 py-2 text-sm hover:bg-white/15 transition disabled:opacity-60" disabled={saving['site.store_name']||saving['site.support_email']}>
+                ])} className="rounded-md bg-foreground text-background px-3 py-2 text-sm hover:bg-foreground/90 transition disabled:opacity-60" disabled={saving['site.store_name']||saving['site.support_email']}>
                   {saving['site.store_name']||saving['site.support_email'] ? 'Saving…' : 'Save changes'}
                 </button>
               </div>
@@ -151,7 +151,7 @@ export default function AdminSettingsPage() {
           </CardContent>
         </Card>
 
-        <Card className="overflow-hidden border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent">
+        <Card className="overflow-hidden border-border/60 bg-card/60">
           <CardHeader>
             <CardTitle>Shipping</CardTitle>
             <CardDescription>Default shipping speeds and rates.</CardDescription>
@@ -159,18 +159,18 @@ export default function AdminSettingsPage() {
           <CardContent>
             <form className="grid gap-4">
               <label className="grid gap-1">
-                <span className="text-sm text-white/90">Domestic flat rate</span>
-                <input value={domestic} onChange={(e)=>setDomestic(e.target.value)} className="w-full rounded-md border border-white/10 bg-white/5 text-white placeholder-white/40 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20" placeholder="$5.00" />
+                <span className="text-sm text-foreground">Domestic flat rate</span>
+                <input value={domestic} onChange={(e)=>setDomestic(e.target.value)} className="w-full rounded-md border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground px-3 py-2 text-sm focus:outline-none" placeholder="$5.00" />
               </label>
               <label className="grid gap-1">
-                <span className="text-sm text-white/90">International flat rate</span>
-                <input value={international} onChange={(e)=>setInternational(e.target.value)} className="w-full rounded-md border border-white/10 bg-white/5 text-white placeholder-white/40 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20" placeholder="$15.00" />
+                <span className="text-sm text-foreground">International flat rate</span>
+                <input value={international} onChange={(e)=>setInternational(e.target.value)} className="w-full rounded-md border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground px-3 py-2 text-sm focus:outline-none" placeholder="$15.00" />
               </label>
               <div className="flex justify-end">
                 <button type="button" onClick={()=> void Promise.all([
                   saveCents('shipping.domestic_flat_cents','Domestic flat rate (cents)', Math.round(Number(domestic||'0')*100), { scope:'shipping', group_key:'rates' }),
                   saveCents('shipping.international_flat_cents','International flat rate (cents)', Math.round(Number(international||'0')*100), { scope:'shipping', group_key:'rates' }),
-                ])} className="rounded-md bg-white/10 text-white px-3 py-2 text-sm hover:bg-white/15 transition disabled:opacity-60" disabled={saving['shipping.domestic_flat_cents']||saving['shipping.international_flat_cents']}>
+                ])} className="rounded-md bg-foreground text-background px-3 py-2 text-sm hover:bg-foreground/90 transition disabled:opacity-60" disabled={saving['shipping.domestic_flat_cents']||saving['shipping.international_flat_cents']}>
                   {saving['shipping.domestic_flat_cents']||saving['shipping.international_flat_cents'] ? 'Saving…' : 'Save shipping'}
                 </button>
               </div>
@@ -178,7 +178,7 @@ export default function AdminSettingsPage() {
           </CardContent>
         </Card>
 
-        <Card className="overflow-hidden border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent">
+        <Card className="overflow-hidden border-border/60 bg-card/60">
           <CardHeader>
             <CardTitle>Theme</CardTitle>
             <CardDescription>Brand colors and public UI preferences.</CardDescription>
@@ -186,29 +186,29 @@ export default function AdminSettingsPage() {
           <CardContent>
             <form className="grid gap-4">
               <label className="grid gap-1">
-                <span className="text-sm text-white/90">Accent color</span>
+                <span className="text-sm text-foreground">Accent color</span>
                 <div className="flex items-center gap-3">
                   <input
                     type="color"
                     value={accent}
                     onChange={(e)=>setAccent(e.target.value)}
-                    className="h-9 w-12 shrink-0 rounded-md border border-white/10 bg-white/5"
+                    className="h-9 w-12 shrink-0 rounded-md border border-border/60 bg-background/50"
                   />
                   <input
                     value={accent}
                     onChange={(e)=>setAccent(e.target.value)}
-                    className="w-full rounded-md border border-white/10 bg-white/5 text-white placeholder-white/40 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20"
+                    className="w-full rounded-md border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground px-3 py-2 text-sm focus:outline-none"
                     placeholder="#66E3FF"
                   />
-                  <span className="inline-flex h-8 w-8 shrink-0 rounded-md border border-white/10" style={{ backgroundColor: accent }} />
+                  <span className="inline-flex h-8 w-8 shrink-0 rounded-md border border-border/60" style={{ backgroundColor: accent }} />
                 </div>
-                <span className="text-xs text-white/50">Shown in public UI. Saved as a public setting.</span>
+                <span className="text-xs text-muted-foreground">Shown in public UI. Saved as a public setting.</span>
               </label>
               <div className="flex justify-end">
                 <button
                   type="button"
                   onClick={()=> void saveString('theme.accent','Theme accent color', accent, { scope:'theme', group_key:'brand', is_public: true })}
-                  className="rounded-md bg-white/10 text-white px-3 py-2 text-sm hover:bg-white/15 transition disabled:opacity-60"
+                  className="rounded-md bg-foreground text-background px-3 py-2 text-sm hover:bg-foreground/90 transition disabled:opacity-60"
                   disabled={saving['theme.accent']}
                 >
                   {saving['theme.accent'] ? 'Saving…' : 'Save theme'}
@@ -218,23 +218,23 @@ export default function AdminSettingsPage() {
           </CardContent>
         </Card>
 
-        <Card className="lg:col-span-2 overflow-hidden border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent">
+        <Card className="lg:col-span-2 overflow-hidden border-border/60 bg-card/60">
           <CardHeader>
             <CardTitle>Danger Zone</CardTitle>
             <CardDescription>Permanently remove data. This action cannot be undone.</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-between rounded-md border p-4">
+            <div className="flex items-center justify-between rounded-md border p-4 border-border/60 bg-background/50">
               <div>
                 <div className="font-medium">Reset demo data</div>
                 <div className="text-sm text-muted-foreground">Clears orders, products, and activity.</div>
               </div>
-              <button className="rounded-md bg-red-600 text-white px-3 py-2 text-sm hover:bg-red-700 transition">Reset</button>
+              <button className="rounded-md bg-foreground text-background px-3 py-2 text-sm hover:bg-foreground/90 transition">Reset</button>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="overflow-hidden border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent lg:col-span-2">
+        <Card className="overflow-hidden border-border/60 bg-card/60 lg:col-span-2">
           <CardHeader>
             <CardTitle>Legal Pages</CardTitle>
             <CardDescription>Edit the content shown on Privacy, Terms, and Cookies pages. Saved publicly.</CardDescription>
@@ -242,19 +242,19 @@ export default function AdminSettingsPage() {
           <CardContent>
             <div className="grid gap-4 md:grid-cols-3">
               <div className="md:col-span-1">
-                <label className="block text-sm text-white/90 mb-1">Privacy Policy</label>
-                <textarea value={privacy} onChange={(e)=>setPrivacy(e.target.value)} rows={10} className="w-full rounded-md border border-white/10 bg-white/5 text-white placeholder-white/40 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20" placeholder="Enter privacy policy text" />
-                <button type="button" onClick={()=> saveString('legal.privacy','Privacy Policy', privacy, { scope:'legal', group_key:'policy', is_public: true })} className="mt-2 rounded-md bg-white/10 text-white px-3 py-2 text-sm hover:bg-white/15 transition disabled:opacity-60" disabled={saving['legal.privacy']}>{saving['legal.privacy'] ? 'Saving…' : 'Save Privacy'}</button>
+                <label className="block text-sm text-foreground mb-1">Privacy Policy</label>
+                <textarea value={privacy} onChange={(e)=>setPrivacy(e.target.value)} rows={10} className="w-full rounded-md border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground px-3 py-2 text-sm focus:outline-none" placeholder="Enter privacy policy text" />
+                <button type="button" onClick={()=> saveString('legal.privacy','Privacy Policy', privacy, { scope:'legal', group_key:'policy', is_public: true })} className="mt-2 rounded-md bg-foreground text-background px-3 py-2 text-sm hover:bg-foreground/90 transition disabled:opacity-60" disabled={saving['legal.privacy']}>{saving['legal.privacy'] ? 'Saving…' : 'Save Privacy'}</button>
               </div>
               <div className="md:col-span-1">
-                <label className="block text-sm text-white/90 mb-1">Terms of Service</label>
-                <textarea value={terms} onChange={(e)=>setTerms(e.target.value)} rows={10} className="w-full rounded-md border border-white/10 bg-white/5 text-white placeholder-white/40 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20" placeholder="Enter terms of service text" />
-                <button type="button" onClick={()=> saveString('legal.terms','Terms of Service', terms, { scope:'legal', group_key:'policy', is_public: true })} className="mt-2 rounded-md bg-white/10 text-white px-3 py-2 text-sm hover:bg-white/15 transition disabled:opacity-60" disabled={saving['legal.terms']}>{saving['legal.terms'] ? 'Saving…' : 'Save Terms'}</button>
+                <label className="block text-sm text-foreground mb-1">Terms of Service</label>
+                <textarea value={terms} onChange={(e)=>setTerms(e.target.value)} rows={10} className="w-full rounded-md border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground px-3 py-2 text-sm focus:outline-none" placeholder="Enter terms of service text" />
+                <button type="button" onClick={()=> saveString('legal.terms','Terms of Service', terms, { scope:'legal', group_key:'policy', is_public: true })} className="mt-2 rounded-md bg-foreground text-background px-3 py-2 text-sm hover:bg-foreground/90 transition disabled:opacity-60" disabled={saving['legal.terms']}>{saving['legal.terms'] ? 'Saving…' : 'Save Terms'}</button>
               </div>
               <div className="md:col-span-1">
-                <label className="block text-sm text-white/90 mb-1">Cookie Policy</label>
-                <textarea value={cookiesTxt} onChange={(e)=>setCookiesTxt(e.target.value)} rows={10} className="w-full rounded-md border border-white/10 bg-white/5 text-white placeholder-white/40 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20" placeholder="Enter cookie policy text" />
-                <button type="button" onClick={()=> saveString('legal.cookies','Cookie Policy', cookiesTxt, { scope:'legal', group_key:'policy', is_public: true })} className="mt-2 rounded-md bg-white/10 text-white px-3 py-2 text-sm hover:bg-white/15 transition disabled:opacity-60" disabled={saving['legal.cookies']}>{saving['legal.cookies'] ? 'Saving…' : 'Save Cookies'}</button>
+                <label className="block text-sm text-foreground mb-1">Cookie Policy</label>
+                <textarea value={cookiesTxt} onChange={(e)=>setCookiesTxt(e.target.value)} rows={10} className="w-full rounded-md border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground px-3 py-2 text-sm focus:outline-none" placeholder="Enter cookie policy text" />
+                <button type="button" onClick={()=> saveString('legal.cookies','Cookie Policy', cookiesTxt, { scope:'legal', group_key:'policy', is_public: true })} className="mt-2 rounded-md bg-foreground text-background px-3 py-2 text-sm hover:bg-foreground/90 transition disabled:opacity-60" disabled={saving['legal.cookies']}>{saving['legal.cookies'] ? 'Saving…' : 'Save Cookies'}</button>
               </div>
             </div>
           </CardContent>

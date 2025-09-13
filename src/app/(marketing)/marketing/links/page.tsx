@@ -87,29 +87,29 @@ export default function MarketingLinksPage() {
   return (
     <div className="space-y-5">
       <header>
-        <h1 className="text-xl font-semibold text-white">Links</h1>
-        <p className="text-sm text-white/70">Create short links and track clicks.</p>
+        <h1 className="text-xl font-semibold text-foreground">Links</h1>
+        <p className="text-sm text-muted-foreground">Create short links and track clicks.</p>
       </header>
 
-      <form onSubmit={createLink} className="rounded-lg border border-white/10 bg-black/60 p-4 grid gap-3 md:grid-cols-2">
-        <input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="slug (unique)" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" required />
-        <input value={dest} onChange={(e) => setDest(e.target.value)} placeholder="https://destination" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" required />
-        <input value={source} onChange={(e) => setSource(e.target.value)} placeholder="utm_source" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" />
-        <input value={medium} onChange={(e) => setMedium(e.target.value)} placeholder="utm_medium" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" />
-        <input value={campaign} onChange={(e) => setCampaign(e.target.value)} placeholder="utm_campaign" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" />
-        <input value={content} onChange={(e) => setContent(e.target.value)} placeholder="utm_content" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" />
+      <form onSubmit={createLink} className="rounded-lg border border-border/60 bg-card/60 p-4 grid gap-3 md:grid-cols-2">
+        <input value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="slug (unique)" className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" required />
+        <input value={dest} onChange={(e) => setDest(e.target.value)} placeholder="https://destination" className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" required />
+        <input value={source} onChange={(e) => setSource(e.target.value)} placeholder="utm_source" className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" />
+        <input value={medium} onChange={(e) => setMedium(e.target.value)} placeholder="utm_medium" className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" />
+        <input value={campaign} onChange={(e) => setCampaign(e.target.value)} placeholder="utm_campaign" className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" />
+        <input value={content} onChange={(e) => setContent(e.target.value)} placeholder="utm_content" className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" />
         <div className="md:col-span-2">
-          <button disabled={!slug.trim() || !dest.trim() || saving} className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">{saving ? 'Saving…' : 'Create link'}</button>
+          <button disabled={!slug.trim() || !dest.trim() || saving} className="rounded-md bg-foreground text-background hover:bg-foreground/90 px-3 py-2 text-sm font-semibold disabled:opacity-60">{saving ? 'Saving…' : 'Create link'}</button>
         </div>
       </form>
 
-      {error && <p className="text-sm text-rose-300">{error}</p>}
+      {error && <p className="text-sm text-rose-800 dark:text-rose-200">{error}</p>}
       {loading ? (
-        <div className="text-white/80">Loading…</div>
+        <div className="text-muted-foreground">Loading…</div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-white/10">
-          <table className="w-full text-sm text-white/90">
-            <thead className="bg-white/5 text-white/70">
+        <div className="overflow-hidden rounded-lg border border-border/60">
+          <table className="w-full text-sm text-foreground/90">
+            <thead className="bg-muted text-muted-foreground">
               <tr>
                 <th className="p-3 text-left">Slug</th>
                 <th className="p-3 text-left">Destination</th>
@@ -117,15 +117,15 @@ export default function MarketingLinksPage() {
                 <th className="p-3">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-border/60">
               {items.map((l) => (
                 <tr key={l.id}>
                   <td className="p-3 text-left">{l.slug}</td>
-                  <td className="p-3 text-left truncate max-w-[28ch]" title={l.destination}>{l.destination}</td>
+                  <td className="p-3 text-left truncate max-w-[28ch] text-muted-foreground" title={l.destination}>{l.destination}</td>
                   <td className="p-3 text-center">{l.clicks}</td>
                   <td className="p-3 text-center">
                     {isMarketingAdmin && (
-                      <button onClick={() => remove(l.id)} className="text-rose-300 hover:underline">Delete</button>
+                      <button onClick={() => remove(l.id)} className="text-destructive hover:underline">Delete</button>
                     )}
                   </td>
                 </tr>

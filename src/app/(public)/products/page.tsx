@@ -15,43 +15,64 @@ export default function ProductsPage() {
   const [sort, setSort] = useState<"name" | "price_asc" | "price_desc">("name");
   const [catalog, setCatalog] = useState<ProductWithVariants[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
+  // Stable Supabase client instance for the component lifecycle
+  const supabase = useMemo(() => getSupabaseBrowserClient(), []);
 
   useEffect(() => {
-    const supabase = getSupabaseBrowserClient();
+    let cancelled = false;
+
     (async () => {
       setLoading(true);
       try {
-        const [prodRes, varRes] = await Promise.all([
-          supabase
-            .from("products")
-            .select("id,name,description,status,price_in_cents,images,tags,metadata,created_at,updated_at,deleted_at")
-            .is('deleted_at', null)
-            .order("created_at", { ascending: false }),
-          supabase
-            .from("product_variants")
-            .select("id,product_id,sku,title,attributes,price_in_cents,stock,barcode,weight_grams,metadata,created_at,updated_at,deleted_at"),
-        ]);
+        // Fetch products first (active, not deleted)
+        const prodRes = await supabase
+          .from("products")
+          .select("id,name,description,status,price_in_cents,images,tags,metadata,created_at,updated_at,deleted_at")
+          .is('deleted_at', null)
+          .order("created_at", { ascending: false });
+        if (cancelled) return;
         if (prodRes.error) throw prodRes.error;
-        if (varRes.error) throw varRes.error;
+        const prods = (prodRes.data as ProductT[] | null) ?? [];
+
+        // Fetch only variants for returned products to reduce load
+        let variants: ProductVariantT[] = [];
+        if (prods.length > 0) {
+          const ids = prods.map((p) => p.id);
+          const varRes = await supabase
+            .from("product_variants")
+            .select("id,product_id,sku,title,attributes,price_in_cents,stock,barcode,weight_grams,metadata,created_at,updated_at,deleted_at")
+            .in('product_id', ids);
+          if (cancelled) return;
+          // Don't throw on variant errors; still render products
+          if (!varRes.error) {
+            variants = (varRes.data as ProductVariantT[] | null) ?? [];
+          }
+        }
+
         const variantsByProduct = new Map<string, ProductVariantT[]>();
-        (varRes.data as ProductVariantT[] | null)?.forEach((v) => {
+        variants.forEach((v) => {
           const arr = variantsByProduct.get(v.product_id) ?? [];
           arr.push(v);
           variantsByProduct.set(v.product_id, arr);
         });
-        const cat: ProductWithVariants[] = ((prodRes.data as ProductT[] | null) ?? []).map((p) => ({
+        const cat: ProductWithVariants[] = prods.map((p) => ({
           product: p,
           variants: variantsByProduct.get(p.id) ?? [],
         }));
-        setCatalog(cat);
+        if (!cancelled) setCatalog(cat);
       } catch {
-        // Swallow error; UI shows loading/empty states
+        // On error, surface empty state but don't block the UI
+        if (!cancelled) setCatalog([]);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     })();
-  }, []);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -81,8 +102,10 @@ export default function ProductsPage() {
   return (
     <section
       className={cn(
-        "relative w-full overflow-hidden bg-[radial-gradient(ellipse_at_top_left,rgba(244,63,94,0.25),transparent_50%),",
-        "radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.25),transparent_50%)] py-20 text-white"
+        "system-theme relative w-full overflow-hidden",
+        "bg-[radial-gradient(ellipse_at_top_left,rgba(244,63,94,0.25),transparent_50%),",
+        "radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.25),transparent_50%)]",
+        "py-20 text-foreground"
       )}
     >
       <BackgroundGrid />
@@ -95,7 +118,7 @@ export default function ProductsPage() {
           className="text-center"
         >
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl">Products</h1>
-          <p className="mx-auto mt-3 max-w-2xl text-zinc-300">
+          <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
             Secure, durable straps designed for serious pulling days.
           </p>
         </motion.div>
@@ -107,12 +130,12 @@ export default function ProductsPage() {
           className="mt-8 flex flex-col items-center justify-between gap-3 sm:flex-row"
         >
           <div className="relative w-full max-w-xl">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400 z-10" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground z-10" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search products..."
-              className="w-full rounded-full border border-white/15 bg-white/5 py-2 pl-9 pr-3 text-sm text-white placeholder:text-zinc-400 backdrop-blur focus:border-white/30 focus:outline-none"
+              className="w-full rounded-full border py-2 pl-9 pr-3 text-sm backdrop-blur focus:outline-none border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground focus:border-border"
             />
           </div>
 
@@ -160,13 +183,13 @@ export default function ProductsPage() {
           ))}
         </motion.div>
         {loading && (
-          <div className="mt-16 text-center text-sm text-zinc-300">Loading products…</div>
+          <div className="mt-16 text-center text-sm text-muted-foreground">Loading products…</div>
         )}
         {!loading && catalog.length === 0 && (
-          <div className="mt-16 text-center text-sm text-zinc-300">No products available yet. Please check back soon.</div>
+          <div className="mt-16 text-center text-sm text-muted-foreground">No products available yet. Please check back soon.</div>
         )}
         {!loading && catalog.length > 0 && results.length === 0 && (
-          <div className="mt-16 text-center text-sm text-zinc-300">No products match your search.</div>
+          <div className="mt-16 text-center text-sm text-muted-foreground">No products match your search.</div>
         )}
       </div>
     </section>
@@ -179,7 +202,7 @@ function SortButton({ active, onClick, label, icon }: { active: boolean; onClick
       onClick={onClick}
       className={cn(
         "inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs backdrop-blur",
-        active ? "border-white/40 bg-white/20 text-white" : "border-white/15 bg-white/5 text-zinc-200 hover:border-white/30"
+        active ? "border-border bg-background/60 text-foreground" : "border-border/60 bg-background/40 text-foreground/80 hover:border-border"
       )}
     >
       {label}
@@ -192,9 +215,9 @@ function SortButton({ active, onClick, label, icon }: { active: boolean; onClick
 function BackgroundGrid() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:32px_32px]" />
-      <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-black via-transparent to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-black via-transparent to-transparent" />
+      <div className="absolute inset-0 bg-[linear-gradient(hsl(var(--foreground)/0.05)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--foreground)/0.05)_1px,transparent_1px)] bg-[size:32px_32px]" />
+      <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[hsl(var(--background))] via-transparent to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
     </div>
   );
 }

@@ -126,8 +126,8 @@ export default function MarketingDashboardPage() {
   return (
     <div className="flex flex-col gap-6">
       <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold tracking-tight text-white">Marketing Dashboard</h1>
-        <p className="text-sm text-white/70">Plan, create, and track in one place.</p>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Marketing Dashboard</h1>
+        <p className="text-sm text-muted-foreground">Plan, create, and track in one place.</p>
       </header>
 
       {/* KPI placeholders */}
@@ -140,32 +140,32 @@ export default function MarketingDashboardPage() {
           { k: "Revenue", v: "$—", s: "Orders" },
           { k: "CPA", v: "$—", s: "Ad spend" },
         ].map((x) => (
-          <div key={x.k} className="rounded-xl border border-white/10 bg-black/40 backdrop-blur p-3">
-            <div className="text-[11px] uppercase tracking-wide text-white/60">{x.k}</div>
-            <div className="mt-1 text-xl font-semibold text-white">{x.v}</div>
-            <div className="text-[11px] text-white/50">{x.s}</div>
+          <div key={x.k} className="rounded-xl border border-border/60 bg-card/60 backdrop-blur p-3">
+            <div className="text-[11px] uppercase tracking-wide text-muted-foreground">{x.k}</div>
+            <div className="mt-1 text-xl font-semibold text-foreground">{x.v}</div>
+            <div className="text-[11px] text-muted-foreground">{x.s}</div>
           </div>
         ))}
       </section>
 
       {/* Quick create row */}
       <section className="grid grid-cols-1 xl:grid-cols-4 gap-4">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <div className="text-sm font-semibold text-white">Quick link</div>
+        <div className="rounded-xl border border-border/60 bg-card/60 p-4">
+          <div className="text-sm font-semibold text-foreground">Quick link</div>
           <form onSubmit={quickCreateLink} className="mt-3 grid gap-2">
-            <input value={qSlug} onChange={(e) => setQSlug(e.target.value)} placeholder="slug (unique)" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white text-sm" required />
-            <input value={qDest} onChange={(e) => setQDest(e.target.value)} placeholder="https://destination" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white text-sm" required />
+            <input value={qSlug} onChange={(e) => setQSlug(e.target.value)} placeholder="slug (unique)" className="rounded-md px-3 py-2 text-sm border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none" required />
+            <input value={qDest} onChange={(e) => setQDest(e.target.value)} placeholder="https://destination" className="rounded-md px-3 py-2 text-sm border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none" required />
             <div className="flex items-center justify-between gap-2">
-              <button disabled={!isMarketingAdmin || creating.link || !qSlug.trim() || !qDest.trim()} className="rounded-md bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-60">{creating.link ? 'Saving…' : 'Create'}</button>
-              <Link href="/marketing/links" className="text-xs text-white/70 hover:underline">Manage</Link>
+              <button disabled={!isMarketingAdmin || creating.link || !qSlug.trim() || !qDest.trim()} className="rounded-md px-3 py-2 text-xs font-semibold bg-foreground text-background hover:bg-foreground/90 disabled:opacity-60">{creating.link ? 'Saving…' : 'Create'}</button>
+              <Link href="/marketing/links" className="text-xs text-muted-foreground hover:underline hover:text-foreground">Manage</Link>
             </div>
           </form>
         </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <div className="text-sm font-semibold text-white">Quick campaign</div>
+        <div className="rounded-xl border border-border/60 bg-card/60 p-4">
+          <div className="text-sm font-semibold text-foreground">Quick campaign</div>
           <form onSubmit={quickCreateCampaign} className="mt-3 grid gap-2">
-            <input value={qCampaignName} onChange={(e) => setQCampaignName(e.target.value)} placeholder="Campaign name" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white text-sm" required />
-            <select value={qCampaignChannel} onChange={(e) => setQCampaignChannel(e.target.value)} className="rounded-md border-white/20 bg-black/80 px-3 py-2 text-white text-sm">
+            <input value={qCampaignName} onChange={(e) => setQCampaignName(e.target.value)} placeholder="Campaign name" className="rounded-md px-3 py-2 text-sm border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none" required />
+            <select value={qCampaignChannel} onChange={(e) => setQCampaignChannel(e.target.value)} className="rounded-md px-3 py-2 text-sm border border-border/60 bg-background/50 text-foreground focus:outline-none">
               <option value="email">Email</option>
               <option value="sms">SMS</option>
               <option value="organic">Organic</option>
@@ -173,16 +173,16 @@ export default function MarketingDashboardPage() {
               <option value="ads">Ads</option>
             </select>
             <div className="flex items-center justify-between gap-2">
-              <button disabled={!isMarketingAdmin || creating.campaign || !qCampaignName.trim()} className="rounded-md bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-60">{creating.campaign ? 'Saving…' : 'Create'}</button>
-              <Link href="/marketing/campaigns" className="text-xs text-white/70 hover:underline">Manage</Link>
+              <button disabled={!isMarketingAdmin || creating.campaign || !qCampaignName.trim()} className="rounded-md px-3 py-2 text-xs font-semibold bg-foreground text-background hover:bg-foreground/90 disabled:opacity-60">{creating.campaign ? 'Saving…' : 'Create'}</button>
+              <Link href="/marketing/campaigns" className="text-xs text-muted-foreground hover:underline hover:text-foreground">Manage</Link>
             </div>
           </form>
         </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <div className="text-sm font-semibold text-white">Quick post</div>
+        <div className="rounded-xl border border-border/60 bg-card/60 p-4">
+          <div className="text-sm font-semibold text-foreground">Quick post</div>
           <form onSubmit={quickCreatePost} className="mt-3 grid gap-2">
-            <input value={qPostTitle} onChange={(e) => setQPostTitle(e.target.value)} placeholder="Post title" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white text-sm" required />
-            <select value={qPostPlatform} onChange={(e) => setQPostPlatform(e.target.value)} className="rounded-md border-white/20 bg-black/80 px-3 py-2 text-white text-sm">
+            <input value={qPostTitle} onChange={(e) => setQPostTitle(e.target.value)} placeholder="Post title" className="rounded-md px-3 py-2 text-sm border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none" required />
+            <select value={qPostPlatform} onChange={(e) => setQPostPlatform(e.target.value)} className="rounded-md px-3 py-2 text-sm border border-border/60 bg-background/50 text-foreground focus:outline-none">
               <option value="ig">Instagram</option>
               <option value="tiktok">TikTok</option>
               <option value="yt">YouTube</option>
@@ -191,91 +191,91 @@ export default function MarketingDashboardPage() {
               <option value="blog">Blog</option>
             </select>
             <div className="flex items-center justify-between gap-2">
-              <button disabled={!isMarketingAdmin || creating.post || !qPostTitle.trim()} className="rounded-md bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-60">{creating.post ? 'Saving…' : 'Create'}</button>
-              <Link href="/marketing/content" className="text-xs text-white/70 hover:underline">Manage</Link>
+              <button disabled={!isMarketingAdmin || creating.post || !qPostTitle.trim()} className="rounded-md px-3 py-2 text-xs font-semibold bg-foreground text-background hover:bg-foreground/90 disabled:opacity-60">{creating.post ? 'Saving…' : 'Create'}</button>
+              <Link href="/marketing/content" className="text-xs text-muted-foreground hover:underline hover:text-foreground">Manage</Link>
             </div>
           </form>
         </div>
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-          <div className="text-sm font-semibold text-white">Quick banner</div>
+        <div className="rounded-xl border border-border/60 bg-card/60 p-4">
+          <div className="text-sm font-semibold text-foreground">Quick banner</div>
           <form onSubmit={quickCreateBanner} className="mt-3 grid gap-2">
-            <input value={qBannerMessage} onChange={(e) => setQBannerMessage(e.target.value)} placeholder="Promo message" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white text-sm" required />
+            <input value={qBannerMessage} onChange={(e) => setQBannerMessage(e.target.value)} placeholder="Promo message" className="rounded-md px-3 py-2 text-sm border border-border/60 bg-background/50 text-foreground placeholder:text-muted-foreground focus:outline-none" required />
             <div className="flex items-center justify-between gap-2">
-              <button disabled={!isMarketingAdmin || creating.banner || !qBannerMessage.trim()} className="rounded-md bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700 disabled:opacity-60">{creating.banner ? 'Saving…' : 'Create'}</button>
-              <Link href="/marketing/banners" className="text-xs text-white/70 hover:underline">Manage</Link>
+              <button disabled={!isMarketingAdmin || creating.banner || !qBannerMessage.trim()} className="rounded-md px-3 py-2 text-xs font-semibold bg-foreground text-background hover:bg-foreground/90 disabled:opacity-60">{creating.banner ? 'Saving…' : 'Create'}</button>
+              <Link href="/marketing/banners" className="text-xs text-muted-foreground hover:underline hover:text-foreground">Manage</Link>
             </div>
           </form>
         </div>
       </section>
 
-      {error && <p className="text-sm text-rose-300">{error}</p>}
+      {error && <p className="text-sm text-rose-800 dark:text-rose-200">{error}</p>}
 
       {/* Lower panels: Top Links, Upcoming Content, Active Campaigns */}
       <section className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        <div className="rounded-xl border border-white/10 bg-black/40 backdrop-blur p-4">
+        <div className="rounded-xl border border-border/60 bg-card/60 backdrop-blur p-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-white">Top links</h3>
-            <Link href="/marketing/links" className="text-xs text-white/70 hover:underline">View all</Link>
+            <h3 className="text-sm font-semibold text-foreground">Top links</h3>
+            <Link href="/marketing/links" className="text-xs text-muted-foreground hover:underline hover:text-foreground">View all</Link>
           </div>
           {loading ? (
-            <div className="mt-3 text-white/80">Loading…</div>
+            <div className="mt-3 text-muted-foreground">Loading…</div>
           ) : topLinks.length === 0 ? (
-            <div className="mt-3 text-white/60">No links yet.</div>
+            <div className="mt-3 text-muted-foreground">No links yet.</div>
           ) : (
-            <ul className="mt-3 space-y-2 text-sm text-white/90">
+            <ul className="mt-3 space-y-2 text-sm text-foreground/90">
               {topLinks.map((l) => (
                 <li key={l.id} className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="truncate font-medium">/{l.slug}</div>
-                    <div className="truncate text-white/60 max-w-[40ch]" title={l.destination}>{l.destination}</div>
+                    <div className="truncate text-muted-foreground max-w-[40ch]" title={l.destination}>{l.destination}</div>
                   </div>
-                  <div className="text-white/80">{l.clicks}</div>
+                  <div className="text-foreground/80">{l.clicks}</div>
                 </li>
               ))}
             </ul>
           )}
         </div>
-        <div className="rounded-xl border border-white/10 bg-black/40 backdrop-blur p-4">
+        <div className="rounded-xl border border-border/60 bg-card/60 backdrop-blur p-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-white">This week</h3>
-            <Link href="/marketing/content" className="text-xs text-white/70 hover:underline">Content</Link>
+            <h3 className="text-sm font-semibold text-foreground">This week</h3>
+            <Link href="/marketing/content" className="text-xs text-muted-foreground hover:underline hover:text-foreground">Content</Link>
           </div>
           {loading ? (
-            <div className="mt-3 text-white/80">Loading…</div>
+            <div className="mt-3 text-muted-foreground">Loading…</div>
           ) : upcomingContent.length === 0 ? (
-            <div className="mt-3 text-white/60">No scheduled content.</div>
+            <div className="mt-3 text-muted-foreground">No scheduled content.</div>
           ) : (
-            <ul className="mt-3 space-y-2 text-sm text-white/90">
+            <ul className="mt-3 space-y-2 text-sm text-foreground/90">
               {upcomingContent.map((p) => (
                 <li key={p.id} className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="truncate font-medium">{p.title}</div>
-                    <div className="text-white/60">{p.platform.toUpperCase()} • {p.publish_at ? new Date(p.publish_at).toLocaleString() : 'TBD'}</div>
+                    <div className="text-muted-foreground">{p.platform.toUpperCase()} • {p.publish_at ? new Date(p.publish_at).toLocaleString() : 'TBD'}</div>
                   </div>
-                  <div className="text-white/70">{p.status}</div>
+                  <div className="text-muted-foreground">{p.status}</div>
                 </li>
               ))}
             </ul>
           )}
         </div>
-        <div className="rounded-xl border border-white/10 bg-black/40 backdrop-blur p-4">
+        <div className="rounded-xl border border-border/60 bg-card/60 backdrop-blur p-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-white">Active campaigns</h3>
-            <Link href="/marketing/campaigns" className="text-xs text-white/70 hover:underline">Manage</Link>
+            <h3 className="text-sm font-semibold text-foreground">Active campaigns</h3>
+            <Link href="/marketing/campaigns" className="text-xs text-muted-foreground hover:underline hover:text-foreground">Manage</Link>
           </div>
           {loading ? (
-            <div className="mt-3 text-white/80">Loading…</div>
+            <div className="mt-3 text-muted-foreground">Loading…</div>
           ) : activeCampaigns.length === 0 ? (
-            <div className="mt-3 text-white/60">No active campaigns.</div>
+            <div className="mt-3 text-muted-foreground">No active campaigns.</div>
           ) : (
-            <ul className="mt-3 space-y-2 text-sm text-white/90">
+            <ul className="mt-3 space-y-2 text-sm text-foreground/90">
               {activeCampaigns.slice(0, 6).map((c) => (
                 <li key={c.id} className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <div className="truncate font-medium">{c.name}</div>
-                    <div className="text-white/60">{c.channel.toUpperCase()}</div>
+                    <div className="text-muted-foreground">{c.channel.toUpperCase()}</div>
                   </div>
-                  <div className="text-white/70">{c.status}</div>
+                  <div className="text-muted-foreground">{c.status}</div>
                 </li>
               ))}
             </ul>

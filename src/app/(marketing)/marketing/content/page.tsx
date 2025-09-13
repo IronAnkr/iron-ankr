@@ -63,13 +63,13 @@ export default function MarketingContentPage() {
   return (
     <div className="space-y-5">
       <header>
-        <h1 className="text-xl font-semibold text-white">Content</h1>
-        <p className="text-sm text-white/70">Plan and schedule content across platforms.</p>
+        <h1 className="text-xl font-semibold text-foreground">Content</h1>
+        <p className="text-sm text-muted-foreground">Plan and schedule content across platforms.</p>
       </header>
 
-      <form onSubmit={createPost} className="rounded-lg border border-white/10 bg-black/60 p-4 grid gap-3 md:grid-cols-3">
-        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Post title" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" required />
-        <select value={platform} onChange={(e) => setPlatform(e.target.value)} className="rounded-md border-white/20 bg-black/80 px-3 py-2 text-white">
+      <form onSubmit={createPost} className="rounded-lg border border-border/60 bg-card/60 p-4 grid gap-3 md:grid-cols-3">
+        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Post title" className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" required />
+        <select value={platform} onChange={(e) => setPlatform(e.target.value)} className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground">
           <option value="site">Site</option>
           <option value="blog">Blog</option>
           <option value="ig">Instagram</option>
@@ -81,19 +81,19 @@ export default function MarketingContentPage() {
           <option value="pin">Pinterest</option>
           <option value="reddit">Reddit</option>
         </select>
-        <input type="datetime-local" value={publishAt} onChange={(e) => setPublishAt(e.target.value)} className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" />
+        <input type="datetime-local" value={publishAt} onChange={(e) => setPublishAt(e.target.value)} className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" />
         <div className="md:col-span-3">
-          <button disabled={!title.trim() || saving} className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">{saving ? 'Saving…' : 'Create post'}</button>
+          <button disabled={!title.trim() || saving} className="rounded-md bg-foreground text-background hover:bg-foreground/90 px-3 py-2 text-sm font-semibold disabled:opacity-60">{saving ? 'Saving…' : 'Create post'}</button>
         </div>
       </form>
 
-      {error && <p className="text-sm text-rose-300">{error}</p>}
+      {error && <p className="text-sm text-rose-800 dark:text-rose-200">{error}</p>}
       {loading ? (
-        <div className="text-white/80">Loading…</div>
+        <div className="text-muted-foreground">Loading…</div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-white/10">
-          <table className="w-full text-sm text-white/90">
-            <thead className="bg-white/5 text-white/70">
+        <div className="overflow-hidden rounded-lg border border-border/60">
+          <table className="w-full text-sm text-foreground/90">
+            <thead className="bg-muted text-muted-foreground">
               <tr>
                 <th className="p-3 text-left">Title</th>
                 <th className="p-3">Platform</th>
@@ -102,16 +102,16 @@ export default function MarketingContentPage() {
                 <th className="p-3">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-border/60">
               {items.map((p) => (
                 <tr key={p.id}>
                   <td className="p-3 text-left">{p.title}</td>
-                  <td className="p-3 text-center uppercase text-white/80">{p.platform}</td>
-                  <td className="p-3 text-center">{p.status}</td>
+                  <td className="p-3 text-center uppercase text-muted-foreground">{p.platform}</td>
+                  <td className="p-3 text-center text-muted-foreground">{p.status}</td>
                   <td className="p-3 text-center">{p.publish_at ? new Date(p.publish_at).toLocaleString() : '—'}</td>
                   <td className="p-3 text-center">
                     {isMarketingAdmin && (
-                      <button onClick={() => remove(p.id)} className="text-rose-300 hover:underline">Delete</button>
+                      <button onClick={() => remove(p.id)} className="text-destructive hover:underline">Delete</button>
                     )}
                   </td>
                 </tr>

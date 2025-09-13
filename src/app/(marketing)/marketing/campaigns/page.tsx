@@ -65,32 +65,32 @@ export default function MarketingCampaignsPage() {
   return (
     <div className="space-y-5">
       <header>
-        <h1 className="text-xl font-semibold text-white">Campaigns</h1>
-        <p className="text-sm text-white/70">Plan and track campaigns by channel.</p>
+        <h1 className="text-xl font-semibold text-foreground">Campaigns</h1>
+        <p className="text-sm text-muted-foreground">Plan and track campaigns by channel.</p>
       </header>
 
-      <form onSubmit={createCampaign} className="rounded-lg border border-white/10 bg-black/60 p-4 grid gap-3 sm:grid-cols-3">
-        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Campaign name" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" required />
-        <select value={channel} onChange={(e) => setChannel(e.target.value)} className="rounded-md border-white/20 bg-black/80 px-3 py-2 text-white">
+      <form onSubmit={createCampaign} className="rounded-lg border border-border/60 bg-card/60 p-4 grid gap-3 sm:grid-cols-3">
+        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Campaign name" className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" required />
+        <select value={channel} onChange={(e) => setChannel(e.target.value)} className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground">
           <option value="email">Email</option>
           <option value="sms">SMS</option>
           <option value="organic">Organic</option>
           <option value="influencer">Influencer</option>
           <option value="ads">Ads</option>
         </select>
-        <input value={budget} onChange={(e) => setBudget(e.target.value)} placeholder="Budget (e.g. 250.00)" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" />
+        <input value={budget} onChange={(e) => setBudget(e.target.value)} placeholder="Budget (e.g. 250.00)" className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" />
         <div className="sm:col-span-3">
-          <button disabled={!name.trim() || saving} className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">{saving ? 'Saving…' : 'Create campaign'}</button>
+          <button disabled={!name.trim() || saving} className="rounded-md bg-foreground text-background hover:bg-foreground/90 px-3 py-2 text-sm font-semibold disabled:opacity-60">{saving ? 'Saving…' : 'Create campaign'}</button>
         </div>
       </form>
 
-      {error && <p className="text-sm text-rose-300">{error}</p>}
+      {error && <p className="text-sm text-rose-800 dark:text-rose-200">{error}</p>}
       {loading ? (
-        <div className="text-white/80">Loading…</div>
+        <div className="text-muted-foreground">Loading…</div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-white/10">
-          <table className="w-full text-sm text-white/90">
-            <thead className="bg-white/5 text-white/70">
+        <div className="overflow-hidden rounded-lg border border-border/60">
+          <table className="w-full text-sm text-foreground/90">
+            <thead className="bg-muted text-muted-foreground">
               <tr>
                 <th className="p-3 text-left">Name</th>
                 <th className="p-3">Channel</th>
@@ -99,16 +99,16 @@ export default function MarketingCampaignsPage() {
                 <th className="p-3">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-border/60">
               {items.map((c) => (
                 <tr key={c.id}>
                   <td className="p-3 text-left">{c.name}</td>
-                  <td className="p-3 text-center uppercase text-white/80">{c.channel}</td>
+                  <td className="p-3 text-center uppercase text-muted-foreground">{c.channel}</td>
                   <td className="p-3 text-center">{c.budget_cents ? `$${(c.budget_cents/100).toFixed(2)}` : '—'}</td>
-                  <td className="p-3 text-center">{c.status}</td>
+                  <td className="p-3 text-center text-muted-foreground">{c.status}</td>
                   <td className="p-3 text-center">
                     {isMarketingAdmin && (
-                      <button onClick={() => remove(c.id)} className="text-rose-300 hover:underline">Delete</button>
+                      <button onClick={() => remove(c.id)} className="text-destructive hover:underline">Delete</button>
                     )}
                   </td>
                 </tr>

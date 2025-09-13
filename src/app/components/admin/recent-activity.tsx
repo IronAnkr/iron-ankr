@@ -56,17 +56,17 @@ export function RecentActivity() {
   }, [supabase]);
 
   return (
-    <Card className="overflow-hidden border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent">
+    <Card className="overflow-hidden border-border/60 bg-gradient-to-b from-[hsl(var(--foreground)/0.06)] to-transparent">
       <CardHeader>
-        <CardTitle className="text-white">Recent Activity</CardTitle>
+        <CardTitle className="text-foreground">Recent Activity</CardTitle>
         <CardDescription>Latest orders and amounts.</CardDescription>
       </CardHeader>
       <CardContent>
         {error && (
-          <div className="mb-3 rounded-md border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">{error}</div>
+          <div className="mb-3 rounded-md border p-3 text-sm border-rose-600/30 bg-rose-500/10 text-rose-800 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-100">{error}</div>
         )}
         <div className="relative">
-          <div className="absolute left-[18px] top-0 bottom-0 w-px bg-white/10" />
+          <div className="absolute left-[18px] top-0 bottom-0 w-px bg-border" />
           <ul className="space-y-6">
             {[...orders.map(o => ({
               kind: 'order' as const,
@@ -75,10 +75,10 @@ export function RecentActivity() {
               node: (
                 <>
                   <div className="grid gap-0.5">
-                    <p className="text-sm font-medium leading-none text-white">Order {o.id.slice(0, 8)}…</p>
+                    <p className="text-sm font-medium leading-none text-foreground">Order {o.id.slice(0, 8)}…</p>
                     <p className="text-xs text-muted-foreground">{new Date(o.created_at).toLocaleString()} • {o.payment_status}</p>
                   </div>
-                  <div className="ml-auto text-sm font-medium text-white/90">{formatCents(o.total_in_cents, o.currency)}</div>
+                  <div className="ml-auto text-sm font-medium text-foreground/90">{formatCents(o.total_in_cents, o.currency)}</div>
                 </>
               ),
               badge: o.id.slice(0, 2),
@@ -90,7 +90,7 @@ export function RecentActivity() {
               node: (
                 <>
                   <div className="grid gap-0.5">
-                    <p className="text-sm font-medium leading-none text-white">New customer</p>
+                    <p className="text-sm font-medium leading-none text-foreground">New customer</p>
                     <p className="text-xs text-muted-foreground">{new Date(c.created_at).toLocaleString()} • {c.email}</p>
                   </div>
                 </>
@@ -101,7 +101,7 @@ export function RecentActivity() {
               .slice(0, 8)
               .map((it) => (
                 <li key={`${it.kind}-${it.id}`} className="relative flex items-center gap-4">
-                  <div className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/10 text-[10px] font-medium text-white">
+                  <div className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-foreground/10 text-[10px] font-medium text-foreground">
                     {it.badge || '•'}
                   </div>
                   {it.node}

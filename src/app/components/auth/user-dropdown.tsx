@@ -156,15 +156,17 @@ export function UserDropdown() {
   }
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="relative system-theme">
       <button
         aria-haspopup="menu"
         aria-expanded={open}
         aria-busy={loading}
         disabled={loading}
         onClick={() => !loading && setOpen((v) => !v)}
-        className={`relative inline-flex items-center justify-center h-9 w-9 rounded-full border bg-white/5 text-white/90 hover:border-white/30 ${
-          loading ? "border-white/10 cursor-not-allowed opacity-70" : "border-white/15"
+        className={`relative inline-flex items-center justify-center h-9 w-9 rounded-full border px-0 ${
+          loading
+            ? "cursor-not-allowed opacity-70 border-border/40 bg-background/40 text-foreground/70"
+            : "border-border/60 bg-background/50 text-foreground/90 hover:border-border"
         }`}
         title={email ?? "Sign in"}
       >
@@ -172,7 +174,7 @@ export function UserDropdown() {
           <User2 className="h-4 w-4" />
           {loading && (
             <span
-              className="pointer-events-none absolute -inset-2 rounded-full border-2 border-white/30 border-t-transparent animate-spin"
+              className="pointer-events-none absolute -inset-2 rounded-full border-2 border-foreground/30 border-t-transparent animate-spin"
               aria-hidden
             />
           )}
@@ -181,37 +183,37 @@ export function UserDropdown() {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 mt-2 w-56 overflow-hidden rounded-lg border border-white/10 bg-black/70 backdrop-blur-md shadow-xl z-[60]"
+          className="absolute right-0 mt-2 w-56 overflow-hidden rounded-lg border border-border/60 bg-card/80 backdrop-blur-md shadow-xl z-[60] text-foreground"
         >
-          <div className="py-1 text-sm text-white/90">
+          <div className="py-1 text-sm">
             {email ? (
               <>
                 {isOwner && (
                   <>
-                    <Link href="/owner" className="block px-3 py-2 hover:bg-white/10">Owner Dashboard</Link>
-                    <Link href="/admin" className="block px-3 py-2 hover:bg-white/10">Admin Dashboard</Link>
-                    <Link href="/marketing" className="block px-3 py-2 hover:bg-white/10">Marketing Dashboard</Link>
+                    <Link href="/owner" className="block px-3 py-2 hover:bg-background/50">Owner Dashboard</Link>
+                    <Link href="/admin" className="block px-3 py-2 hover:bg-background/50">Admin Dashboard</Link>
+                    <Link href="/marketing" className="block px-3 py-2 hover:bg-background/50">Marketing Dashboard</Link>
                   </>
                 )}
                 {!isOwner && (
                   <>
                     {showAdminDashboard && (
-                      <Link href="/admin" className="block px-3 py-2 hover:bg-white/10">Admin Dashboard</Link>
+                      <Link href="/admin" className="block px-3 py-2 hover:bg-background/50">Admin Dashboard</Link>
                     )}
                     {showMarketingDashboard && (
-                      <Link href="/marketing" className="block px-3 py-2 hover:bg-white/10">Marketing Dashboard</Link>
+                      <Link href="/marketing" className="block px-3 py-2 hover:bg-background/50">Marketing Dashboard</Link>
                     )}
                   </>
                 )}
-                <Link href="/account" className="block px-3 py-2 hover:bg-white/10">Account</Link>
-                <Link href="/account/orders" className="block px-3 py-2 hover:bg-white/10">My Orders</Link>
-                <Link href="/account/settings" className="block px-3 py-2 hover:bg-white/10">Settings</Link>
-                <button onClick={signOut} className="block w-full text-left px-3 py-2 hover:bg-white/10">Sign out</button>
+                <Link href="/account" className="block px-3 py-2 hover:bg-background/50">Account</Link>
+                <Link href="/account/orders" className="block px-3 py-2 hover:bg-background/50">My Orders</Link>
+                <Link href="/account/settings" className="block px-3 py-2 hover:bg-background/50">Settings</Link>
+                <button onClick={signOut} className="block w-full text-left px-3 py-2 hover:bg-background/50">Sign out</button>
               </>
             ) : (
               <>
-                <Link href="/login" className="block px-3 py-2 hover:bg-white/10">Sign in</Link>
-                <Link href="/register" className="block px-3 py-2 hover:bg-white/10">Register</Link>
+                <Link href="/login" className="block px-3 py-2 hover:bg-background/50">Sign in</Link>
+                <Link href="/register" className="block px-3 py-2 hover:bg-background/50">Register</Link>
               </>
             )}
           </div>

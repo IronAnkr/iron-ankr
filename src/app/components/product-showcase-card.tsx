@@ -115,10 +115,14 @@ export default function ProductShowcaseCard({ product, variants, className, badg
   }
 
   return (
-    <article className={cn("group text-white", className)}>
-      <div className={cn("relative rounded-2xl p-[1px]", "bg-gradient-to-br from-white/15 via-white/5 to-transparent group-hover:from-rose-400/30 group-hover:via-violet-400/20 group-hover:to-emerald-400/20 transition-colors")}
+    <article className={cn("group text-foreground", className)}>
+      <div className={cn(
+        "relative rounded-2xl p-[1px]",
+        "bg-gradient-to-br from-foreground/15 via-foreground/5 to-transparent",
+        "group-hover:from-rose-400/30 group-hover:via-violet-400/20 group-hover:to-emerald-400/20 transition-colors"
+      )}
       >
-        <div className="relative overflow-hidden rounded-[1rem] border border-white/10 bg-zinc-950/80 backdrop-blur-sm">
+        <div className="relative overflow-hidden rounded-[1rem] border border-border/60 bg-card/80 backdrop-blur-sm">
           <div className="relative aspect-[4/5] w-full">
             {/* High-contrast, aesthetic background for transparent product images */}
             <div
@@ -154,12 +158,12 @@ export default function ProductShowcaseCard({ product, variants, className, badg
             {(badge || rating !== undefined) && (
               <div className="absolute left-3 top-3 flex items-center gap-2">
                 {badge && (
-                  <span className="rounded-full bg-white/15 px-2.5 py-1 text-xs font-semibold backdrop-blur">
+                  <span className="rounded-full bg-foreground/15 px-2.5 py-1 text-xs font-semibold backdrop-blur">
                     {badge}
                   </span>
                 )}
                 {rating !== undefined && (
-                  <span className="flex items-center gap-1 rounded-full bg-black/40 px-2 py-1 text-xs backdrop-blur">
+                  <span className="flex items-center gap-1 rounded-full bg-background/60 px-2 py-1 text-xs backdrop-blur">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <span
                         key={i}
@@ -194,15 +198,15 @@ export default function ProductShowcaseCard({ product, variants, className, badg
                 <h3 className="text-base font-semibold leading-tight line-clamp-2">
                   {product.name}
                 </h3>
-                <p className="mt-1 text-sm text-zinc-300 line-clamp-2">
+                <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
                   {product.description}
                 </p>
               </div>
               <div className="shrink-0 text-right">
-                <div className="rounded-full bg-white/90 px-3 py-1 text-sm font-semibold text-black inline-block">
+                <div className="rounded-full bg-foreground px-3 py-1 text-sm font-semibold text-background inline-block">
                   {matchedVariant ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(effectivePrice / 100) : price.label}
                 </div>
-                <div className={cn("mt-1 text-xs", (matchedVariant?.stock ?? 1) > 0 ? "text-emerald-300" : "text-rose-300")}>{(matchedVariant?.stock ?? 1) > 0 ? "In stock" : "Out of stock"}</div>
+                <div className={cn("mt-1 text-xs", (matchedVariant?.stock ?? 1) > 0 ? "text-emerald-600 dark:text-emerald-300" : "text-rose-600 dark:text-rose-300")}>{(matchedVariant?.stock ?? 1) > 0 ? "In stock" : "Out of stock"}</div>
               </div>
             </div>
             {/* Variant selectors */}
@@ -210,14 +214,14 @@ export default function ProductShowcaseCard({ product, variants, className, badg
               <div className="mt-3 space-y-2">
                 {colors.length > 0 && (
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-zinc-400">Color</span>
+                    <span className="text-xs text-muted-foreground">Color</span>
                     <div className="flex items-center gap-2">
                       {colors.map((c) => (
                         <button
                           key={c}
                           title={c}
                           onClick={() => setSelectedColor(c)}
-                          className={cn("h-5 w-5 rounded-full ring-2", selectedColor === c ? "ring-white" : "ring-white/50")}
+                          className={cn("h-5 w-5 rounded-full ring-2", selectedColor === c ? "ring-foreground" : "ring-foreground/50")}
                           style={{ backgroundColor: colorMap[c] ?? c }}
                         />
                       ))}
@@ -226,13 +230,13 @@ export default function ProductShowcaseCard({ product, variants, className, badg
                 )}
                 {sizes.length > 0 && (
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-zinc-400">Size</span>
+                    <span className="text-xs text-muted-foreground">Size</span>
                     <div className="flex items-center gap-1">
                       {sizes.map((s) => (
                         <button
                           key={s}
                           onClick={() => setSelectedSize(s)}
-                          className={cn("rounded-md border px-2 py-0.5 text-[11px]", selectedSize === s ? "border-white bg-white/10" : "border-white/20 bg-black/40 hover:border-white/40")}
+                          className={cn("rounded-md border px-2 py-0.5 text-[11px]", selectedSize === s ? "border-foreground bg-foreground/10" : "border-border/60 bg-background/40 hover:border-border")}
                         >
                           {s}
                         </button>
@@ -241,12 +245,12 @@ export default function ProductShowcaseCard({ product, variants, className, badg
                   </div>
                 )}
                 {(!colors.length && !sizes.length && variants && variants.length > 0) && (
-                  <label className="flex items-center gap-2 text-xs text-zinc-300">
+                  <label className="flex items-center gap-2 text-xs text-muted-foreground">
                     Variant
                     <select
                       value={selectedVariantId ?? ""}
                       onChange={(e) => setSelectedVariantId(e.target.value || null)}
-                      className="rounded-md border border-white/20 bg-black/60 px-2 py-1 text-xs text-white"
+                      className="rounded-md border border-border/60 bg-background/60 px-2 py-1 text-xs text-foreground"
                     >
                       {variants.map((v) => (
                         <option key={v.id} value={v.id}>{v.title ?? v.sku ?? "Variant"}</option>
@@ -262,7 +266,7 @@ export default function ProductShowcaseCard({ product, variants, className, badg
               <div className="flex items-center gap-2">
                 <button
                   aria-label="Decrease quantity"
-                  className="rounded-md border border-white/15 bg-white/5 px-2 py-1 text-white/90 hover:border-white/30"
+                  className="rounded-md border px-2 py-1 hover:border-border border-border/60 bg-background/50 text-foreground/90"
                   onClick={() => setQty((n) => Math.max(1, n - 1))}
                   disabled={loading}
                 >
@@ -273,11 +277,11 @@ export default function ProductShowcaseCard({ product, variants, className, badg
                   min={1}
                   value={qty}
                   onChange={(e) => setQty(Math.max(1, Number(e.target.value) || 1))}
-                  className="w-12 rounded-md border border-white/15 bg-black/50 px-2 py-1 text-center text-white/90 text-sm"
+                  className="w-12 rounded-md border border-border/60 bg-background/60 px-2 py-1 text-center text-foreground/90 text-sm"
                 />
                 <button
                   aria-label="Increase quantity"
-                  className="rounded-md border border-white/15 bg-white/5 px-2 py-1 text-white/90 hover:border-white/30"
+                  className="rounded-md border px-2 py-1 hover:border-border border-border/60 bg-background/50 text-foreground/90"
                   onClick={() => setQty((n) => n + 1)}
                   disabled={loading}
                 >
@@ -289,8 +293,10 @@ export default function ProductShowcaseCard({ product, variants, className, badg
                 type="button"
                 onClick={onAddToCart}
                 disabled={loading || !inStock}
-                className={cn("inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-60",
-                  addedPulse ? "bg-emerald-500 text-black" : "bg-white text-black hover:bg-zinc-200")}
+                className={cn(
+                  "inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-60",
+                  addedPulse ? "bg-emerald-500 text-black" : "bg-foreground text-background hover:bg-foreground/90"
+                )}
               >
                 {addedPulse ? <Check className="h-4 w-4" /> : <ShoppingCart className="h-4 w-4" />}
                 {addedPulse ? 'Added' : (loading ? 'Adding…' : 'Add to cart')}

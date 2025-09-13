@@ -134,21 +134,21 @@ export function OverviewChart() {
   const ordY = hoverIdx != null ? height - (orders[hoverIdx] / maxOrd) * height : null;
 
   return (
-    <div className="rounded-xl border border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent p-4 md:p-6">
+    <div className="rounded-xl border border-border/60 bg-gradient-to-b from-[hsl(var(--foreground)/0.06)] to-transparent p-4 md:p-6">
       <div className="mb-4 flex items-end justify-between">
         <div>
-          <h3 className="text-sm text-white/80">Revenue & Orders (30d)</h3>
+          <h3 className="text-sm text-foreground/80">Revenue & Orders (30d)</h3>
           {!loading && (
-            <div className="text-xs text-white/60">{labels[0]} → {labels[labels.length-1]}</div>
+            <div className="text-xs text-muted-foreground">{labels[0]} → {labels[labels.length-1]}</div>
           )}
         </div>
-        <div className="flex items-center gap-2 text-xs text-white/80">
-          <button onClick={() => setShowRevenue(v => !v)} className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 ${showRevenue ? 'bg-emerald-400/15 text-emerald-300' : 'bg-white/10 text-white/60'}`}>● Revenue</button>
-          <button onClick={() => setShowOrders(v => !v)} className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 ${showOrders ? 'bg-sky-400/15 text-sky-300' : 'bg-white/10 text-white/60'}`}>● Orders</button>
+        <div className="flex items-center gap-2 text-xs text-foreground/80">
+          <button onClick={() => setShowRevenue(v => !v)} className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 ${showRevenue ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300' : 'bg-background/50 text-muted-foreground'}`}>● Revenue</button>
+          <button onClick={() => setShowOrders(v => !v)} className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 ${showOrders ? 'bg-sky-500/10 text-sky-700 dark:text-sky-300' : 'bg-background/50 text-muted-foreground'}`}>● Orders</button>
         </div>
       </div>
-      <div ref={containerRef} className="relative overflow-hidden rounded-lg bg-white/5 p-3">
-        {error && <div className="text-rose-300 text-sm p-2">{error}</div>}
+      <div ref={containerRef} className="relative overflow-hidden rounded-lg bg-background/50 p-3">
+        {error && <div className="text-rose-800 dark:text-rose-200 text-sm p-2">{error}</div>}
         <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" className="h-40 w-full">
           <defs>
             <linearGradient id="areaRev" x1="0" x2="0" y1="0" y2="1">
@@ -176,14 +176,14 @@ export function OverviewChart() {
           {/* Hover line and circles */}
           {hoverXView != null && (
             <g>
-              <line x1={hoverXView} x2={hoverXView} y1={0} y2={height} stroke="rgba(255,255,255,0.4)" strokeDasharray="4 4" />
-              {showRevenue && revY != null && <circle cx={hoverXView} cy={revY} r="3" fill="#10B981" stroke="#fff" strokeWidth="1" />}
-              {showOrders && ordY != null && <circle cx={hoverXView} cy={ordY} r="3" fill="#38BDF8" stroke="#fff" strokeWidth="1" />}
+              <line x1={hoverXView} x2={hoverXView} y1={0} y2={height} stroke="rgba(127,127,127,0.5)" strokeDasharray="4 4" />
+              {showRevenue && revY != null && <circle cx={hoverXView} cy={revY} r="3" fill="#10B981" stroke="#ccc" strokeWidth="1" />}
+              {showOrders && ordY != null && <circle cx={hoverXView} cy={ordY} r="3" fill="#38BDF8" stroke="#ccc" strokeWidth="1" />}
             </g>
           )}
         </svg>
         {/* Grid overlay */}
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,.06)_1px,transparent_1px)] bg-[size:40px_40px] opacity-40" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--foreground)/.06)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/.06)_1px,transparent_1px)] bg-[size:40px_40px] opacity-40" />
         {/* Hover/interaction layer */}
         <div
           className="absolute inset-0"
@@ -193,10 +193,10 @@ export function OverviewChart() {
         {/* Tooltip */}
         {hoverIdx != null && (
           <div
-            className="pointer-events-none absolute -translate-x-1/2 rounded-md border border-white/15 bg-black/80 px-2 py-1 text-xs text-white"
+            className="pointer-events-none absolute bg-white dark:bg-black -translate-x-1/2 rounded-md border border-border/60 bg-background/80 px-2 py-1 text-xs text-foreground"
             style={{ left: 12 + (labels.length > 1 ? (innerWidthPx * (hoverIdx / (labels.length - 1))) : 0), bottom: 8 }}
           >
-            <div className="text-white/70">{labels[hoverIdx]}</div>
+            <div className="text-muted-foreground">{labels[hoverIdx]}</div>
             {showRevenue && <div className="text-emerald-300">Revenue: {formatMoney(revenue[hoverIdx] || 0)}</div>}
             {showOrders && <div className="text-sky-300">Orders: {orders[hoverIdx] || 0}</div>}
           </div>

@@ -115,40 +115,40 @@ export default function MarketingBannersPage() {
   return (
     <div className="space-y-5">
       <header>
-        <h1 className="text-xl font-semibold text-white">Banners</h1>
-        <p className="text-sm text-white/70">Manage site-wide promo banners.</p>
+        <h1 className="text-xl font-semibold text-foreground">Banners</h1>
+        <p className="text-sm text-muted-foreground">Manage site-wide promo banners.</p>
       </header>
 
-      <form onSubmit={createBanner} className="rounded-lg border border-white/10 bg-black/60 p-4 grid gap-3">
-        <input value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Banner message" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" required />
-        <input value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://link (optional)" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" />
+      <form onSubmit={createBanner} className="rounded-lg border border-border/60 bg-card/60 p-4 grid gap-3">
+        <input value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Banner message" className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" required />
+        <input value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://link (optional)" className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" />
         <div className="flex gap-3">
-          <select value={variant} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setVariant(e.target.value as "info"|"success"|"warning"|"error")} className="rounded-md border-white/20 bg-black/80 px-3 py-2 text-white">
+          <select value={variant} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setVariant(e.target.value as "info"|"success"|"warning"|"error")} className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground">
             <option value="info">Info</option>
             <option value="success">Success</option>
             <option value="warning">Warning</option>
             <option value="error">Error</option>
           </select>
-          <input value={priority} onChange={(e) => setPriority(e.target.value)} placeholder="Priority (0)" className="rounded-md border-white/20 bg-white/5 px-3 py-2 text-white" />
+          <input value={priority} onChange={(e) => setPriority(e.target.value)} placeholder="Priority (0)" className="rounded-md border border-border/60 bg-background/50 px-3 py-2 text-foreground placeholder:text-muted-foreground" />
         </div>
         {/* Live preview */}
         {message.trim() && (
-          <div className="rounded-md overflow-hidden border border-white/10">
+          <div className="rounded-md overflow-hidden border border-border/60">
             <BannerPreview variant={variant} message={message} link={link} />
           </div>
         )}
         <div>
-          <button disabled={!message.trim() || saving} className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60">{saving ? 'Saving…' : 'Create banner'}</button>
+          <button disabled={!message.trim() || saving} className="rounded-md bg-foreground text-background hover:bg-foreground/90 px-3 py-2 text-sm font-semibold disabled:opacity-60">{saving ? 'Saving…' : 'Create banner'}</button>
         </div>
       </form>
 
-      {error && <p className="text-sm text-rose-300">{error}</p>}
+      {error && <p className="text-sm text-rose-800 dark:text-rose-200">{error}</p>}
       {loading ? (
-        <div className="text-white/80">Loading…</div>
+        <div className="text-muted-foreground">Loading…</div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-white/10">
-          <table className="w-full text-sm text-white/90">
-            <thead className="bg-white/5 text-white/70">
+        <div className="overflow-hidden rounded-lg border border-border/60">
+          <table className="w-full text-sm text-foreground/90">
+            <thead className="bg-muted text-muted-foreground">
               <tr>
                 <th className="p-3 text-left">Message</th>
                 <th className="p-3">Variant</th>
@@ -157,11 +157,11 @@ export default function MarketingBannersPage() {
                 <th className="p-3">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-border/60">
               {items.map((b) => (
                 <tr key={b.id}>
                   <td className="p-3 text-left">{b.message}</td>
-                  <td className="p-3 text-center uppercase text-white/80">{b.variant}</td>
+                  <td className="p-3 text-center uppercase text-muted-foreground">{b.variant}</td>
                   <td className="p-3 text-center">
                     {isMarketingAdmin ? (
                       editingId === b.id ? (
@@ -172,23 +172,23 @@ export default function MarketingBannersPage() {
                             onChange={(e) => setEditingPriority(e.target.value.replace(/[^0-9-]/g, ''))}
                             onKeyDown={(e) => { if (e.key === 'Enter') commitEdit(); if (e.key === 'Escape') cancelEdit(); }}
                             onBlur={() => { setTimeout(() => { if (!suppressBlurRef.current) commitEdit(); suppressBlurRef.current = false; }, 0); }}
-                            className="w-20 rounded-md border border-white/20 bg-white/5 px-2 py-1 text-white text-sm"
+                            className="w-20 rounded-md border border-border/60 bg-background/50 px-2 py-1 text-foreground text-sm"
                             inputMode="numeric"
                           />
                           <button
                             onMouseDown={() => { suppressBlurRef.current = true; }}
                             onClick={commitEdit}
                             disabled={rowSaving}
-                            className="rounded-md bg-blue-600 px-2 py-1 text-xs text-white disabled:opacity-50"
+                            className="rounded-md bg-foreground text-background px-2 py-1 text-xs disabled:opacity-50"
                           >Save</button>
                           <button
                             onMouseDown={() => { suppressBlurRef.current = true; }}
                             onClick={cancelEdit}
-                            className="rounded-md border border-white/20 bg-white/5 px-2 py-1 text-xs text-white"
+                            className="rounded-md border border-border/60 bg-background/50 px-2 py-1 text-xs text-foreground"
                           >Cancel</button>
                         </div>
                       ) : (
-                        <button onClick={() => beginEdit(b)} className="hover:underline text-white/90">
+                        <button onClick={() => beginEdit(b)} className="hover:underline text-foreground/90">
                           {b.priority}
                         </button>
                       )
@@ -200,8 +200,8 @@ export default function MarketingBannersPage() {
                   <td className="p-3 text-center flex items-center justify-center gap-3">
                     {isMarketingAdmin && (
                       <>
-                        <button onClick={() => toggleActive(b.id, b.active)} className="text-blue-300 hover:underline">{b.active ? 'Disable' : 'Enable'}</button>
-                        <button onClick={() => remove(b.id)} className="text-rose-300 hover:underline">Delete</button>
+                        <button onClick={() => toggleActive(b.id, b.active)} className="text-muted-foreground hover:text-foreground hover:underline">{b.active ? 'Disable' : 'Enable'}</button>
+                        <button onClick={() => remove(b.id)} className="text-destructive hover:underline">Delete</button>
                       </>
                     )}
                   </td>

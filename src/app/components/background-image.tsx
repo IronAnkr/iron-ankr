@@ -41,7 +41,7 @@ export default function BackgroundImage({src}:{src:string}) {
     <Image
       src={src}
       alt="hero background"
-      className="object-cover blur-sm -z-10"
+      className="object-cover -z-10"
       style={{
         transform: `translate3d(0, ${translateY}px, 0)`,
         willChange: "transform",
