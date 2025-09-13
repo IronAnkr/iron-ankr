@@ -8,15 +8,32 @@ import { PublicBanner } from "./public-banner";
 import { UserDropdown } from "./auth/user-dropdown";
 import { MobileDrawer } from "./MobileDrawer";
 import Image from "next/image";
+import { useEffect } from "react";
+import { SearchModal } from "./search-modal";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 30, mass: 0.2 });
   const bgOpacity = useTransform(progress, [0, 1], [0.3, 0.75]);
 
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const meta = e.metaKey || e.ctrlKey;
+      if (meta && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+      if (e.key === 'Escape') setSearchOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   return (
-    <nav className="fixed inset-x-4 top-4 z-50 h-16 bg-black/25 rounded-md overflow-visible rounded-top-lg">
+    <>
+    <nav className="fixed inset-x-4 top-4 z-50 h-16 bg-black/25 rounded-md overflow-visible">
       <motion.div
         className="absolute inset-x-0 top-0 h-0.5 origin-left bg-gradient-to-r from-rose-400 z-10 via-fuchsia-400 to-sky-400"
         style={{ scaleX: progress }}
@@ -51,6 +68,7 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <button
             aria-label="Search"
+            onClick={() => setSearchOpen(true)}
             className="group hidden items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-zinc-200 backdrop-blur hover:border-white/30 md:flex"
           >
             <Search className="h-4 w-4 text-zinc-300" />
@@ -81,6 +99,8 @@ export default function Navbar() {
         <PublicBanner />
       </div>
     </nav>
+    <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
+    </>
   );
 }
 

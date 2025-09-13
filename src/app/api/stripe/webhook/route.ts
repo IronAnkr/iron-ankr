@@ -44,13 +44,48 @@ export async function POST(req: Request) {
           .select("id,product_id,variant_id,title,sku,quantity,unit_price_in_cents,total_price_in_cents,metadata")
           .eq("cart_id", cartId);
 
+        // Ensure we have a customer row
+        let customerId = cart.customer_id as string | null;
+        try {
+          const cd = session.customer_details;
+          const email = (cd?.email || (session.customer_email as string | null)) ?? null;
+          if (!customerId && email) {
+            const { data: existing } = await supa
+              .from("customers")
+              .select("id")
+              .eq("email", email)
+              .maybeSingle();
+            if (existing?.id) {
+              customerId = existing.id as string;
+            } else {
+              const name = cd?.name || "";
+              const [first_name, ...rest] = name.split(" ");
+              const last_name = rest.join(" ") || null;
+              const newId = crypto.randomUUID();
+              const { error: custErr } = await supa.from("customers").insert({
+                id: newId,
+                email,
+                first_name: first_name || null,
+                last_name,
+                phone: cd?.phone || null,
+                metadata: { stripe_customer_id: session.customer || null },
+              });
+              if (!custErr) customerId = newId;
+            }
+            // link cart if it was anonymous
+            if (!cart.customer_id && customerId) {
+              await supa.from("carts").update({ customer_id: customerId }).eq("id", cart.id);
+            }
+          }
+        } catch { /* ignore customer creation errors */ }
+
         const orderId = crypto.randomUUID();
         const now = new Date().toISOString();
         // Create order
         const { error: orderErr } = await supa.from("orders").insert({
           id: orderId,
           cart_id: cart.id,
-          customer_id: cart.customer_id,
+          customer_id: customerId,
           subtotal_in_cents: cart.subtotal_in_cents,
           discount_in_cents: cart.discount_in_cents,
           tax_in_cents: cart.tax_in_cents,

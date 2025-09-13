@@ -17,6 +17,9 @@ const ADMIN_SETTING_KEYS = [
   'shipping.domestic_flat_cents',
   'shipping.international_flat_cents',
   'theme.accent',
+  'legal.privacy',
+  'legal.terms',
+  'legal.cookies',
 ] as const;
 
 export default function AdminSettingsPage() {
@@ -94,6 +97,9 @@ export default function AdminSettingsPage() {
   const [domestic, setDomestic] = useState('5.00');
   const [international, setInternational] = useState('15.00');
   const [accent, setAccent] = useState('#66E3FF');
+  const [privacy, setPrivacy] = useState('');
+  const [terms, setTerms] = useState('');
+  const [cookiesTxt, setCookiesTxt] = useState('');
 
   useEffect(() => {
     setStoreName(settings['site.store_name']?.value_str ?? 'Iron ankr');
@@ -101,6 +107,9 @@ export default function AdminSettingsPage() {
     setDomestic(String(extractCents(settings['shipping.domestic_flat_cents'], 500) / 100));
     setInternational(String(extractCents(settings['shipping.international_flat_cents'], 1500) / 100));
     setAccent(settings['theme.accent']?.value_str ?? '#66E3FF');
+    setPrivacy(settings['legal.privacy']?.value_str ?? '');
+    setTerms(settings['legal.terms']?.value_str ?? '');
+    setCookiesTxt(settings['legal.cookies']?.value_str ?? '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows.length]);
 
@@ -221,6 +230,32 @@ export default function AdminSettingsPage() {
                 <div className="text-sm text-muted-foreground">Clears orders, products, and activity.</div>
               </div>
               <button className="rounded-md bg-red-600 text-white px-3 py-2 text-sm hover:bg-red-700 transition">Reset</button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="overflow-hidden border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Legal Pages</CardTitle>
+            <CardDescription>Edit the content shown on Privacy, Terms, and Cookies pages. Saved publicly.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="md:col-span-1">
+                <label className="block text-sm text-white/90 mb-1">Privacy Policy</label>
+                <textarea value={privacy} onChange={(e)=>setPrivacy(e.target.value)} rows={10} className="w-full rounded-md border border-white/10 bg-white/5 text-white placeholder-white/40 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20" placeholder="Enter privacy policy text" />
+                <button type="button" onClick={()=> saveString('legal.privacy','Privacy Policy', privacy, { scope:'legal', group_key:'policy', is_public: true })} className="mt-2 rounded-md bg-white/10 text-white px-3 py-2 text-sm hover:bg-white/15 transition disabled:opacity-60" disabled={saving['legal.privacy']}>{saving['legal.privacy'] ? 'Saving…' : 'Save Privacy'}</button>
+              </div>
+              <div className="md:col-span-1">
+                <label className="block text-sm text-white/90 mb-1">Terms of Service</label>
+                <textarea value={terms} onChange={(e)=>setTerms(e.target.value)} rows={10} className="w-full rounded-md border border-white/10 bg-white/5 text-white placeholder-white/40 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20" placeholder="Enter terms of service text" />
+                <button type="button" onClick={()=> saveString('legal.terms','Terms of Service', terms, { scope:'legal', group_key:'policy', is_public: true })} className="mt-2 rounded-md bg-white/10 text-white px-3 py-2 text-sm hover:bg-white/15 transition disabled:opacity-60" disabled={saving['legal.terms']}>{saving['legal.terms'] ? 'Saving…' : 'Save Terms'}</button>
+              </div>
+              <div className="md:col-span-1">
+                <label className="block text-sm text-white/90 mb-1">Cookie Policy</label>
+                <textarea value={cookiesTxt} onChange={(e)=>setCookiesTxt(e.target.value)} rows={10} className="w-full rounded-md border border-white/10 bg-white/5 text-white placeholder-white/40 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-white/20" placeholder="Enter cookie policy text" />
+                <button type="button" onClick={()=> saveString('legal.cookies','Cookie Policy', cookiesTxt, { scope:'legal', group_key:'policy', is_public: true })} className="mt-2 rounded-md bg-white/10 text-white px-3 py-2 text-sm hover:bg-white/15 transition disabled:opacity-60" disabled={saving['legal.cookies']}>{saving['legal.cookies'] ? 'Saving…' : 'Save Cookies'}</button>
+              </div>
             </div>
           </CardContent>
         </Card>

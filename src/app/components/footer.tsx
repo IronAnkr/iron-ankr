@@ -5,6 +5,7 @@ import { Instagram, Youtube, Twitter, ArrowRight, ShieldCheck, Mail, Globe } fro
 import { cn } from "@/utils/cn";
 import Image from "next/image";
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -121,9 +122,9 @@ export default function Footer() {
           <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
             <span>© {year} Iron ankr. All rights reserved.</span>
             <div className="flex items-center gap-4">
-              <a className="hover:text-white" href="#">Privacy</a>
-              <a className="hover:text-white" href="#">Terms</a>
-              <a className="hover:text-white" href="#">Cookies</a>
+              <Link className="hover:text-white" href="/privacy">Privacy</Link>
+              <Link className="hover:text-white" href="/terms">Terms</Link>
+              <Link className="hover:text-white" href="/cookies">Cookies</Link>
             </div>
           </div>
         </div>
@@ -154,4 +155,3 @@ function BackgroundGrid() {
     </div>
   );
 }
-

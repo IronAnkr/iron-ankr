@@ -4,7 +4,7 @@ import BackgroundImage from "./background-image";
 import GradientOverlay from "./gradient-overlay";
 import { Roboto_Slab } from "next/font/google";
 import { motion } from "framer-motion";
-import { ArrowDownRight } from "lucide-react";
+import { ArrowDownRight, ShieldCheck, Truck, Award, Clock, Star } from "lucide-react";
 import Image from "next/image";
 
 const font_b = Roboto_Slab({ subsets: ['latin'], weight: "300"})
@@ -18,7 +18,7 @@ export default function LandingHero() {
       <DecorativeLayers />
 
       {/* Content */}
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-white text-center">
+      <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-white text-center md:-mt-8 lg:-mt-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -71,6 +71,23 @@ export default function LandingHero() {
               Explore Products <ArrowDownRight className="h-4 w-4" />
             </a>
           </motion.div>
+
+          {/* Social proof / trust bar */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.35 }}
+            className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-zinc-300"
+          >
+            <span className="inline-flex items-center gap-1">
+              {[0,1,2,3,4].map(i => <Star key={i} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />)}
+              <span className="ml-1">Rated 4.9/5 by 500+ lifters</span>
+            </span>
+            <span className="hidden sm:inline text-white/20">•</span>
+            <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> 30‑day guarantee</span>
+            <span className="hidden sm:inline text-white/20">•</span>
+            <span className="inline-flex items-center gap-1"><Truck className="h-3.5 w-3.5" /> Ships in 24h</span>
+          </motion.div>
         </motion.div>
 
         {/* Scroll cue */}
@@ -84,6 +101,9 @@ export default function LandingHero() {
           Scroll to products
           <span className="inline-block h-2 w-2 rotate-45 border-b border-r -translate-y-0.5" />
         </motion.a>
+
+        {/* Floating feature cards */}
+        <FloatingFeatureCards />
       </div>
     </main>
   );
@@ -101,5 +121,37 @@ function DecorativeLayers() {
       <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/10 via-transparent to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black via-transparent to-transparent" />
     </div>
+  );
+}
+
+function FloatingFeatureCards() {
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.7, delay: 0.45 }}
+        className="pointer-events-none absolute left-4 top-24 hidden max-w-[220px] rounded-xl border border-white/15 bg-white/5 p-3 text-left text-xs text-white/90 backdrop-blur-md sm:block md:left-10"
+      >
+        <div className="mb-2 inline-flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 text-emerald-200">
+          <Award className="h-3.5 w-3.5" /> Pro‑grade build
+        </div>
+        
+        Triple‑stitched nylon, contoured loop, and abrasion‑resistant weave for secure, repeatable pulls.
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.7, delay: 0.55 }}
+        className="pointer-events-none absolute right-4 bottom-24 hidden max-w-[240px] rounded-xl border border-white/15 bg-white/5 p-3 text-left text-xs text-white/90 backdrop-blur-md sm:block md:right-10"
+      >
+        <div className="mb-2 inline-flex items-center gap-2 rounded-md border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-sky-200">
+          <Clock className="h-3.5 w-3.5" /> Fast setup
+        </div>
+        
+        Wrap once and lift—indexed loop holds position so you can focus on the pull, not the grip.
+      </motion.div>
+    </>
   );
 }

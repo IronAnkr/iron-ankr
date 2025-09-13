@@ -16,102 +16,113 @@ export function UserDropdown() {
 
   useEffect(() => {
     let mounted = true;
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+    const armTimeout = () => {
+      if (timeout) clearTimeout(timeout);
+      timeout = setTimeout(() => { if (mounted) setLoading(false); }, 5000);
+    };
     type TeamRow = { role: "owner"|"admin"|"marketing"|"member"; teams: { slug: string | null; name: string | null } | null };
     async function load() {
-      setLoading(true);
-      const { data } = await supabase.auth.getUser();
-      if (!mounted) return;
-      const user = data.user;
-      setEmail(user?.email ?? null);
-      if (user?.id) {
-        const { data: roleRow } = await supabase
-          .from("app_users")
-          .select("role")
-          .eq("id", user.id)
-          .maybeSingle();
-        const userRole = roleRow?.role;
-        const owner = userRole === "owner";
-        setIsOwner(owner);
+      setLoading(true); armTimeout();
+      try {
+        const { data } = await supabase.auth.getUser();
+        if (!mounted) return;
+        const user = data.user;
+        setEmail(user?.email ?? null);
+        if (user?.id) {
+          const { data: roleRow } = await supabase
+            .from("app_users")
+            .select("role")
+            .eq("id", user.id)
+            .maybeSingle();
+          if (!mounted) return;
+          const userRole = roleRow?.role;
+          const owner = userRole === "owner";
+          setIsOwner(owner);
 
-        if (owner) {
-          // Owner sees all dashboards
-          setShowAdminDashboard(true);
-          setShowMarketingDashboard(true);
+          if (owner) {
+            setShowAdminDashboard(true);
+            setShowMarketingDashboard(true);
+          } else {
+            const appAdmin = userRole === "admin";
+            const { data: teamRows } = await supabase
+              .from("team_members")
+              .select("role, teams(slug,name)")
+              .eq("user_id", user.id);
+            if (!mounted) return;
+            const rows = (teamRows as TeamRow[] | null) || [];
+            const hasMarketingTeamRole = rows.some(
+              (r: TeamRow) =>
+                (r.teams?.slug === "marketing" || r.teams?.name?.toLowerCase() === "marketing") &&
+                (r.role === "marketing" || r.role === "admin" || r.role === "owner")
+            );
+            const hasAdminTeamAdmin = rows.some(
+              (r: TeamRow) =>
+                (r.teams?.slug === "admin" || r.teams?.name?.toLowerCase() === "admin") &&
+                (r.role === "admin" || r.role === "owner")
+            );
+            setShowAdminDashboard(appAdmin || hasAdminTeamAdmin);
+            setShowMarketingDashboard(appAdmin || hasMarketingTeamRole);
+          }
         } else {
-          const appAdmin = userRole === "admin";
-          // Team-level access via specific teams
-          const { data: teamRows } = await supabase
-            .from("team_members")
-            .select("role, teams(slug,name)")
-            .eq("user_id", user.id);
-
-          const rows = (teamRows as TeamRow[] | null) || [];
-          const hasMarketingTeamRole = rows.some(
-            (r: TeamRow) =>
-              (r.teams?.slug === "marketing" || r.teams?.name?.toLowerCase() === "marketing") &&
-              (r.role === "marketing" || r.role === "admin" || r.role === "owner")
-          );
-          const hasAdminTeamAdmin = rows.some(
-            (r: TeamRow) =>
-              (r.teams?.slug === "admin" || r.teams?.name?.toLowerCase() === "admin") &&
-              (r.role === "admin" || r.role === "owner")
-          );
-
-          setShowAdminDashboard(appAdmin || hasAdminTeamAdmin);
-          setShowMarketingDashboard(appAdmin || hasMarketingTeamRole);
+          setIsOwner(false);
+          setShowAdminDashboard(false);
+          setShowMarketingDashboard(false);
         }
-      } else {
-        setIsOwner(false);
-        setShowAdminDashboard(false);
-        setShowMarketingDashboard(false);
+      } finally {
+        if (mounted) setLoading(false);
       }
-      setLoading(false);
     }
     load();
 
     const { data: sub } = supabase.auth.onAuthStateChange(async (_ev, session) => {
-      setLoading(true);
-      const u = session?.user;
-      setEmail(u?.email ?? null);
-      if (u?.id) {
-        const { data: roleRow } = await supabase
-          .from("app_users")
-          .select("role")
-          .eq("id", u.id)
-          .maybeSingle();
-        const userRole = roleRow?.role;
-        const owner = userRole === "owner";
-        setIsOwner(owner);
+      setLoading(true); armTimeout();
+      try {
+        const u = session?.user;
+        setEmail(u?.email ?? null);
+        if (u?.id) {
+          const { data: roleRow } = await supabase
+            .from("app_users")
+            .select("role")
+            .eq("id", u.id)
+            .maybeSingle();
+          if (!mounted) return;
+          const userRole = roleRow?.role;
+          const owner = userRole === "owner";
+          setIsOwner(owner);
 
-        if (owner) {
-          setShowAdminDashboard(true);
-          setShowMarketingDashboard(true);
+          if (owner) {
+            setShowAdminDashboard(true);
+            setShowMarketingDashboard(true);
+          } else {
+            const appAdmin = userRole === "admin";
+            const { data: teamRows } = await supabase
+              .from("team_members")
+              .select("role, teams(slug,name)")
+              .eq("user_id", u.id);
+            if (!mounted) return;
+            const rows2 = (teamRows as TeamRow[] | null) || [];
+            const hasMarketingTeamRole = rows2.some(
+              (r: TeamRow) =>
+                (r.teams?.slug === "marketing" || r.teams?.name?.toLowerCase() === "marketing") &&
+                (r.role === "marketing" || r.role === "admin" || r.role === "owner")
+            );
+            const hasAdminTeamAdmin = rows2.some(
+              (r: TeamRow) =>
+                (r.teams?.slug === "admin" || r.teams?.name?.toLowerCase() === "admin") &&
+                (r.role === "admin" || r.role === "owner")
+            );
+            setShowAdminDashboard(appAdmin || hasAdminTeamAdmin);
+            setShowMarketingDashboard(appAdmin || hasMarketingTeamRole);
+          }
         } else {
-          const appAdmin = userRole === "admin";
-          const { data: teamRows } = await supabase
-            .from("team_members")
-            .select("role, teams(slug,name)")
-            .eq("user_id", u.id);
-          const rows2 = (teamRows as TeamRow[] | null) || [];
-          const hasMarketingTeamRole = rows2.some(
-            (r: TeamRow) =>
-              (r.teams?.slug === "marketing" || r.teams?.name?.toLowerCase() === "marketing") &&
-              (r.role === "marketing" || r.role === "admin" || r.role === "owner")
-          );
-          const hasAdminTeamAdmin = rows2.some(
-            (r: TeamRow) =>
-              (r.teams?.slug === "admin" || r.teams?.name?.toLowerCase() === "admin") &&
-              (r.role === "admin" || r.role === "owner")
-          );
-          setShowAdminDashboard(appAdmin || hasAdminTeamAdmin);
-          setShowMarketingDashboard(appAdmin || hasMarketingTeamRole);
+          setIsOwner(false);
+          setShowAdminDashboard(false);
+          setShowMarketingDashboard(false);
         }
-      } else {
-        setIsOwner(false);
-        setShowAdminDashboard(false);
-        setShowMarketingDashboard(false);
+      } finally {
+        if (mounted) setLoading(false);
       }
-      setLoading(false);
     });
     const onTeamsChanged = () => {
       // Team membership changed elsewhere (e.g., invite accepted); refresh
@@ -128,6 +139,7 @@ export function UserDropdown() {
       sub.subscription?.unsubscribe();
       document.removeEventListener("click", onDocClick);
       window.removeEventListener('ia:teams-changed', onTeamsChanged as EventListener);
+      if (timeout) clearTimeout(timeout);
     };
   }, [supabase]);
 
@@ -176,7 +188,7 @@ export function UserDropdown() {
               <>
                 {isOwner && (
                   <>
-                    <Link href="/owner" className="block px-3 py-2 hover:bg-white/10">Teams</Link>
+                    <Link href="/owner" className="block px-3 py-2 hover:bg-white/10">Owner Dashboard</Link>
                     <Link href="/admin" className="block px-3 py-2 hover:bg-white/10">Admin Dashboard</Link>
                     <Link href="/marketing" className="block px-3 py-2 hover:bg-white/10">Marketing Dashboard</Link>
                   </>
