@@ -1,162 +1,136 @@
 "use client";
-
-import BackgroundImage from "./background-image";
-import GradientOverlay from "./gradient-overlay";
-import { Roboto_Slab } from "next/font/google";
+import { Bebas_Neue, Inter } from "next/font/google";
 import { motion } from "framer-motion";
-import { ArrowDownRight, ShieldCheck, Truck, Award, Clock, Star } from "lucide-react";
-import Image from "next/image";
+import { ArrowDownRight, ShieldCheck, Truck, Star } from "lucide-react";
+import BackgroundImage from "./background-image";
 
-const font_b = Roboto_Slab({ subsets: ['latin'], weight: "300"})
+const fontHead = Bebas_Neue({ subsets: ["latin"], weight: "400" });
+const fontBody = Inter({ subsets: ["latin"] });
 
 export default function LandingHero() {
   return (
-    <main className="system-theme relative h-[100svh] overflow-hidden text-foreground">
-      {/* Backgrounds */}
-      <GradientOverlay />
-      <span className="visible dark:invisible">
-      <BackgroundImage src="/hero-bg-light.png"/>
-      </span>
-      <span className="invisible dark:visible">
-      <BackgroundImage src="/hero-bg-dark.png"/>
-      </span>
-      <DecorativeLayers />
+    <main className="system-theme relative min-h-[100svh] overflow-hidden bg-background text-foreground">
+      {/* Background image: wide, subtle, and inverted in dark mode */}
+      <BackgroundImage src={"/hero-bg.png"}/>
+      {/* Vertical straps: two side-by-side with slight overlap */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-[1]">
+        {/* Desktop: right-side pair */}
+        <div className="absolute inset-0 ">
+          {/* Back strap */}
+          <div className="absolute right-[1%] lg:right-[18%] top-1/2 -translate-y-1/2">
+            <div
+              className="
+                origin-center
+                h-[88svh]
+                aspect-[247/1536]
+                brightness-150
+                dark:brightness-90
+                bg-[url('/hero-cotton-webbing-strip-red.png')]
+                bg-no-repeat bg-center bg-contain
+                drop-shadow-[0_14px_40px_rgba(0,0,0,0.35)]
+                [mask-image:linear-gradient(to_bottom,transparent,white_10%,white_90%)]
+                [-webkit-mask-image:linear-gradient(to_bottom,transparent,white_10%,white_90%)]
+              "
+            />
+          </div>
 
-      {/* Content */}
-      <div className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center md:-mt-8 lg:-mt-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          {/* Front strap (slightly overlapping) */}
+          <div className="absolute invisible lg:visible  right-[8%] top-1/2 -translate-y-1/2">
+            <div
+              className="
+                 origin-center
+                h-[88svh]
+                aspect-[247/1536]
+                bg-[url('/hero-cotton-webbing-strip.png')]
+                bg-no-repeat bg-center bg-contain
+                drop-shadow-[0_20px_50px_rgba(0,0,0,0.45)]
+              "
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Content grid: left-focused on desktop, centered on mobile */}
+      <div className="relative z-10 mx-auto grid min-h-[100svh] w-full max-w-7xl items-center gap-10 px-6 lg:grid-cols-[minmax(0,620px)_1fr]">
+        {/* Left column */}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="w-full max-w-5xl"
+          className="order-2 text-center lg:order-1 lg:text-left"
+          style={fontBody.style}
         >
-          <Image src="/logo.png" alt="Iron ankr" width={200} height={200} className="justify-self-center invert dark:invert-0" />
+          {/* Kicker */}
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] tracking-wide text-foreground/70">
+            <span className="h-1.5 w-1.5 rounded-full bg-black/60 dark:bg-white/60" />
+            Founder’s Batch • Limited Run
+            <span className="h-1.5 w-1.5 rounded-full bg-black/60 dark:bg-white/60 block md:hidden" />
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.05 }}
-            className="text-balance text-5xl font-extrabold leading-[1.05] sm:text-7xl md:text-8xl"
+          {/* Headline — clean, no outline */}
+          <h1
+            className={`${fontHead.className} leading-[0.9] text-[14vw] sm:text-[12vw] lg:text-[96px] -tracking-[0.01em] w-fit relative justify-self-center lg:justify-self-start`}
           >
-            <span className="bg-gradient-to-b from-[hsl(var(--foreground))] to-[hsl(var(--foreground)/0.7)] bg-clip-text text-transparent">
-              LIFT HEAVY,
-            </span>
+            LIFT HEAVY,
             <br />
-            <span className="bg-gradient-to-r from-rose-400 via-fuchsia-300 to-sky-400 bg-clip-text text-transparent drop-shadow">
-              LIFT SAFE.
-            </span>
-          </motion.h1>
+            LIFT SAFE.
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="mx-auto mt-4 max-w-2xl text-sm text-muted-foreground sm:text-base"
-            style={font_b.style}
-          >
-            The only gym straps you’ll need—engineered for secure pulls, consistent technique, and progressive overload.
-          </motion.p>
+          {/* Subcopy */}
+          <p className="mt-4 max-w-[46ch] text-sm text-muted-foreground sm:text-base lg:pr-6 justify-self-center lg:justify-self-start">
+            Minimal straps. Maximum control. Built for secure pulls, repeatable setup, and relentless progression.
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.25 }}
-            className="mt-8 flex flex-wrap items-center justify-center gap-3"
-          >
+          {/* CTAs */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
             <a
               href="#products"
-              className="inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background shadow transition-colors hover:bg-foreground/90"
+              className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-sm transition-opacity bg-gradient-to-r from-[hsl(var(--brand-1))] to-[hsl(var(--brand-2))] hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[hsl(var(--brand-2)/0.6)] focus-visible:ring-offset-background"
             >
-              Shop Now
+              Shop Straps
             </a>
             <a
               href="#products"
-              className="inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm backdrop-blur border-border/60 bg-background/50 text-foreground/80 hover:border-border"
+              className="inline-flex items-center gap-2 rounded-full border px-6 py-3 text-sm backdrop-blur bg-background/60 text-foreground/90 border-[hsl(var(--brand-2)/0.35)] hover:bg-background/80 hover:border-[hsl(var(--brand-2)/0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--brand-2)/0.4)] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
-              Explore Products <ArrowDownRight className="h-4 w-4" />
+              Explore Collection <ArrowDownRight className="h-4 w-4" />
             </a>
-          </motion.div>
+          </div>
 
-          {/* Social proof / trust bar */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.35 }}
-            className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground"
-          >
-            <span className="inline-flex items-center gap-1">
-              {[0,1,2,3,4].map(i => <Star key={i} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />)}
-              <span className="ml-1">Rated 4.9/5 by 500+ lifters</span>
+          {/* Trust bar */}
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground lg:justify-start">
+            <span className="inline-flex items-center gap-1 bg-white rounded-full dark:bg-black px-2">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <Star key={i} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+              ))}
+              <span className="ml-1">4.9/5 from 500+ lifters</span>
             </span>
             <span className="hidden sm:inline text-foreground/20">•</span>
-            <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> 30‑day guarantee</span>
+            <span className="inline-flex items-center gap-1 bg-white rounded-full dark:bg-black px-2">
+              <ShieldCheck className="h-3.5 w-3.5" /> 30-day guarantee
+            </span>
             <span className="hidden sm:inline text-foreground/20">•</span>
-            <span className="inline-flex items-center gap-1"><Truck className="h-3.5 w-3.5" /> Ships in 24h</span>
-          </motion.div>
-        </motion.div>
+            <span className="inline-flex items-center gap-1 bg-white rounded-full dark:bg-black px-2">
+              <Truck className="h-3.5 w-3.5" /> Ships in 24h
+            </span>
+          </div>
+        </motion.section>
 
-        {/* Scroll cue */}
-        <motion.a
-          href="#products"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="absolute bottom-6 inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
-        >
-          Scroll to products
-          <span className="inline-block h-2 w-2 rotate-45 border-b border-r border-foreground/50 -translate-y-0.5" />
-        </motion.a>
-
-        {/* Floating feature cards */}
-        <FloatingFeatureCards />
+        {/* Right column is intentionally empty to keep the strap breathing room */}
+        <div className="order-1 hidden lg:block" />
       </div>
+
+      {/* Scroll cue */}
+      <motion.a
+        href="#products"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 0.5 }}
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground"
+      >
+        Scroll to products
+        <span className="inline-block h-2 w-2 -translate-y-0.5 rotate-45 border-b border-r border-foreground/50" />
+      </motion.a>
     </main>
-  );
-}
-
-function DecorativeLayers() {
-  return (
-    <div aria-hidden className="pointer-events-none absolute inset-0">
-      {/* Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(hsl(var(--foreground)/0.06)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--foreground)/0.06)_1px,transparent_1px)] bg-[size:36px_36px]" />
-      {/* Radials */}
-      <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-rose-400/20 blur-3xl" />
-      <div className="absolute -right-24 top-1/3 h-72 w-72 rounded-full bg-sky-400/20 blur-3xl" />
-      {/* Glare */}
-      <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[hsl(var(--foreground)/0.10)] via-transparent to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
-    </div>
-  );
-}
-
-function FloatingFeatureCards() {
-  return (
-    <>
-      <motion.div
-        initial={{ opacity: 0, y: 20, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.7, delay: 0.45 }}
-        className="pointer-events-none absolute left-4 top-24 hidden max-w-[220px] rounded-xl border border-border/60 bg-card/70 p-3 text-left text-xs text-foreground/90 backdrop-blur-md sm:block md:left-10"
-      >
-        <div className="mb-2 inline-flex items-center gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/15 px-2 py-0.5 text-emerald-700 dark:text-emerald-200">
-          <Award className="h-3.5 w-3.5" /> Pro‑grade build
-        </div>
-        
-        Triple‑stitched nylon, contoured loop, and abrasion‑resistant weave for secure, repeatable pulls.
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.7, delay: 0.55 }}
-        className="pointer-events-none absolute right-4 bottom-24 hidden max-w-[240px] rounded-xl border border-border/60 bg-card/70 p-3 text-left text-xs text-foreground/90 backdrop-blur-md sm:block md:right-10"
-      >
-        <div className="mb-2 inline-flex items-center gap-2 rounded-md border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-sky-700 dark:text-sky-200">
-          <Clock className="h-3.5 w-3.5" /> Fast setup
-        </div>
-        
-        Wrap once and lift—indexed loop holds position so you can focus on the pull, not the grip.
-      </motion.div>
-    </>
   );
 }

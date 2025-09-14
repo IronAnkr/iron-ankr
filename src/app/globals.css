@@ -31,6 +31,10 @@
     --ring: 0 0% 0%;
  
     --radius: 0.5rem;
+
+    /* brand accents */
+    --brand-1: 340 82% 60%; /* rose */
+    --brand-2: 205 90% 55%; /* sky */
   }
  
   .dark {
@@ -61,6 +65,10 @@
     --border: 0 0% 20%;
     --input: 0 0% 20%;
     --ring: 0 0% 80%;
+
+    /* brand accents (tuned for dark) */
+    --brand-1: 340 82% 65%;
+    --brand-2: 205 90% 60%;
   }
 
   .system-theme {
@@ -93,6 +101,10 @@
     --ring: 0 0% 0%;
 
     --radius: 0.5rem;
+
+    /* brand accents */
+    --brand-1: 340 82% 60%;
+    --brand-2: 205 90% 55%;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -124,7 +136,10 @@
       --border: 0 0% 20%;
       --input: 0 0% 20%;
       --ring: 0 0% 80%;
+
+      /* brand accents (tuned for dark) */
+      --brand-1: 340 82% 65%;
+      --brand-2: 205 90% 60%;
     }
   }
 }
-
