@@ -9,47 +9,9 @@ const fontBody = Inter({ subsets: ["latin"] });
 
 export default function LandingHero() {
   return (
-    <main className="system-theme relative min-h-[100svh] overflow-hidden bg-background text-foreground">
+    <main className="system-theme relative min-h-[100svh] overflow-hidden bg-background text-foreground ">
       {/* Background image: wide, subtle, and inverted in dark mode */}
       <BackgroundImage src={"/hero-bg.png"}/>
-      {/* Vertical straps: two side-by-side with slight overlap */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 z-[1]">
-        {/* Desktop: right-side pair */}
-        <div className="absolute inset-0 ">
-          {/* Back strap */}
-          <div className="absolute right-[1%] lg:right-[18%] top-1/2 -translate-y-1/2">
-            <div
-              className="
-                origin-center
-                h-[88svh]
-                aspect-[247/1536]
-                brightness-150
-                dark:brightness-90
-                bg-[url('/hero-cotton-webbing-strip-red.png')]
-                bg-no-repeat bg-center bg-contain
-                drop-shadow-[0_14px_40px_rgba(0,0,0,0.35)]
-                [mask-image:linear-gradient(to_bottom,transparent,white_10%,white_90%)]
-                [-webkit-mask-image:linear-gradient(to_bottom,transparent,white_10%,white_90%)]
-              "
-            />
-          </div>
-
-          {/* Front strap (slightly overlapping) */}
-          <div className="absolute invisible lg:visible  right-[8%] top-1/2 -translate-y-1/2">
-            <div
-              className="
-                 origin-center
-                h-[88svh]
-                aspect-[247/1536]
-                bg-[url('/hero-cotton-webbing-strip.png')]
-                bg-no-repeat bg-center bg-contain
-                drop-shadow-[0_20px_50px_rgba(0,0,0,0.45)]
-              "
-            />
-          </div>
-        </div>
-      </div>
-
       {/* Content grid: left-focused on desktop, centered on mobile */}
       <div className="relative z-10 mx-auto grid min-h-[100svh] w-full max-w-7xl items-center gap-10 px-6 lg:grid-cols-[minmax(0,620px)_1fr]">
         {/* Left column */}
@@ -98,18 +60,13 @@ export default function LandingHero() {
           </div>
 
           {/* Trust bar */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground lg:justify-start">
+          <div className="mt-6 flex items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground lg:justify-start">
             <span className="inline-flex items-center gap-1 bg-white rounded-full dark:bg-black px-2">
               {[0, 1, 2, 3, 4].map((i) => (
                 <Star key={i} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
               ))}
               <span className="ml-1">4.9/5 from 500+ lifters</span>
             </span>
-            <span className="hidden sm:inline text-foreground/20">•</span>
-            <span className="inline-flex items-center gap-1 bg-white rounded-full dark:bg-black px-2">
-              <ShieldCheck className="h-3.5 w-3.5" /> 30-day guarantee
-            </span>
-            <span className="hidden sm:inline text-foreground/20">•</span>
             <span className="inline-flex items-center gap-1 bg-white rounded-full dark:bg-black px-2">
               <Truck className="h-3.5 w-3.5" /> Ships in 24h
             </span>

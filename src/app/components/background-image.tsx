@@ -42,7 +42,7 @@ export default function BackgroundImage({src}:{src:string}) {
       src={src}
       alt="hero background"
       className="
-        object-cover -z-10 blur-xs opacity-50
+        object-contain grayscale -z-10 invert p-24 opacity-25
       "
       style={{
         transform: `translate3d(0, ${translateY}px, 0)`,

@@ -33,11 +33,11 @@ export default function Navbar() {
   return (
     <>
     <nav className="system-theme fixed inset-x-4 top-4 z-50 h-16 rounded-md overflow-visible text-foreground">
+      <Image src="/cotton-webbing.png" className="object-cover -z-10 invert rounded-t-md" alt="nav bg" fill/>
       <motion.div
         className="absolute inset-x-0 top-0 h-0.5 origin-left bg-gradient-to-r from-rose-400 z-10 via-fuchsia-400 to-sky-400"
         style={{ scaleX: progress }}
       />
-      <div className="backdrop-blur-md absolute inset-0" />
 
       <motion.div
         className="absolute inset-0 -z-10 backdrop-blur-md border-b"
@@ -111,6 +111,7 @@ function NavLink({ href, label }: { href: string; label: string }) {
 import { useCart } from "@/app/cart/cart-provider";
 import React from "react";
 import LogoIcon from "./logo-icon";
+import Image from "next/image";
 
 function CartButton() {
   const { items } = useCart();
