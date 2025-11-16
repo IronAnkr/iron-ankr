@@ -34,7 +34,6 @@ function LoginContent() {
   // Surface any error passed via query string (e.g., callback failures)
   useEffect(() => {
     if (urlError) setError(urlError);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlError]);
 
   async function sendMagicLink(e: React.FormEvent) {

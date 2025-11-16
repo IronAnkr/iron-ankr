@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { InviteModalWatcher } from "./components/auth/invite-modal";
@@ -38,8 +39,10 @@ export default function RootLayout({
         <CartProvider>
           {children}
         </CartProvider>
-        {/* Global page view analytics */}
-        <PageViewTracker />
+        {/* Global page view analytics (requires Suspense for useSearchParams) */}
+        <Suspense fallback={null}>
+          <PageViewTracker />
+        </Suspense>
       </body>
       <GoogleAnalytics gaId="G-K2S57B1J45" />
     </html>

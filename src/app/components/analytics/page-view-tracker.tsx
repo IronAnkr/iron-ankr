@@ -28,11 +28,10 @@ function getDeviceId(): string {
 
 function computeFingerprint(): string {
   try {
-    const nav = navigator as any;
     const parts = [
       navigator.userAgent,
       navigator.language,
-      nav?.platform,
+      navigator.platform,
       String(screen.width),
       String(screen.height),
       String(screen.colorDepth),
@@ -161,4 +160,3 @@ export function PageViewTracker() {
 
   return null;
 }
-

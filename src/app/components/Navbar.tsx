@@ -110,7 +110,6 @@ function NavLink({ href, label }: { href: string; label: string }) {
 import { useCart } from "@/app/cart/cart-provider";
 import React from "react";
 import LogoIcon from "./logo-icon";
-import Image from "next/image";
 
 function CartButton() {
   const { items } = useCart();

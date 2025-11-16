@@ -92,9 +92,8 @@ export async function GET() {
     };
 
     return NextResponse.json(summary);
-  } catch (e: any) {
-    const message = e?.message || "Server error";
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "Server error";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
-

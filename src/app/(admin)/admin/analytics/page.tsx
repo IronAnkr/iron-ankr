@@ -1,27 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Sparkline } from "@/app/components/admin/sparkline";
 
-type PageViewRow = {
-  started_at: string;
-  ended_at: string | null;
-  device_id: string | null;
-  fingerprint: string | null;
-  path: string | null;
-};
-
-function lastNDaysLabels(n: number) {
-  const days: string[] = [];
-  const now = new Date();
-  for (let i = n - 1; i >= 0; i--) {
-    const d = new Date(now);
-    d.setDate(now.getDate() - i);
-    days.push(d.toISOString().slice(0, 10));
-  }
-  return days;
-}
 
 function formatDuration(sec: number) {
   if (!sec || sec < 1) return "—";
@@ -63,8 +45,9 @@ export default function AdminAnalyticsDetailPage() {
         setViewsSpark(json.viewsSpark || []);
         setVisitorsSpark(json.visitorsSpark || []);
         setTopPages((json.topPages || []) as { path: string; count: number }[]);
-      } catch (e: any) {
-        setError(e?.message || "Failed to load analytics");
+      } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : "Failed to load analytics";
+        setError(message);
       } finally {
         setLoading(false);
       }
