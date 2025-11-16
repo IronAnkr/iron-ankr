@@ -49,7 +49,8 @@ function RegisterContent() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${siteUrl}/auth/callback?redirect=${encodeURIComponent(redirect)}`,
+          // Use hash-callback which handles both implicit token hashes and PKCE code flows
+          emailRedirectTo: `${siteUrl}/auth/hash-callback?redirect=${encodeURIComponent(redirect)}`,
           shouldCreateUser: true,
         },
       });

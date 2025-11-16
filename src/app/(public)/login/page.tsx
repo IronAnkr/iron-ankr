@@ -16,6 +16,7 @@ function LoginContent() {
   const supabase = getSupabaseBrowserClient();
   const params = useSearchParams();
   const redirect = params.get("redirect") || "/";
+  const urlError = params.get("error");
 
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,6 +30,12 @@ function LoginContent() {
       if (last) setEmail(last);
     } catch {}
   }, []);
+
+  // Surface any error passed via query string (e.g., callback failures)
+  useEffect(() => {
+    if (urlError) setError(urlError);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlError]);
 
   async function sendMagicLink(e: React.FormEvent) {
     e.preventDefault();
@@ -45,7 +52,8 @@ function LoginContent() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${siteUrl}/auth/callback?redirect=${encodeURIComponent(redirect)}`,
+          // Use a client-side hash handler to support both implicit and PKCE flows reliably
+          emailRedirectTo: `${siteUrl}/auth/hash-callback?redirect=${encodeURIComponent(redirect)}`,
         },
       });
       if (error) throw error;

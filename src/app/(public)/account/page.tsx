@@ -122,7 +122,7 @@ export default function AccountPage() {
   }
 
   return (
-    <div className="min-h-[60vh] p-6">
+    <div className="min-h-[60vh] p-6 py-32">
       <div className="mx-auto w-[min(96vw,720px)] space-y-6">
         <header>
           <h1 className="text-2xl font-bold tracking-tight text-white">My Account</h1>
