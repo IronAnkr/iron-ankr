@@ -6,7 +6,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
   return (
     <div className="system-theme relative flex flex-col min-h-screen pt-24 bg-background text-foreground overflow-x-hidden">
       <FancyBackground />
-      <main className="relative z-10 flex-1 py-6 lg:py-8">
+      <main className="relative z-30 flex-1 py-6 lg:py-8">
         <AdminContainer>
           <nav className="mb-4 flex flex-wrap gap-2 text-sm">
             <Link href="/marketing" className="rounded-md border px-3 py-1.5 border-border/60 bg-background/50 text-foreground hover:border-border">Overview</Link>

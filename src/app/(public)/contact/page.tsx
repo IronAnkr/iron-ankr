@@ -39,7 +39,7 @@ export default function ContactPage() {
         "system-theme relative w-full overflow-hidden",
         "bg-[radial-gradient(ellipse_at_top_left,rgba(244,63,94,0.25),transparent_50%),",
         "radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.25),transparent_50%)]",
-        "py-20 text-foreground"
+        "py-32 text-foreground"
       )}
     >
       <BackgroundGrid />
@@ -88,7 +88,7 @@ export default function ContactPage() {
                     onChange={(e) => setName(e.target.value)}
                     required
                     placeholder="Your full name"
-                  className="w-full rounded-md border px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none border-border/60 bg-background/50 text-foreground focus:border-border"
+                  className="w-full rounded-md border px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none border-border/60 bg-white dark:bg-black text-foreground focus:border-border"
                   disabled={submitting}
                   />
                 </Field>
@@ -99,7 +99,7 @@ export default function ContactPage() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="you@example.com"
-                    className="w-full rounded-md border px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none border-border/60 bg-background/50 text-foreground focus:border-border"
+                    className="w-full rounded-md border px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none border-border/60 bg-white dark:bg-black text-foreground focus:border-border"
                     disabled={submitting}
                     />
                 </Field>
@@ -112,7 +112,7 @@ export default function ContactPage() {
                   required
                   rows={6}
                   placeholder="How can we help?"
-                  className="w-full resize-y rounded-md border px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none border-border/60 bg-background/50 text-foreground focus:border-border"
+                  className="w-full resize-y rounded-md border px-3 py-2 text-sm placeholder:text-muted-foreground focus:outline-none border-border/60 bg-white dark:bg-black text-foreground focus:border-border"
                   disabled={submitting}
                 />
               </Field>
@@ -182,7 +182,7 @@ function InfoCard({ icon, title, children }: { icon: React.ReactNode; title: str
 
 function BackgroundGrid() {
   return (
-    <div aria-hidden className="pointer-events-none absolute inset-0">
+    <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
       <div className="absolute inset-0 bg-[linear-gradient(hsl(var(--foreground)/0.05)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--foreground)/0.05)_1px,transparent_1px)] bg-[size:32px_32px]" />
       <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[hsl(var(--background))] via-transparent to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />

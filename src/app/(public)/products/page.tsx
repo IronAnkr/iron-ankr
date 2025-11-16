@@ -105,7 +105,7 @@ export default function ProductsPage() {
         "system-theme relative w-full overflow-hidden",
         "bg-[radial-gradient(ellipse_at_top_left,rgba(244,63,94,0.25),transparent_50%),",
         "radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.25),transparent_50%)]",
-        "py-20 text-foreground"
+        "py-32 text-foreground"
       )}
     >
       <BackgroundGrid />

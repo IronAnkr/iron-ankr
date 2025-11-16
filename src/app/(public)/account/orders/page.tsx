@@ -41,7 +41,7 @@ export default function AccountOrdersPage() {
   }, [supabase]);
 
   return (
-    <div className="min-h-[60vh] p-6">
+    <div className="min-h-[60vh] p-6 pt-32">
       <div className="mx-auto w-[min(96vw,960px)] space-y-6">
         <header>
           <h1 className="text-2xl font-bold tracking-tight text-white">My Orders</h1>

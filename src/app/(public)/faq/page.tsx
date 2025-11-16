@@ -58,7 +58,7 @@ export default function FaqPage() {
         "system-theme relative w-full overflow-hidden",
         "bg-[radial-gradient(ellipse_at_top_left,rgba(244,63,94,0.25),transparent_50%),",
         "radial-gradient(ellipse_at_bottom_right,rgba(59,130,246,0.25),transparent_50%)]",
-        "py-20 text-foreground"
+        "py-32 text-foreground"
       )}
     >
       <BackgroundGrid />
@@ -83,7 +83,7 @@ export default function FaqPage() {
           className="mx-auto mt-8 w-full max-w-xl"
         >
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground z-10" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}

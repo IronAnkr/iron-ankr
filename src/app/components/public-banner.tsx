@@ -127,7 +127,7 @@ export function PublicBanner() {
   }
 
   return (
-    <div className="system-theme relative w-full rounded-b-lg justify-self-center overflow-hidden overflow-hidden" aria-live="polite" aria-atomic>
+    <div className="system-theme relative w-full justify-self-center overflow-hidden overflow-hidden" aria-live="polite" aria-atomic>
       <AnimatePresence mode="popLayout">
         <motion.div
           key={banner.id}
