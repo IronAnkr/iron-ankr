@@ -28,7 +28,7 @@ export default function ProductsPage() {
         // Fetch products first (active, not deleted)
         const prodRes = await supabase
           .from("products")
-          .select("id,name,description,status,price_in_cents,images,tags,metadata,created_at,updated_at,deleted_at")
+          .select("id,name,description,slug,status,price_in_cents,images,tags,metadata,created_at,updated_at,deleted_at")
           .is('deleted_at', null)
           .order("created_at", { ascending: false });
         if (cancelled) return;
@@ -178,6 +178,7 @@ export default function ProductsPage() {
                 product={product}
                 variants={variants}
                 badge={idx === 0 ? "Bestseller" : undefined}
+                href={`/products/${product.slug ?? product.id}`}
               />
             </motion.div>
           ))}

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { cn } from "@/utils/cn";
 import { type ProductT, type ProductVariantT } from "@/db/schema";
@@ -10,6 +11,7 @@ type Props = {
   variants?: ProductVariantT[];
   className?: string;
   badge?: string;
+  href?: string;
 };
 
 function formatCents(cents: number, currency: string = "USD") {
@@ -70,7 +72,62 @@ function getRating(product: ProductT): number | undefined {
   return undefined;
 }
 
-export default function ProductShowcaseCard({ product, variants, className, badge }: Props) {
+function CardMedia({
+  coverSrc,
+  setCoverSrc,
+  hoverSrc,
+  productName,
+}: {
+  coverSrc: string;
+  setCoverSrc: (s: string) => void;
+  hoverSrc: string | null;
+  productName: string;
+}) {
+  return (
+    <div className="relative aspect-[4/5] w-full">
+      <div
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          backgroundColor: '#8b8b8b',
+          backgroundImage: [
+            'radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.35), rgba(255,255,255,0) 45%)',
+            'radial-gradient(ellipse at 70% 80%, rgba(0,0,0,0.25), rgba(0,0,0,0) 50%)',
+            'conic-gradient(from 210deg at 50% 50%, rgba(14,165,233,0.10), rgba(244,63,94,0.10), rgba(109,40,217,0.08), rgba(14,165,233,0.10))',
+            'linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)',
+            'linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)',
+            'radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.22) 100%)',
+            'linear-gradient(180deg, #8b8b8b, #8b8b8b)'
+          ].join(', '),
+          backgroundSize: 'auto, auto, auto, 28px 28px, 28px 28px, auto, auto',
+          backgroundPosition: 'center',
+        }}
+      />
+      <Image
+        src={coverSrc}
+        alt={productName}
+        fill
+        priority={false}
+        sizes="(min-width: 1024px) 22rem, (min-width: 640px) 50vw, 100vw"
+        className="object-contain transition-transform duration-700 ease-out group-hover:scale-105"
+        style={{ filter: 'drop-shadow(0 0 12px rgba(255,255,255,0.40)) drop-shadow(0 0 2px rgba(0,0,0,0.85))' }}
+        onError={() => { if (coverSrc !== "/logo.png") setCoverSrc("/logo.png"); }}
+      />
+      {hoverSrc && (
+        <Image
+          src={hoverSrc}
+          alt={productName + " alternate"}
+          fill
+          priority={false}
+          sizes="(min-width: 1024px) 22rem, (min-width: 640px) 50vw, 100vw"
+          className="object-cover object-center transition duration-700 ease-out opacity-0 group-hover:opacity-100"
+        />
+      )}
+    </div>
+  );
+}
+
+export default function ProductShowcaseCard({ product, variants, className, badge, href }: Props) {
   const [coverSrc, setCoverSrc] = useState<string>(product.images?.[0] ?? "/logo.png");
   const hoverSrc = product.images?.[1] ?? null;
   const { colors, sizes } = extractVariantPreview(variants);
@@ -123,39 +180,16 @@ export default function ProductShowcaseCard({ product, variants, className, badg
       )}
       >
         <div className="relative overflow-hidden rounded-[1rem] border border-border/60 bg-card/80 backdrop-blur-sm">
-          <div className="relative aspect-[4/5] w-full">
-            {/* High-contrast, aesthetic background for transparent product images */}
-            <div
-              aria-hidden
-              className="absolute inset-0"
-              style={{
-                backgroundColor: '#8b8b8b',
-                backgroundImage: [
-                  'radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.35), rgba(255,255,255,0) 45%)',
-                  'radial-gradient(ellipse at 70% 80%, rgba(0,0,0,0.25), rgba(0,0,0,0) 50%)',
-                  'conic-gradient(from 210deg at 50% 50%, rgba(14,165,233,0.10), rgba(244,63,94,0.10), rgba(109,40,217,0.08), rgba(14,165,233,0.10))',
-                  'linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)',
-                  'linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)',
-                  'radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.22) 100%)',
-                  'linear-gradient(180deg, #8b8b8b, #8b8b8b)'
-                ].join(', '),
-                backgroundSize: 'auto, auto, auto, 28px 28px, 28px 28px, auto, auto',
-                backgroundPosition: 'center',
-              }}
-            />
-            <Image
-              src={coverSrc}
-              alt={product.name}
-              fill
-              priority={false}
-              sizes="(min-width: 1024px) 22rem, (min-width: 640px) 50vw, 100vw"
-              className="object-contain transition-transform duration-700 ease-out group-hover:scale-105"
-              style={{ filter: 'drop-shadow(0 0 12px rgba(255,255,255,0.40)) drop-shadow(0 0 2px rgba(0,0,0,0.85))' }}
-              onError={() => { if (coverSrc !== "/logo.png") setCoverSrc("/logo.png"); }}
-            />
-            
-
-            {(badge || rating !== undefined) && (
+          {href ? (
+            <Link href={href} className="relative block aspect-[4/5] w-full">
+              <CardMedia coverSrc={coverSrc} setCoverSrc={setCoverSrc} hoverSrc={hoverSrc} productName={product.name} />
+            </Link>
+          ) : (
+            <div className="relative aspect-[4/5] w-full">
+              <CardMedia coverSrc={coverSrc} setCoverSrc={setCoverSrc} hoverSrc={hoverSrc} productName={product.name} />
+            </div>
+          )}
+          {(badge || rating !== undefined) && (
               <div className="absolute left-3 top-3 flex items-center gap-2">
                 {badge && (
                   <span className="rounded-full bg-foreground/15 px-2.5 py-1 text-xs font-semibold backdrop-blur">
@@ -179,25 +213,17 @@ export default function ProductShowcaseCard({ product, variants, className, badg
                 )}
               </div>
             )}
-            {/* Hover image swap */}
-            {hoverSrc && (
-              <Image
-                src={hoverSrc}
-                alt={product.name + " alternate"}
-                fill
-                priority={false}
-                sizes="(min-width: 1024px) 22rem, (min-width: 640px) 50vw, 100vw"
-                className="object-cover object-center transition duration-700 ease-out opacity-0 group-hover:opacity-100"
-              />
-            )}
-          </div>
-
+          
           <div className="relative p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <h3 className="text-base font-semibold leading-tight line-clamp-2">
-                  {product.name}
-                </h3>
+                {href ? (
+                  <Link href={href} className="text-base font-semibold leading-tight line-clamp-2 hover:underline">
+                    {product.name}
+                  </Link>
+                ) : (
+                  <h3 className="text-base font-semibold leading-tight line-clamp-2">{product.name}</h3>
+                )}
                 <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
                   {product.description}
                 </p>
