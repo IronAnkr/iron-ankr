@@ -11,6 +11,8 @@ export default function LandingHero() {
   return (
     <main className="system-theme relative min-h-[100svh] overflow-hidden bg-background text-foreground ">
       {/* Background image: wide, subtle, and inverted in dark mode */}
+      <div className="absolute inset-0 bg-gradient-to-r from-white via-white/50 to-white z-10 dark:from-black dark:via-black/25 dark:to-black"/>
+      <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white z-10 dark:from-black dark:via-transparent dark:to-black"/>
       <BackgroundImage src={"/hero-bg.png"}/>
       {/* Content grid: left-focused on desktop, centered on mobile */}
       <div className="relative z-10 mx-auto grid min-h-[100svh] w-full max-w-7xl items-center gap-10 px-6 lg:grid-cols-[minmax(0,620px)_1fr]">
