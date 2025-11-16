@@ -15,7 +15,7 @@ export default function LandingHero() {
       <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white z-10 dark:from-black dark:via-transparent dark:to-black"/>
       <BackgroundImage src={"/hero-bg.png"}/>
       {/* Content grid: left-focused on desktop, centered on mobile */}
-      <div className="relative z-10 mx-auto grid min-h-[100svh] w-full max-w-7xl items-center gap-10 px-6 lg:grid-cols-[minmax(0,620px)_1fr]">
+      <div className="relative z-10 mx-auto grid min-h-[100svh]  w-full max-w-7xl items-center gap-10 px-6 lg:grid-cols-[minmax(0,620px)_1fr]">
         {/* Left column */}
         <motion.section
           initial={{ opacity: 0, y: 16 }}
@@ -25,7 +25,7 @@ export default function LandingHero() {
           style={fontBody.style}
         >
           {/* Kicker */}
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] tracking-wide text-foreground/70">
+          <div className="mb-12 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] backdrop-blur-md tracking-wide text-foreground/70">
             <span className="h-1.5 w-1.5 rounded-full bg-black/60 dark:bg-white/60" />
             Founder’s Batch • Limited Run
             <span className="h-1.5 w-1.5 rounded-full bg-black/60 dark:bg-white/60 block md:hidden" />
