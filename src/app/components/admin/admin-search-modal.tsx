@@ -9,6 +9,7 @@ type Item = { title: string; href: string; section: string; keywords?: string[] 
 function adminItems(): Item[] {
   return [
     { title: "Admin Dashboard", href: "/admin", section: "Admin", keywords: ["overview","metrics","dashboard"] },
+    { title: "Analytics", href: "/admin/analytics", section: "Admin", keywords: ["traffic","views","visitors","insights","kpi"] },
     { title: "Orders", href: "/admin/orders", section: "Admin", keywords: ["payments","transactions","stripe","checkout","sales"] },
     { title: "Fulfillment", href: "/admin/fulfillment", section: "Admin", keywords: ["shipping","packing","labels","warehouse"] },
     { title: "Products", href: "/admin/products", section: "Admin", keywords: ["catalog","inventory","variants","price","sku"] },
