@@ -5,6 +5,7 @@ import { InviteModalWatcher } from "./components/auth/invite-modal";
 import { AuthHashHandler } from "./components/auth/auth-hash-handler";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { CartProvider } from "./cart/cart-provider";
+import { PageViewTracker } from "./components/analytics/page-view-tracker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,8 @@ export default function RootLayout({
         <CartProvider>
           {children}
         </CartProvider>
+        {/* Global page view analytics */}
+        <PageViewTracker />
       </body>
       <GoogleAnalytics gaId="G-K2S57B1J45" />
     </html>
