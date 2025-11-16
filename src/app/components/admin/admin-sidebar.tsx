@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ClipboardList, Home, Megaphone, Package, Percent, Settings, Truck, Wrench, Inbox } from "lucide-react";
+import { ClipboardList, Home, Megaphone, Package, Percent, Settings, Truck, Wrench, Inbox, BarChart3 } from "lucide-react";
 
 const LINKS = [
+  { href: "/admin/analytics", label: "Analytics", Icon: BarChart3 },
   { href: "/admin/orders", label: "Orders", Icon: ClipboardList },
   { href: "/admin/messages", label: "Messages", Icon: Inbox },
   { href: "/admin/fulfillment", label: "Fulfillment", Icon: Truck },

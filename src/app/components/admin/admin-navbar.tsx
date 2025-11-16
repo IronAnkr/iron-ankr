@@ -4,9 +4,10 @@ import { usePathname } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
 import { AdminSearchModal } from "./admin-search-modal";
-import { Menu, X, LogOut, Home, Package, Settings, Percent, Megaphone, ClipboardList } from "lucide-react";
+import { Menu, X, LogOut, Home, Package, Settings, Percent, Megaphone, ClipboardList, BarChart3 } from "lucide-react";
 
 const ADMIN_LINKS = [
+  { href:"/analytics", label: "analytics", Icon: BarChart3 },
   { href:"/orders", label: "orders", Icon: ClipboardList },
   { href:"/products", label: "products", Icon: Package },
   { href:"/banners", label: "banners", Icon: Megaphone },

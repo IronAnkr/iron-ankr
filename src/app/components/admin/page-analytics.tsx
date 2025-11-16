@@ -37,6 +37,10 @@ export function PageAnalytics() {
   const [unfulfilledCount, setUnfulfilledCount] = useState(0);
   const [revenueSpark, setRevenueSpark] = useState<number[]>([]);
   const [ordersSpark, setOrdersSpark] = useState<number[]>([]);
+  const [viewsCount, setViewsCount] = useState(0);
+  const [visitorsCount, setVisitorsCount] = useState(0);
+  const [avgDurationSec, setAvgDurationSec] = useState(0);
+  const [viewsSpark, setViewsSpark] = useState<number[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -44,13 +48,22 @@ export function PageAnalytics() {
         setLoading(true); setError(null);
         const since = new Date();
         since.setDate(since.getDate() - 30);
-        const { data, error } = await supabase
-          .from("orders")
-          .select("id,total_in_cents,currency,payment_status,fulfillment_status,created_at")
-          .gte("created_at", since.toISOString())
-          .order("created_at", { ascending: true });
-        if (error) throw error;
-        const rows = (data as OrderRow[] | null) ?? [];
+        const [ordersRes, viewsRes] = await Promise.all([
+          supabase
+            .from("orders")
+            .select("id,total_in_cents,currency,payment_status,fulfillment_status,created_at")
+            .gte("created_at", since.toISOString())
+            .order("created_at", { ascending: true }),
+          supabase
+            .from("page_views")
+            .select("started_at,ended_at,device_id,fingerprint")
+            .gte("started_at", since.toISOString())
+            .order("started_at", { ascending: true }),
+        ]);
+        if (ordersRes.error) throw ordersRes.error;
+        if (viewsRes.error) throw viewsRes.error;
+
+        const rows = (ordersRes.data as OrderRow[] | null) ?? [];
 
         // Totals
         const paid = rows.filter(r => (r.payment_status || "").toLowerCase() === "paid");
@@ -70,6 +83,42 @@ export function PageAnalytics() {
         }
         setRevenueSpark(labels.map(l => Math.round((byDayRevenue[l] || 0) / 100)));
         setOrdersSpark(labels.map(l => byDayOrders[l] || 0));
+
+        // Page views KPIs
+        type PageViewRow = { started_at: string; ended_at: string | null; device_id: string | null; fingerprint: string | null };
+        const pvs = (viewsRes.data as PageViewRow[] | null) ?? [];
+        setViewsCount(pvs.length);
+
+        // Unique visitors by device_id fallback to fingerprint
+        const visitorKeys = new Set<string>();
+        for (const v of pvs) {
+          const k = (v.device_id && v.device_id.trim()) || (v.fingerprint && v.fingerprint.trim());
+          if (k) visitorKeys.add(k);
+        }
+        setVisitorsCount(visitorKeys.size);
+
+        // Average duration in seconds for ended views
+        let sumSec = 0;
+        let endedCount = 0;
+        for (const v of pvs) {
+          if (v.ended_at) {
+            const s = Date.parse(v.started_at);
+            const e = Date.parse(v.ended_at);
+            if (!Number.isNaN(s) && !Number.isNaN(e) && e > s) {
+              sumSec += Math.round((e - s) / 1000);
+              endedCount += 1;
+            }
+          }
+        }
+        setAvgDurationSec(endedCount ? Math.round(sumSec / endedCount) : 0);
+
+        // Views sparkline (last 8 days)
+        const byDayViews: Record<string, number> = Object.fromEntries(labels.map(l => [l, 0]));
+        for (const v of pvs) {
+          const day = v.started_at.slice(0, 10);
+          if (day in byDayViews) byDayViews[day] += 1;
+        }
+        setViewsSpark(labels.map(l => byDayViews[l] || 0));
       } catch (e: unknown) {
         const message = e instanceof Error ? e.message : "Failed to load analytics";
         setError(message);
@@ -78,6 +127,13 @@ export function PageAnalytics() {
       }
     })();
   }, [supabase]);
+
+  function formatDuration(sec: number) {
+    if (!sec || sec < 1) return "—";
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return m > 0 ? `${m}m ${s}s` : `${s}s`;
+  }
 
   const cards = [
     {
@@ -100,6 +156,27 @@ export function PageAnalytics() {
       delta: "",
       color: "from-pink-400/20 to-pink-400/0",
       data: ordersSpark,
+    },
+    {
+      title: "Views",
+      value: loading ? "—" : String(viewsCount),
+      delta: "",
+      color: "from-sky-400/20 to-sky-400/0",
+      data: viewsSpark,
+    },
+    {
+      title: "Visitors",
+      value: loading ? "—" : String(visitorsCount),
+      delta: "",
+      color: "from-amber-400/20 to-amber-400/0",
+      data: viewsSpark,
+    },
+    {
+      title: "Avg Time",
+      value: loading ? "—" : formatDuration(avgDurationSec),
+      delta: "",
+      color: "from-cyan-400/20 to-cyan-400/0",
+      data: viewsSpark,
     },
   ];
 
