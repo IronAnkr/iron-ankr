@@ -23,7 +23,7 @@ export default function LandingProductShowcase() {
         const [prodRes, varRes] = await Promise.all([
           supabase
             .from("products")
-            .select("id,name,description,status,price_in_cents,images,tags,metadata,created_at,updated_at,deleted_at")
+            .select("id,name,description,slug,status,price_in_cents,images,tags,metadata,created_at,updated_at,deleted_at")
             .is('deleted_at', null)
             .eq('status', 'active')
             .order("created_at", { ascending: false })
@@ -172,6 +172,7 @@ export default function LandingProductShowcase() {
                 product={product}
                 variants={variants}
                 badge={idx === 0 ? "Bestseller" : undefined}
+                href={`/products/${product.slug ?? product.id}`}
               />
             </motion.div>
           ))}
