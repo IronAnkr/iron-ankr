@@ -32,8 +32,7 @@ export default function Navbar() {
 
   return (
     <>
-    <nav className="system-theme fixed inset-x-4 top-4 z-50 h-16 rounded-md overflow-visible text-foreground">
-      <Image src="/cotton-webbing.png" className="object-cover -z-10 invert rounded-t-md" alt="nav bg" fill/>
+    <nav className="system-theme fixed inset-0 top-0 z-50 h-16 rounded-md overflow-visible text-foreground bg-white dark:bg-black">
       <motion.div
         className="absolute inset-x-0 top-0 h-0.5 origin-left bg-gradient-to-r from-rose-400 z-10 via-fuchsia-400 to-sky-400"
         style={{ scaleX: progress }}
